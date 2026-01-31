@@ -37,8 +37,9 @@
       "epic": "E0",
       "milestone": "M0",
       "title": "Create solution + project skeletons",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-01T00:54:13Z",
+      "doneAt": "2026-02-01T01:05:00Z",
       "dependsOn": [],
       "requirementRef": "/.agent/AGENT_OS.md#milestone-m0",
       "rationale": "Establish stable module boundaries and toolchain gates before implementing gameplay logic.",
@@ -54,8 +55,17 @@
         "pwsh ./scripts/ci.ps1 -Scope Always -LockedRestore:$false"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "dotnet new sln -n Floodline",
+          "dotnet new classlib -n Floodline.Core -o src/Floodline.Core -f netstandard2.1",
+          "dotnet new console -n Floodline.Cli -o src/Floodline.Cli -f net8.0",
+          "dotnet new xunit -n Floodline.Core.Tests -o tests/Floodline.Core.Tests -f net8.0",
+          "dotnet sln Floodline.sln add src/Floodline.Core/Floodline.Core.csproj src/Floodline.Cli/Floodline.Cli.csproj tests/Floodline.Core.Tests/Floodline.Core.Tests.csproj",
+          "powershell ./scripts/ci.ps1 -Scope Always -LockedRestore:$false"
+        ],
+        "notes": [
+          "Fixed a parser error in ci.ps1 related to $LASTEXITCODE variable reference."
+        ]
       }
     },
     {
