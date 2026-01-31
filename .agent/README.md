@@ -12,7 +12,9 @@ The agent must prefer **verifiable artifacts** over prose:
 `/.agent/backlog.md` is a human-readable view; the agent MUST update JSON.
 
 **Status enum:** `New` → `InProgress` → `Done`  
-**WIP limit:** 1 (exactly one InProgress at any time).
+**WIP limit:** 1 (at most one `InProgress` at a time; `0` allowed only between items).
+- If any eligible `New` item exists (all `dependsOn` Done), immediately set NEXT to `InProgress`
+  before making other repo changes.
 
 ## Execution loop (per backlog item)
 
@@ -36,6 +38,8 @@ Outside this window: do not re-plan.
 ### B) Start work (mandatory)
 4) Set the chosen item `status` to **InProgress** and set `startedAt` (ISO 8601 UTC).
    - If any other item is InProgress, STOP and resolve the inconsistency first.
+   - Immediately commit this backlog-only change (no code yet) to keep the working tree clean.
+     - Commit message: `FL-XXXX: start <short title>`
 
 ### C) Implement + verify
 5) Restate the goal and cite the requirement (GDD section / rule / test).

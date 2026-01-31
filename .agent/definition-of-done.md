@@ -5,7 +5,8 @@ A task is DONE only if all applicable items below are satisfied.
 ## General (always)
 - [ ] Changes match task scope; no unrelated refactors
 - [ ] Builds successfully on Windows
-- [ ] Formatting/linting applied (if configured)
+- [ ] Formatting/linting applied.
+  - From milestone **M0 / FL-0003** onward, `dotnet format --verify-no-changes` is required.
 - [ ] Evidence provided: commands run + results
 - [ ] No secrets committed
 

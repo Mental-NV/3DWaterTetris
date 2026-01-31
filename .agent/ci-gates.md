@@ -6,7 +6,8 @@ A PR/commit is acceptable only if all applicable gates pass.
 - Restore dependencies
 - Build (Release)
 - Unit tests
-- Formatting/lint (if configured)
+- Formatting/lint.
+  - From milestone **M0 / FL-0003** onward, `dotnet format --verify-no-changes` is required.
 - Static analysis (if configured)
 
 ## Unity projects

@@ -1,4 +1,3 @@
-```text
 MISSION: Floodline — Fully Autonomous Build (Windows / C# / .NET / Unity)
 
 You are an autonomous coding agent working inside a git repo on Windows. Your goal is to build the Floodline product end-to-end according to the Game Design Document and the agent operating system in /.agent, with strict determinism and strict .NET quality gates. You must proceed item-by-item from the canonical backlog, updating statuses so it’s always obvious what is done, what is current, and what is next.
@@ -38,17 +37,20 @@ C) Strict .NET quality gates (highest strictness)
 - Nullable enabled and enforced.
 - TreatWarningsAsErrors = true.
 - EnforceCodeStyleInBuild = true.
-- “dotnet format --verify-no-changes” must pass (when configured).
+- `dotnet format --verify-no-changes` must pass once the formatting gate is introduced (Milestone M0 / FL-0003 and onward).
 
 D) Backlog truth + WIP discipline
 - Canonical backlog is /.agent/backlog.json.
 - Status enum: New → InProgress → Done.
-- WIP limit = 1: exactly one InProgress item at a time.
+- **WIP limit = 1**: at most one InProgress item at a time.
+  - 0 is allowed only between items (e.g., initial repo state or immediately after completing an item).
+  - If any eligible New item exists (all dependsOn Done), you MUST immediately set NEXT to InProgress
+    before making other repo changes.
 - When starting an item: set status=InProgress and startedAt (ISO 8601 UTC).
 - When finishing: ensure DoD then set status=Done and doneAt, and append evidence (commands + results).
 - Always be able to state:
   - DONE items (status=Done)
-  - CURRENT item (status=InProgress)
+  - CURRENT item (status=InProgress) if any
   - NEXT item (lowest ID New with all dependsOn Done)
 
 ============================================================
@@ -117,9 +119,10 @@ For each backlog item, run these roles in order (even if you are a single agent)
 Repeat until the backlog (and milestone plan) is complete:
 
 Step 0 — Preflight (each session)
-- Ensure working tree is clean.
+- Ensure working tree is clean (no uncommitted changes).
 - Read the source-of-truth files listed above.
 - Confirm there is at most one InProgress item.
+- If you need to change backlog status (e.g., start/continue an item), commit the backlog-only status change immediately so the tree returns to clean state before implementation work.
 
 Step 1 — Select work
 - If there is an InProgress item: continue it.
@@ -127,7 +130,7 @@ Step 1 — Select work
 
 Step 2 — Start work
 - Set item status=InProgress; set startedAt (UTC ISO 8601).
-- Persist the change to /.agent/backlog.json immediately (commit later with code changes).
+- Persist the change to /.agent/backlog.json immediately and commit it as a backlog-only commit (before code changes).
 
 Step 3 — Implement and verify
 - Implement per constraints.
@@ -170,4 +173,3 @@ Step 5 — If blocked
 Do not do Unity work until milestone M5.
 Do not change milestone order.
 Do not guess behavior—use change proposals when needed.
-```

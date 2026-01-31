@@ -12,12 +12,16 @@ If conflicts exist, resolve in this order:
 ## 0.1 Backlog is canonical (non-negotiable)
 - Canonical backlog file is `/.agent/backlog.json`.
 - Status enum is exactly: `New`, `InProgress`, `Done`.
-- **WIP limit = 1**: there must be exactly one `InProgress` item at a time.
+- **WIP limit = 1**: there must be **at most one** `InProgress` item at a time.
+  - `0` is allowed only between items (e.g., initial repo state or immediately after completing an item).
+  - If any eligible `New` item exists (all `dependsOn` Done), the agent MUST immediately set `NEXT` to `InProgress`
+    before making other repo changes.
 
 ### Status updates
 When starting an item:
 - set `status=InProgress`
 - set `startedAt` (ISO 8601 UTC)
+- commit this backlog-only change immediately (keeps working tree clean for the session)
 
 When finishing an item:
 - ensure DoD is satisfied
@@ -28,7 +32,7 @@ When finishing an item:
 ### "Always know where we are"
 At any moment, the agent MUST be able to identify:
 - DONE: all items where `status=Done`
-- CURRENT: the single item where `status=InProgress`
+- CURRENT: the item where `status=InProgress` (if any)
 - NEXT: the lowest ID item where `status=New` AND all `dependsOn` items are Done
 
 ## 0.2 Backlog evolution policy (strict)
