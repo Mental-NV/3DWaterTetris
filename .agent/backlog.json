@@ -118,7 +118,7 @@
       "dependsOn": [
         "FL-0003"
       ],
-      "requirementRef": "/.agent/AGENT_OS.md#determinism",
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#determinism-contract",
       "rationale": "Deterministic ordering is a foundation for water/solid solvers and replay stability.",
       "sizeHint": "M",
       "deliverables": [
@@ -169,7 +169,7 @@
       "dependsOn": [
         "FL-0102"
       ],
-      "requirementRef": "/.agent/AGENT_OS.md#autonomy-acceptance",
+      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#input-model",
       "rationale": "Headless CLI is required for golden tests, replay verification, and automation.",
       "sizeHint": "M",
       "deliverables": [
