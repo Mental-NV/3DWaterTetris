@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1.0",
   "statusEnum": [
     "New",
     "InProgress",
@@ -11,15 +11,15 @@
   "backlogEvolution": {
     "editWindows": [
       "before-starting-new-item",
-      "blocked-current-item"
+      "when-blocked"
     ],
     "allowedReasons": [
       "missing-infrastructure",
-      "bug-found-by-tests",
+      "test-discovered-bug",
       "task-too-large-split",
       "spec-mismatch-change-proposal"
     ],
-    "requiredFields": [
+    "requiredFieldsForNewItems": [
       "id",
       "title",
       "milestone",
@@ -50,7 +50,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M0 -Configuration Release -LockedRestore:$false"
+        "pwsh ./scripts/ci.ps1 -Scope Always -LockedRestore:$false"
       ],
       "evidence": {
         "commandsRun": [],
@@ -67,16 +67,16 @@
         "FL-0001"
       ],
       "requirementRef": "/.agent/AGENT_OS.md#strict-net-baseline",
-      "rationale": "Enforce pinned package graph and deterministic restores to support strict CI gates.",
+      "rationale": "Deterministic dependency graph is critical for autonomous agents and stable CI.",
       "sizeHint": "S",
       "deliverables": [
         "Directory.Packages.props (pinned versions)",
         "Directory.Build.props: ManagePackageVersionsCentrally=true, lock files enabled",
-        "packages.lock.json created and committed"
+        "packages.lock.json generated + CI uses --locked-mode"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M0 -Configuration Release"
+        "pwsh ./scripts/ci.ps1 -Scope M0 -UseLockFile"
       ],
       "evidence": {
         "commandsRun": [],
@@ -93,15 +93,16 @@
         "FL-0002"
       ],
       "requirementRef": "/.agent/AGENT_OS.md#strict-net-baseline",
-      "rationale": "Prevent lint/nullable/style debt from accumulating in an autonomous pipeline.",
-      "sizeHint": "S",
+      "rationale": "Make correctness and style mechanically enforced to reduce agent-induced regressions.",
+      "sizeHint": "M",
       "deliverables": [
         ".editorconfig (strict)",
-        "TreatWarningsAsErrors=true, EnforceCodeStyleInBuild=true, Nullable=enable"
+        "TreatWarningsAsErrors=true, EnforceCodeStyleInBuild=true, Nullable=enable",
+        "dotnet format verify gate"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M0 -Configuration Release -IncludeFormat"
+        "pwsh ./scripts/ci.ps1 -Scope M0 -IncludeFormat"
       ],
       "evidence": {
         "commandsRun": [],
@@ -117,17 +118,17 @@
       "dependsOn": [
         "FL-0003"
       ],
-      "requirementRef": "/.agent/AGENT_OS.md#hard-invariants",
-      "rationale": "Create deterministic primitives and canonical ordering required for all later mechanics.",
+      "requirementRef": "/.agent/AGENT_OS.md#determinism",
+      "rationale": "Deterministic ordering is a foundation for water/solid solvers and replay stability.",
       "sizeHint": "M",
       "deliverables": [
         "Int3 coordinate type",
         "Gravity directions + right-axis table",
-        "Deterministic iteration helpers (stable ordering)"
+        "Ordering helper for (gravElev, tieCoord)"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1 -Configuration Release"
+        "pwsh ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -144,16 +145,15 @@
         "FL-0101"
       ],
       "requirementRef": "/docs/GDD_v0_2.md",
-      "rationale": "Represent the playfield deterministically, supporting solids, water, drains, and objectives.",
+      "rationale": "Canonical grid state is required for deterministic resolve, objectives, and hashing.",
       "sizeHint": "M",
       "deliverables": [
         "Cell/voxel occupancy model with enum/material IDs",
-        "Single occupancy invariant enforced",
-        "Deterministic hashing of grid state"
+        "Single occupancy invariant enforced"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1 -Configuration Release"
+        "pwsh ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -170,16 +170,16 @@
         "FL-0102"
       ],
       "requirementRef": "/.agent/AGENT_OS.md#autonomy-acceptance",
-      "rationale": "Enable headless execution + determinism evidence without Unity.",
+      "rationale": "Headless CLI is required for golden tests, replay verification, and automation.",
       "sizeHint": "M",
       "deliverables": [
         "CLI loads level JSON + seed + scripted inputs",
         "Runs until win/lose or max ticks",
-        "Outputs final metrics + determinism hash summary"
+        "Prints summary metrics"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1 -Configuration Release",
+        "pwsh ./scripts/ci.ps1 -Scope M1",
         "dotnet run --project Floodline.Cli -- --help",
         "dotnet run --project Floodline.Cli -- --level <path> --inputs <path>"
       ],

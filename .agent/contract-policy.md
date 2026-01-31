@@ -3,8 +3,9 @@
 **Purpose:** keep the system consistent under autonomous development: APIs, level data, replays, and determinism must not drift.
 
 This policy complements:
-- `/docs/GDD_v0_2.md`
-- `/.agent/rules.md` (no silent spec edits; change proposals for spec changes)
+- [`docs/GDD_v0_2.md`](../docs/GDD_v0_2.md)
+- [`AGENT_OS.md`](AGENT_OS.md) (change control; no silent spec edits)
+- [`change-proposal-template.md`](change-proposal-template.md) (required for spec/architecture changes)
 
 ---
 
@@ -153,5 +154,5 @@ CI must gate:
 
 ## 8) Change control (agent rule)
 Any change to this policy or to the meaning of contracts must be accompanied by:
-- a Change Proposal (`/.agent/change-proposal-template.md`)
+- a Change Proposal ([`change-proposal-template.md`](change-proposal-template.md))
 - updates to schemas / migrators / golden fixtures as needed

@@ -7,6 +7,7 @@ param(
   [string]$Configuration = "Release",
 
   [switch]$LockedRestore = $true,
+  [switch]$UseLockFile = $false,
   [switch]$IncludeFormat = $false,
 
   # future switches (safe to add later without breaking callers)
@@ -29,9 +30,15 @@ $sln = Get-ChildItem -Path "." -Filter "*.sln" -Recurse -ErrorAction SilentlyCon
 if (-not $sln) { throw "No .sln found. Create solution/projects before running CI script." }
 
 # Restore
+# - UseLockFile: generates/updates packages.lock.json (for initial adoption)
+# - LockedRestore: verifies restore uses committed lock files
+if ($UseLockFile) {
+  Run "dotnet restore `"$($sln.FullName)`" --use-lock-file"
+}
+
 if ($LockedRestore) {
   Run "dotnet restore `"$($sln.FullName)`" --locked-mode"
-} else {
+} elseif (-not $UseLockFile) {
   Run "dotnet restore `"$($sln.FullName)`""
 }
 
