@@ -7,7 +7,7 @@ public class Pcg32Tests
     [Fact]
     public void TickRateIsCanonical()
     {
-        Assert.Equal(60, Constants.TickHz);
+        Assert.Equal(60, Floodline.Core.Constants.TickHz);
     }
 
     [Fact]
@@ -59,6 +59,23 @@ public class Pcg32Tests
         int min = 5;
         int max = 15;
         for (int i = 0; i < 1000; i++)
+        {
+            int val = rng.NextInt(min, max);
+            Assert.True(val >= min && val < max, $"Value {val} out of bounds [{min}, {max})");
+        }
+    }
+
+    [Fact]
+    public void NextIntMinMaxHandlesFullRange()
+    {
+        Pcg32 rng = new(1);
+        // Range covers full 32-bit space: int.MinValue to int.MaxValue
+        // range = 2^32 - 1, which fits in uint.
+        // We chose constraints such that it runs multiple times without crashing.
+        int min = int.MinValue;
+        int max = int.MaxValue;
+
+        for (int i = 0; i < 100; i++)
         {
             int val = rng.NextInt(min, max);
             Assert.True(val >= min && val < max, $"Value {val} out of bounds [{min}, {max})");

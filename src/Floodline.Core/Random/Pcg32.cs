@@ -64,8 +64,22 @@ public sealed class Pcg32 : IRandom
     /// <inheritdoc/>
     public int NextInt(int min, int max)
     {
-        return max <= min
-            ? throw new System.ArgumentOutOfRangeException(nameof(max), "Max must be greater than min")
-            : min + NextInt(max - min);
+        if (max <= min)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(max), "Max must be greater than min");
+        }
+
+        // Use uint to allow ranges larger than int.MaxValue (e.g. min=int.MinValue, max=int.MaxValue)
+        uint range = (uint)max - (uint)min;
+        uint threshold = (uint)((0x100000000UL - range) % range);
+
+        while (true)
+        {
+            uint r = Nextuint();
+            if (r >= threshold)
+            {
+                return (int)((uint)min + (r % range));
+            }
+        }
     }
 }
