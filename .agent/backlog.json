@@ -73,8 +73,8 @@
       "epic": "E0",
       "milestone": "M0",
       "title": "Enable Central Package Management + locked restore",
-      "status": "InProgress",
-      "startedAt": "2026-02-01T01:23:44Z",
+      "status": "Done",
+      "doneAt": "2026-02-01T01:25:00Z",
       "dependsOn": [
         "FL-0001"
       ],
@@ -91,8 +91,14 @@
         "pwsh ./scripts/ci.ps1 -Scope M0 -UseLockFile"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "dotnet restore",
+          "powershell ./scripts/ci.ps1 -Scope M0 -UseLockFile"
+        ],
+        "notes": [
+          "Enabled CPM and lock files.",
+          "Verified build and tests pass in locked mode."
+        ]
       }
     },
     {
