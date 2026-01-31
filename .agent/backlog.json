@@ -73,7 +73,8 @@
       "epic": "E0",
       "milestone": "M0",
       "title": "Enable Central Package Management + locked restore",
-      "status": "New",
+      "status": "Done",
+      "doneAt": "2026-02-01T01:25:00Z",
       "dependsOn": [
         "FL-0001"
       ],
@@ -90,8 +91,14 @@
         "pwsh ./scripts/ci.ps1 -Scope M0 -UseLockFile"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "dotnet restore",
+          "powershell ./scripts/ci.ps1 -Scope M0 -UseLockFile"
+        ],
+        "notes": [
+          "Enabled CPM and lock files.",
+          "Verified build and tests pass in locked mode."
+        ]
       }
     },
     {
@@ -99,7 +106,8 @@
       "epic": "E0",
       "milestone": "M0",
       "title": "Strict analyzers + formatting gates (warnings-as-errors)",
-      "status": "New",
+      "status": "Done",
+      "doneAt": "2026-02-01T01:27:00Z",
       "dependsOn": [
         "FL-0002"
       ],
@@ -116,8 +124,14 @@
         "pwsh ./scripts/ci.ps1 -Scope M0 -IncludeFormat"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell ./scripts/ci.ps1 -Scope M0 -IncludeFormat"
+        ],
+        "notes": [
+          "Implemented strict analyzers and formatting gates.",
+          "Updated Directory.Build.props and .editorconfig.",
+          "Cleaned up boilerplate files to satisfy analyzers."
+        ]
       }
     },
     {
@@ -155,7 +169,8 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Core primitives: coords, gravity, ordering",
-      "status": "New",
+      "status": "Done",
+      "doneAt": "2026-02-01T01:35:00Z",
       "dependsOn": [
         "FL-0003"
       ],
@@ -172,8 +187,15 @@
         "pwsh ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell ./scripts/ci.ps1 -Scope M1"
+        ],
+        "notes": [
+          "Implemented Core primitives: Int3, GravityDirection, and DeterministicOrdering.",
+          "Added Polyfills.cs to support records in netstandard2.1.",
+          "Verified stability with unit tests (PrimitiveTests.cs).",
+          "Fixed all analyzer errors (CA1036, IDE0008, IDE0048, IDE0065, IDE0090, IDE0130, IDE0160)."
+        ]
       }
     },
     {
