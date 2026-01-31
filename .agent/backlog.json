@@ -169,7 +169,8 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Core primitives: coords, gravity, ordering",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-01T01:30:00Z",
       "dependsOn": [
         "FL-0003"
       ],
