@@ -144,7 +144,7 @@
       "dependsOn": [
         "FL-0101"
       ],
-      "requirementRef": "/docs/GDD_v0_2.md",
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#cell-occupancy-types",
       "rationale": "Canonical grid state is required for deterministic resolve, objectives, and hashing.",
       "sizeHint": "M",
       "deliverables": [

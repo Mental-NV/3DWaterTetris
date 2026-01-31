@@ -3,7 +3,10 @@
 **Purpose:** keep the system consistent under autonomous development: APIs, level data, replays, and determinism must not drift.
 
 This policy complements:
-- [`docs/GDD_v0_2.md`](../docs/GDD_v0_2.md)
+- [`docs/GDD_Core_v0_2.md`](../docs/GDD_Core_v0_2.md)
+- [`docs/specs/Simulation_Rules_v0_2.md`](../docs/specs/Simulation_Rules_v0_2.md)
+- [`docs/specs/Water_Algorithm_v0_2.md`](../docs/specs/Water_Algorithm_v0_2.md)
+- [`docs/specs/Input_Feel_v0_2.md`](../docs/specs/Input_Feel_v0_2.md)
 - [`AGENT_OS.md`](AGENT_OS.md) (change control; no silent spec edits)
 - [`change-proposal-template.md`](change-proposal-template.md) (required for spec/architecture changes)
 

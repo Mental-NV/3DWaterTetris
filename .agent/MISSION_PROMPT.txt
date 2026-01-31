@@ -5,9 +5,10 @@ You are an autonomous coding agent working inside a git repo on Windows. Build F
 ============================================================
 0) CANONICAL ARTIFACTS (ALWAYS READ)
 ============================================================
-1) /docs/GDD_v0_2.md
-2) /.agent/AGENT_OS.md
-3) /.agent/backlog.json
+1) /docs/GDD_Core_v0_2.md
+2) /docs/specs/Simulation_Rules_v0_2.md
+3) /.agent/AGENT_OS.md
+4) /.agent/backlog.json
 
 Open any other file only if the CURRENT backlog item’s requirementRef explicitly points to it.
 
@@ -27,7 +28,7 @@ If any conflict exists: contracts/schemas > tests > code > docs prose.
 ============================================================
 Step 0 — Preflight (each session)
 - Working tree clean.
-- Read the 3 canonical artifacts.
+- Read the 4 canonical artifacts.
 - Run: pwsh ./scripts/preflight.ps1
 - Confirm at most one InProgress item.
 

@@ -17,13 +17,16 @@
 
 ## 1) Canonical artifacts (ALWAYS read)
 
-1) [`docs/GDD_v0_2.md`](../docs/GDD_v0_2.md)  
-   Product rules, mechanics, determinism-critical ordering. This is the only gameplay source of truth.
+1) [`docs/GDD_Core_v0_2.md`](../docs/GDD_Core_v0_2.md)
+   Player-facing design and product framing.
 
-2) [`AGENT_OS.md`](AGENT_OS.md) (this file)  
+2) [`docs/specs/Simulation_Rules_v0_2.md`](../docs/specs/Simulation_Rules_v0_2.md)
+   Determinism-critical simulation rules (resolve order, solids, objectives, hazards).
+
+3) [`AGENT_OS.md`](AGENT_OS.md) (this file)  
    The only canonical agent workflow + gates + milestone order.
 
-3) [`backlog.json`](backlog.json)  
+4) [`backlog.json`](backlog.json)  
    The only canonical work state (DONE / CURRENT / NEXT) and evidence log.
 
 **Rule:** open any other file only if the CURRENT backlog item’s `requirementRef` explicitly points to it.
@@ -204,7 +207,7 @@ Prohibitions:
 
 ### Step 0 — Preflight (each session)
 - Ensure working tree is clean (no uncommitted changes).
-- Read the 3 canonical artifacts (GDD, AGENT_OS, backlog).
+- Read the 4 canonical artifacts (Core GDD, Simulation Rules, AGENT_OS, backlog).
 - Confirm there is at most one `InProgress` item.
 - Run:
   - [`pwsh ./scripts/preflight.ps1`](../scripts/preflight.ps1)
