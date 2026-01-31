@@ -22,7 +22,7 @@ $ErrorActionPreference = "Stop"
 function Run([string]$cmd) {
   Write-Host ">> $cmd"
   iex $cmd
-  if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE: $cmd" }
+  if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code ${LASTEXITCODE}: $cmd" }
 }
 
 # Find solution (first *.sln under repo root)
