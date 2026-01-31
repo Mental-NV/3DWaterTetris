@@ -4,26 +4,56 @@ This folder defines the "constitution" and execution loop for coding AI agents w
 
 ## Golden rule
 The agent must prefer **verifiable artifacts** over prose:
-**contracts > tests > code > docs text**.
 
-## Execution loop (per task)
-1) Pick the next backlog item from `/.agent/backlog.json` (or `/.agent/backlog.md`).
-2) Set its `status` to **InProgress** (and ensure there is no other InProgress item).
-3) Restate goal + cite requirement (source file/section if available).
-4) List touched artifacts (contracts/tests/docs/code).
-5) Implement minimal diff.
-6) Run required validation commands.
-7) Update docs/ADR if behavior or architecture changed.
-8) Commit with evidence (commands + results).
-9) Set backlog item `status` to **Done**.
-10) Select the next eligible **New** item (all dependencies Done) and proceed.
+**contracts / schemas > automated tests (incl. golden) > code > docs text**
+
+## Canonical backlog
+**Source of truth:** `/.agent/backlog.json`  
+`/.agent/backlog.md` is a human-readable view; the agent MUST update JSON.
 
 **Status enum:** `New` → `InProgress` → `Done`  
 **WIP limit:** 1 (exactly one InProgress at any time).
 
+## Execution loop (per backlog item)
+
+### A) Plan window (allowed backlog edits)
+Before starting a new item, the agent MUST:
+1) Read `/.agent/backlog.json`
+2) Identify:
+   - Done items
+   - Current item (the single InProgress item, if any)
+   - Next item (lowest ID New item whose dependencies are Done)
+3) Confirm the next item is **appropriately sized**. If it is too large, the agent MUST split it into smaller items (see `rules.md`).
+
+During this window the agent MAY:
+- split an item into smaller items,
+- add an enabler task (CI, scripts, schema tools, fixtures),
+- add a bugfix task discovered by tests,
+- add a Change Proposal task if design/architecture must change.
+
+Outside this window: do not re-plan.
+
+### B) Start work (mandatory)
+4) Set the chosen item `status` to **InProgress** and set `startedAt` (ISO 8601 UTC).
+   - If any other item is InProgress, STOP and resolve the inconsistency first.
+
+### C) Implement + verify
+5) Restate the goal and cite the requirement (GDD section / rule / test).
+6) List touched artifacts (contracts/tests/docs/code).
+7) Implement minimal diff.
+8) Run the validation commands listed in the backlog item.
+9) Update docs/ADR if behavior or architecture changed.
+10) Commit with evidence (commands + results).
+
+### D) Finish
+11) If DoD is satisfied, set `status` to **Done** and set `doneAt` (ISO 8601 UTC).
+12) Append evidence to the backlog item (`evidence.commandsRun`).
+13) Move to the next eligible **New** item.
+
 ## When the agent is blocked
 - Do NOT guess silently.
-- Keep item as **InProgress** and record a Blocking Note in the task:
+- Keep the item as **InProgress**.
+- Record a Blocking Note in `evidence.notes`:
   - what failed
   - 2–3 options
   - recommended option + why

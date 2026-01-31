@@ -19,10 +19,8 @@ The agent must follow `/.agent/` as the repo constitution.
 - `/.agent/milestones.md` — dependency graph and exit criteria aligned to the autonomy-first sequence
 - `/.agent/contract-policy.md` — versioning rules for levels/replays/determinism hashes
 - `/.agent/backlog.json` — canonical backlog with statuses (New/InProgress/Done)
-- `/.agent/backlog.md` — human-readable backlog view
 
 ### Operational templates
-- `/.agent/task-template.md` — required structure for every backlog item
 - `/.agent/change-proposal-template.md` — required for any spec/architecture change
 - `/.agent/commands-windows.md` — canonical Windows commands (dotnet + Unity batchmode)
 - `/.agent/ci-gates.md` — CI gates (must pass)

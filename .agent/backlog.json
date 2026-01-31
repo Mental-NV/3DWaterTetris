@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "statusEnum": [
     "New",
     "InProgress",
@@ -8,6 +8,29 @@
   "wipLimit": 1,
   "canonicalOrdering": "lowest-id-first",
   "selectionRule": "next = lowest-id New item where all dependsOn are Done",
+  "backlogEvolution": {
+    "editWindows": [
+      "before-starting-new-item",
+      "when-blocked"
+    ],
+    "allowedReasons": [
+      "missing-infrastructure",
+      "test-discovered-bug",
+      "task-too-large-split",
+      "spec-mismatch-change-proposal"
+    ],
+    "requiredFieldsForNewItems": [
+      "id",
+      "title",
+      "milestone",
+      "status",
+      "dependsOn",
+      "requirementRef",
+      "rationale",
+      "validation",
+      "definitionOfDoneRef"
+    ]
+  },
   "items": [
     {
       "id": "FL-0001",
@@ -16,6 +39,9 @@
       "title": "Create solution + project skeletons",
       "status": "New",
       "dependsOn": [],
+      "requirementRef": "/.agent/milestones.md#M0",
+      "rationale": "Establish stable module boundaries and toolchain gates before implementing gameplay logic.",
+      "sizeHint": "S",
       "deliverables": [
         "Floodline.Core (netstandard2.1;net8.0)",
         "Floodline.Core.Tests (net8.0)",
@@ -42,6 +68,9 @@
       "dependsOn": [
         "FL-0001"
       ],
+      "requirementRef": "/.agent/context.md#3-strict-net-baseline-repo-policy",
+      "rationale": "Deterministic dependency graph is critical for autonomous agents and stable CI.",
+      "sizeHint": "S",
       "deliverables": [
         "Directory.Packages.props (pinned versions)",
         "Directory.Build.props: ManagePackageVersionsCentrally=true, lock files enabled",
@@ -67,6 +96,9 @@
       "dependsOn": [
         "FL-0002"
       ],
+      "requirementRef": "/.agent/context.md#3-strict-net-baseline-repo-policy",
+      "rationale": "Make correctness and style mechanically enforced to reduce agent-induced regressions.",
+      "sizeHint": "M",
       "deliverables": [
         ".editorconfig (strict)",
         "TreatWarningsAsErrors=true, EnforceCodeStyleInBuild=true, Nullable=enable",
@@ -92,6 +124,9 @@
       "dependsOn": [
         "FL-0003"
       ],
+      "requirementRef": "/.agent/context.md#2-hard-invariants-must-never-drift",
+      "rationale": "Deterministic ordering is a foundation for water/solid solvers and replay stability.",
+      "sizeHint": "M",
       "deliverables": [
         "Int3 coordinate type",
         "Gravity directions + right-axis table",
@@ -115,6 +150,9 @@
       "dependsOn": [
         "FL-0101"
       ],
+      "requirementRef": "/docs/GDD_v0_2.md",
+      "rationale": "Canonical grid state is required for deterministic resolve, objectives, and hashing.",
+      "sizeHint": "M",
       "deliverables": [
         "Cell/voxel occupancy model with enum/material IDs",
         "Single occupancy invariant enforced"
@@ -137,6 +175,9 @@
       "dependsOn": [
         "FL-0102"
       ],
+      "requirementRef": "/.agent/context.md#5-mvp-acceptance-criteria-autonomy-targets",
+      "rationale": "Headless CLI is required for golden tests, replay verification, and automation.",
+      "sizeHint": "M",
       "deliverables": [
         "CLI loads level JSON + seed + scripted inputs",
         "Runs until win/lose or max ticks",
