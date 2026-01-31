@@ -1,0 +1,262 @@
+# Floodline — AGENT_OS (Canonical Agent Operating System)
+
+**Purpose:** minimize context switching while keeping autonomous execution strict, deterministic, and verifiable.
+
+---
+
+## 0) Canonical artifacts (ALWAYS read)
+
+1) `/docs/GDD_v0_2.md`  
+   Product rules, mechanics, determinism-critical ordering. This is the only gameplay source of truth.
+
+2) `/.agent/AGENT_OS.md` (this file)  
+   The only canonical agent workflow + gates + milestone order.
+
+3) `/.agent/backlog.json`  
+   The only canonical work state (DONE / CURRENT / NEXT) and evidence log.
+
+**Open any other file only if the CURRENT backlog item’s `requirementRef` explicitly points to it.**
+
+---
+
+## 1) Artifact precedence (conflict resolution)
+
+If any conflict exists, resolve in this order:
+
+1) contracts / schemas  
+2) automated tests (incl. golden/snapshots)  
+3) code  
+4) docs prose
+
+---
+
+## 2) Non-negotiable constraints
+
+### 2.1 Determinism (Core simulation)
+- Core sim must be deterministic given `(level, seed, per-tick inputs, rulesVersion)`.
+- **No floating point** in Core gameplay solver logic (solids / water / objectives).
+- Canonical ordering and tie-breaks must match **the GDD**.
+- Resolve Phase ordering must match **the GDD**.
+
+### 2.2 Architecture split (Unity is forbidden until M5)
+- `Floodline.Core` must not reference `UnityEngine`.
+- Unity work is forbidden until milestone **M5** (after M0–M4 are green).
+
+### 2.3 Strict .NET quality gates (high strictness)
+- Central Package Management is mandatory (`Directory.Packages.props`).
+- Lock files mandatory; CI uses locked restore.
+- Nullable enabled and enforced.
+- `TreatWarningsAsErrors = true`.
+- `EnforceCodeStyleInBuild = true`.
+- Once introduced, formatting gate must pass:
+  - `dotnet format --verify-no-changes`
+
+### 2.4 Backlog truth + WIP discipline (hard rule)
+- Canonical backlog: `/.agent/backlog.json`.
+- Status enum: `New → InProgress → Done`.
+- **WIP limit = 1**: at most one `InProgress` item at a time.
+  - `0` is allowed only between items.
+  - If any eligible `New` item exists (all `dependsOn` are `Done`), you MUST immediately set NEXT to `InProgress`
+    before making other repo changes.
+
+**Always be able to state:**
+- DONE items (`Done`)
+- CURRENT item (`InProgress`) if any
+- NEXT item (lowest ID `New` with all dependencies `Done`)
+
+### 2.5 Change control (no silent spec drift)
+If design/architecture must change:
+- Create a Change Proposal using `/.agent/change-proposal-template.md`
+- Add a Change Proposal backlog item with `requirementRef` to the relevant GDD section(s)
+- Do not silently edit behavior and “fix docs later”.
+
+### 2.6 Scope control
+- Implement ONLY what the current backlog item requires.
+- No “while I’m here” refactors.
+- If ambiguous: add a Clarify / Change Proposal item, do not invent behavior.
+
+### 2.7 Security / secrets
+- Never commit secrets, tokens, keys, passwords, private personal data.
+
+---
+
+## 3) Milestones (order is mandatory)
+
+**Do not reorder milestones:** `M0 → M1 → M2 → M3 → M4 → M5`  
+You may NOT start `M(N+1)` until `M(N)` exit criteria are satisfied.
+
+### M0 — Repo Baseline (strict .NET + CI)
+**Exit criteria**
+- `dotnet restore` uses lock file and passes in locked mode
+- `dotnet build -c Release` passes with zero warnings
+- `dotnet test -c Release` passes
+- formatting gate passes once introduced (`dotnet format --verify-no-changes`)
+
+### M1 — Core Sim + CLI Runner (no visuals)
+**Exit criteria**
+- CLI runs a minimal level end-to-end and outputs a final state summary
+- Core remains Unity-free
+
+### M2 — Golden Tests (Resolve + Water + Objectives)
+**Exit criteria**
+- Golden suite passes in Release on Windows
+- At least one negative test per subsystem
+
+### M3 — Replay Format + Determinism Hash
+**Exit criteria**
+- Recorded replay replays to identical determinism hash in CI
+- Replay versioning rules enforced (see contract policy if referenced)
+
+### M4 — Level Schema + Validator + Campaign Validation
+**Exit criteria**
+- Validator passes for all campaign levels in CI
+- Errors actionable (file + JSON path + rule id)
+
+### M5 — Unity Client Shell (last)
+**Exit criteria**
+- CLI and Unity produce identical determinism hashes for same replay/seed/level
+- Basic playability for early campaign levels
+
+---
+
+## 4) Backlog item requirements (for adding/splitting)
+
+You may add/split backlog items ONLY:
+- before starting a new item (Plan window), OR
+- when CURRENT item is blocked and you need an enabler/bugfix/change-proposal item.
+
+Allowed reasons:
+- missing infrastructure discovered while executing
+- bug uncovered by tests/golden regressions
+- task too large → split
+- spec/design mismatch → Change Proposal
+
+Every new backlog item MUST include:
+- `id`, `title`, `milestone`, `status`, `dependsOn`
+- `requirementRef` (exact GDD section anchor preferred; or failing test reference)
+- `rationale`
+- `validation.commands` (prefer the scripts in `scripts/`)
+- `dodRef` (this AGENT_OS section or a specific gate list)
+- evidence fields (`evidence.commandsRun`, `evidence.notes`)
+
+**No `requirementRef` = scope creep = do not add.**
+
+---
+
+## 5) Role loop (run sequentially per item)
+
+Even as a single agent, run roles in this order:
+
+### Planner
+Outputs:
+- confirm DONE / CURRENT / NEXT
+- verify sizing; split/add enablers only if allowed
+- confirm milestone consistency and dependencies
+
+Prohibitions:
+- no code changes
+
+### Architect
+Outputs:
+- module boundaries and invariants touched
+- ADR-style decision note if needed (brief)
+- contract/versioning decisions if needed
+
+Prohibitions:
+- no large refactors unless justified by a Change Proposal
+
+### Implementer
+Outputs:
+- minimal change set that satisfies the item deliverables
+- tests + documentation updates required by rules
+
+Prohibitions:
+- no unrequested refactors
+- no silent design edits
+
+### Verifier
+Outputs:
+- runs the item’s validation commands
+- ensures gates satisfied
+- flags drift / weak tests / contract mismatches / scope creep
+
+Prohibitions:
+- no feature additions
+
+---
+
+## 6) Execution loop (repeat until backlog complete)
+
+### Step 0 — Preflight (each session)
+- Ensure working tree is clean (no uncommitted changes).
+- Read the 3 canonical artifacts (GDD, AGENT_OS, backlog).
+- Confirm there is at most one `InProgress` item.
+- Run:
+  - `pwsh ./scripts/preflight.ps1`
+
+### Step 1 — Select work
+- If there is a CURRENT `InProgress` item: continue it.
+- Else select NEXT = lowest ID `New` item with all `dependsOn` = `Done`.
+
+### Step 2 — Start work (mandatory backlog-only commit)
+- Set item `status=InProgress`, set `startedAt` (UTC ISO 8601).
+- Commit this backlog-only change immediately (no code yet):
+  - `FL-XXXX: start <short title>`
+
+### Step 3 — Implement and verify
+- Implement per constraints.
+- Run validation commands exactly as listed in backlog item:
+  - prefer `pwsh ./scripts/ci.ps1 ...`
+- Record commands + results in item evidence.
+
+### Step 4 — Finish
+Only if gates are satisfied:
+- set `status=Done`, set `doneAt` (UTC ISO 8601)
+- append evidence
+- commit:
+  - `FL-XXXX: <short title>`
+
+### Step 5 — If blocked
+- Keep `status=InProgress`.
+- Write a Blocking Note into evidence:
+  - what failed
+  - 2–3 options
+  - recommended option + why
+  - what info is needed
+- If allowed, add an enabler/bugfix/change-proposal backlog item with `requirementRef`.
+
+---
+
+## 7) Gates (canonical)
+
+### Always (once solution exists)
+- restore (locked mode when applicable)
+- build `Release`
+- unit tests `Release`
+
+### Formatting gate (once introduced)
+- `dotnet format --verify-no-changes`
+
+### Milestone-specific additions
+- M2+: golden/snapshot tests
+- M3+: replay record/playback + determinism hash checks
+- M4+: schema + semantic validation for levels/campaign
+- M5+: Unity EditMode + PlayMode tests (smoke suite minimum)
+
+---
+
+## 8) Standard validation entrypoints (preferred)
+
+Use scripts to reduce per-item command drift:
+
+- `pwsh ./scripts/preflight.ps1`
+- `pwsh ./scripts/ci.ps1 -Scope Always`
+- `pwsh ./scripts/ci.ps1 -Scope M0 -IncludeFormat`
+- `pwsh ./scripts/ci.ps1 -Scope M2 -Golden`
+- `pwsh ./scripts/ci.ps1 -Scope M3 -Replay`
+- `pwsh ./scripts/ci.ps1 -Scope M4 -ValidateLevels`
+- `pwsh ./scripts/ci.ps1 -Scope M5 -Unity`
+
+Backlog items should reference these script calls in `validation.commands`.
+
+---
