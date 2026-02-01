@@ -8,7 +8,7 @@ param(
 
   [switch]$LockedRestore = $true,
   [switch]$UseLockFile = $false,
-  [switch]$IncludeFormat = $false,
+  [switch]$IncludeFormat = $true,
 
   # future switches (safe to add later without breaking callers)
   [switch]$Golden = $false,
