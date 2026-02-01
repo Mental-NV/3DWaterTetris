@@ -15,7 +15,7 @@ public sealed class MovementTests
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0), new(0, 1, 0)];
         OrientedPiece piece = new(PieceId.I4, voxels, 0);
         Int3 origin = new(5, 10, 3);
-        ActivePiece activePiece = new(piece, origin, GravityDirection.Down);
+        ActivePiece activePiece = new(piece, origin);
 
         // Act
         IReadOnlyList<Int3> worldPositions = activePiece.GetWorldPositions();
@@ -34,7 +34,7 @@ public sealed class MovementTests
         Grid grid = new(new Int3(10, 20, 10));
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -51,7 +51,7 @@ public sealed class MovementTests
         Grid grid = new(new Int3(10, 20, 10));
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(9, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(9, 10, 5));
 
         // Act - try to move right, which would put voxel at x=11 (out of bounds)
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -70,7 +70,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act - try to move right into solid
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -89,7 +89,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act - move into water cell
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -108,7 +108,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -126,7 +126,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -144,7 +144,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -162,7 +162,7 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = activePiece.TryTranslate(new Int3(1, 0, 0), grid);
@@ -178,10 +178,10 @@ public sealed class MovementTests
         Grid grid = new(new Int3(10, 20, 10));
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
-        bool result = activePiece.CanAdvanceInGravity(grid);
+        bool result = activePiece.CanAdvance(grid, GravityDirection.Down);
 
         // Assert
         Assert.True(result);
@@ -196,10 +196,10 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
-        bool result = activePiece.CanAdvanceInGravity(grid);
+        bool result = activePiece.CanAdvance(grid, GravityDirection.Down);
 
         // Assert - lock condition detected
         Assert.False(result);
@@ -214,10 +214,10 @@ public sealed class MovementTests
 
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 10, 5));
 
         // Act
-        bool result = activePiece.CanAdvanceInGravity(grid);
+        bool result = activePiece.CanAdvance(grid, GravityDirection.Down);
 
         // Assert
         Assert.True(result);
@@ -230,10 +230,10 @@ public sealed class MovementTests
         Grid grid = new(new Int3(10, 20, 10));
         List<Int3> voxels = [new(0, 0, 0), new(1, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        ActivePiece activePiece = new(piece, new Int3(5, 0, 5), GravityDirection.Down);
+        ActivePiece activePiece = new(piece, new Int3(5, 0, 5));
 
         // Act - at y=0, moving down would go to y=-1 (out of bounds)
-        bool result = activePiece.CanAdvanceInGravity(grid);
+        bool result = activePiece.CanAdvance(grid, GravityDirection.Down);
 
         // Assert
         Assert.False(result);
@@ -247,7 +247,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.MoveLeft);
@@ -265,7 +266,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.MoveRight);
@@ -283,7 +285,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.MoveForward);
@@ -301,7 +304,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.MoveBack);
@@ -319,7 +323,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ApplyGravityStep();
@@ -339,7 +344,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ApplyGravityStep();
@@ -357,7 +363,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.SoftDrop);
@@ -377,7 +384,8 @@ public sealed class MovementTests
         MovementController controller = new(grid);
         List<Int3> voxels = [new(0, 0, 0)];
         OrientedPiece piece = new(PieceId.O2, voxels, 0);
-        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5), GravityDirection.Down);
+        controller.SetGravity(GravityDirection.Down);
+        controller.CurrentPiece = new ActivePiece(piece, new Int3(5, 10, 5));
 
         // Act
         bool result = controller.ProcessInput(InputCommand.HardDrop);

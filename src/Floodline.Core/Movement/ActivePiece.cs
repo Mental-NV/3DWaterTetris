@@ -6,8 +6,7 @@ namespace Floodline.Core.Movement;
 /// </summary>
 /// <param name="piece">The oriented piece definition.</param>
 /// <param name="origin">The initial origin position.</param>
-/// <param name="gravity">The current gravity direction.</param>
-public sealed class ActivePiece(OrientedPiece piece, Int3 origin, GravityDirection gravity)
+public sealed class ActivePiece(OrientedPiece piece, Int3 origin)
 {
     /// <summary>
     /// Gets the oriented piece definition (shape and voxels).
@@ -18,11 +17,6 @@ public sealed class ActivePiece(OrientedPiece piece, Int3 origin, GravityDirecti
     /// Gets or sets the origin position of the piece in grid coordinates.
     /// </summary>
     public Int3 Origin { get; private set; } = origin;
-
-    /// <summary>
-    /// Gets the current gravity direction.
-    /// </summary>
-    public GravityDirection Gravity { get; } = gravity;
 
     /// <summary>
     /// Gets the absolute world positions of all voxels in the piece.
@@ -67,15 +61,16 @@ public sealed class ActivePiece(OrientedPiece piece, Int3 origin, GravityDirecti
     /// Per Simulation_Rules_v0_2.md §4.3: piece locks when it cannot advance due to collision or out-of-bounds.
     /// </summary>
     /// <param name="grid">The grid to check collision against.</param>
+    /// <param name="gravity">The current gravity direction.</param>
     /// <returns>True if the piece can advance; otherwise, false (lock condition).</returns>
-    public bool CanAdvanceInGravity(Grid grid)
+    public bool CanAdvance(Grid grid, GravityDirection gravity)
     {
         if (grid is null)
         {
             throw new ArgumentNullException(nameof(grid));
         }
 
-        Int3 gravityVector = GravityTable.GetVector(Gravity);
+        Int3 gravityVector = GravityTable.GetVector(gravity);
         Int3 newOrigin = Origin + gravityVector;
         return IsValidPlacement(newOrigin, Piece.Voxels, grid);
     }

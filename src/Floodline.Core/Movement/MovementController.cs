@@ -18,6 +18,18 @@ public sealed class MovementController(Grid grid)
     public Grid Grid { get; } = grid ?? throw new ArgumentNullException(nameof(grid));
 
     /// <summary>
+    /// Gets the current world gravity direction.
+    /// Default is Down (-Y).
+    /// </summary>
+    public GravityDirection Gravity { get; private set; } = GravityDirection.Down;
+
+    /// <summary>
+    /// Sets the current world gravity direction.
+    /// </summary>
+    /// <param name="gravity">The new gravity direction.</param>
+    public void SetGravity(GravityDirection gravity) => Gravity = gravity;
+
+    /// <summary>
     /// Processes a single input command for the current tick.
     /// Per Input_Feel_v0_2.md §2, commands are applied in canonical order.
     /// </summary>
@@ -50,7 +62,7 @@ public sealed class MovementController(Grid grid)
             return false;
         }
 
-        Int3 gravityVector = GravityTable.GetVector(CurrentPiece.Gravity);
+        Int3 gravityVector = GravityTable.GetVector(Gravity);
         return CurrentPiece.TryTranslate(gravityVector, Grid);
     }
 
