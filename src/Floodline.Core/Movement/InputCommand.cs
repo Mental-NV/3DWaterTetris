@@ -22,12 +22,12 @@ public enum InputCommand
     MoveRight,
 
     /// <summary>
-    /// Move piece forward (negative Z direction in world space).
+    /// Move piece forward/north (negative Z direction in world space).
     /// </summary>
     MoveForward,
 
     /// <summary>
-    /// Move piece back (positive Z direction in world space).
+    /// Move piece back/south (positive Z direction in world space).
     /// </summary>
     MoveBack,
 

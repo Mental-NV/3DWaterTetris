@@ -2,6 +2,10 @@ using Floodline.Core.Movement;
 
 namespace Floodline.Core.Tests.Movement;
 
+/// <summary>
+/// Tests for active piece movement and collision detection.
+/// Grid coordinate convention: Forward/North = -Z, Back/South = +Z, Right = +X, Left = -X.
+/// </summary>
 public sealed class MovementTests
 {
     [Fact]
