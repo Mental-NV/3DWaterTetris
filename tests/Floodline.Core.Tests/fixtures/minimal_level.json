@@ -1,0 +1,47 @@
+{
+    "meta": {
+        "id": "test-level",
+        "title": "Minimal Test Level",
+        "schemaVersion": 1,
+        "seed": 12345
+    },
+    "bounds": {
+        "x": 10,
+        "y": 20,
+        "z": 10
+    },
+    "initialVoxels": [
+        {
+            "pos": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "type": "Bedrock"
+        }
+    ],
+    "objectives": [
+        {
+            "type": "ReachHeight",
+            "params": {
+                "height": 5
+            }
+        }
+    ],
+    "rotation": {
+        "tiltBudget": 5,
+        "allowedDirections": [
+            "Down",
+            "North",
+            "South"
+        ]
+    },
+    "bag": {
+        "type": "Weighted",
+        "weights": {
+            "L3": 10,
+            "I3": 10
+        }
+    },
+    "hazards": []
+}
