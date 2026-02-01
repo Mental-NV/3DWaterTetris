@@ -123,14 +123,45 @@ public static class LevelLoader
             throw new ArgumentException("Rotation configuration is missing.");
         }
 
+        ValidateObjectives(level);
+
         if (level.Bag == null)
         {
             throw new ArgumentException("Bag configuration is missing.");
         }
 
+        if (string.IsNullOrWhiteSpace(level.Bag.Type))
+        {
+            throw new ArgumentException("Bag type is missing.");
+        }
+
         if (level.Hazards == null)
         {
             throw new ArgumentException("Hazards list is missing.");
+        }
+
+        foreach (HazardConfig hazard in level.Hazards)
+        {
+            if (string.IsNullOrWhiteSpace(hazard.Type))
+            {
+                throw new ArgumentException("Hazard type is missing.");
+            }
+        }
+    }
+
+    private static void ValidateObjectives(Level level)
+    {
+        if (level.Objectives == null)
+        {
+            throw new ArgumentException("Objectives list is missing.");
+        }
+
+        foreach (ObjectiveConfig objective in level.Objectives)
+        {
+            if (string.IsNullOrWhiteSpace(objective.Type))
+            {
+                throw new ArgumentException("Objective type is missing.");
+            }
         }
     }
 }

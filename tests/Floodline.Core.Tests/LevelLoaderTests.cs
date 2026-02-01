@@ -80,4 +80,52 @@ public class LevelLoaderTests
         ArgumentException ex = Assert.Throws<ArgumentException>(() => LevelLoader.Load(json));
         Assert.Contains("InitialVoxels list is missing", ex.Message);
     }
+
+    [Fact]
+    public void LoadMissingBagTypeThrowsArgumentException()
+    {
+        string json = @"{
+            ""meta"": { ""id"": ""fail"", ""title"": ""fail"", ""schemaVersion"": 1, ""seed"": 1 },
+            ""bounds"": { ""x"": 10, ""y"": 10, ""z"": 10 },
+            ""initialVoxels"": [],
+            ""objectives"": [],
+            ""rotation"": { ""cooldownTicks"": 60 },
+            ""bag"": { },
+            ""hazards"": []
+        }";
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => LevelLoader.Load(json));
+        Assert.Contains("Bag type is missing", ex.Message);
+    }
+
+    [Fact]
+    public void LoadMissingObjectiveTypeThrowsArgumentException()
+    {
+        string json = @"{
+            ""meta"": { ""id"": ""fail"", ""title"": ""fail"", ""schemaVersion"": 1, ""seed"": 1 },
+            ""bounds"": { ""x"": 10, ""y"": 10, ""z"": 10 },
+            ""initialVoxels"": [],
+            ""objectives"": [{ ""params"": {} }],
+            ""rotation"": { ""cooldownTicks"": 60 },
+            ""bag"": { ""type"": ""Fixed"" },
+            ""hazards"": []
+        }";
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => LevelLoader.Load(json));
+        Assert.Contains("Objective type is missing", ex.Message);
+    }
+
+    [Fact]
+    public void LoadMissingHazardTypeThrowsArgumentException()
+    {
+        string json = @"{
+            ""meta"": { ""id"": ""fail"", ""title"": ""fail"", ""schemaVersion"": 1, ""seed"": 1 },
+            ""bounds"": { ""x"": 10, ""y"": 10, ""z"": 10 },
+            ""initialVoxels"": [],
+            ""objectives"": [],
+            ""rotation"": { ""cooldownTicks"": 60 },
+            ""bag"": { ""type"": ""Fixed"" },
+            ""hazards"": [{ ""params"": {} }]
+        }";
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => LevelLoader.Load(json));
+        Assert.Contains("Hazard type is missing", ex.Message);
+    }
 }
