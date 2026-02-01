@@ -1,3 +1,5 @@
+#pragma warning disable JSON002
+
 using Floodline.Core.Levels;
 
 namespace Floodline.Core.Tests;
@@ -8,8 +10,8 @@ public class LevelLoaderTests
     public void LoadValidJsonReturnsLevel()
     {
         // Arrange
-        string path = System.IO.Path.Combine("fixtures", "minimal_level.json");
-        string json = System.IO.File.ReadAllText(path);
+        string path = Path.Combine("fixtures", "minimal_level.json");
+        string json = File.ReadAllText(path);
 
         // Act
         Level level = LevelLoader.Load(json);
@@ -43,19 +45,8 @@ public class LevelLoaderTests
     }
 
     [Fact]
-    public void LoadEmptyJsonThrowsArgumentException()
-    {
-        // Act & Assert
-        _ = Assert.Throws<ArgumentException>(() => LevelLoader.Load(""));
-    }
+    public void LoadEmptyJsonThrowsArgumentException() => _ = Assert.Throws<ArgumentException>(() => LevelLoader.Load(""));
 
     [Fact]
-    public void LoadMissingMetaThrowsArgumentException()
-    {
-        // Arrange
-        string json = @"{ ""bounds"": { ""x"": 10, ""y"": 10, ""z"": 10 } }";
-
-        // Act & Assert
-        _ = Assert.Throws<ArgumentException>(() => LevelLoader.Load(json));
-    }
+    public void LoadMissingMetaThrowsArgumentException() => _ = Assert.Throws<ArgumentException>(() => LevelLoader.Load(@"{ ""bounds"": { ""x"": 10, ""y"": 10, ""z"": 10 } }"));
 }
