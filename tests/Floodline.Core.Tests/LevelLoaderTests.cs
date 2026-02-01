@@ -10,7 +10,8 @@ public class LevelLoaderTests
     public void LoadValidJsonReturnsLevel()
     {
         // Arrange
-        string path = Path.Combine("fixtures", "minimal_level.json");
+        string baseDir = AppContext.BaseDirectory;
+        string path = Path.Combine(baseDir, "fixtures", "minimal_level.json");
         string json = File.ReadAllText(path);
 
         // Act
