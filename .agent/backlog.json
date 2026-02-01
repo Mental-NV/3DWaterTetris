@@ -52,7 +52,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope Always -LockedRestore:$false"
+        "powershell -File ./scripts/ci.ps1 -Scope Always -LockedRestore:$false"
       ],
       "evidence": {
         "commandsRun": [
@@ -88,7 +88,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M0 -UseLockFile"
+        "powershell -File ./scripts/ci.ps1 -Scope M0 -UseLockFile"
       ],
       "evidence": {
         "commandsRun": [
@@ -121,7 +121,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M0 -IncludeFormat"
+        "powershell -File ./scripts/ci.ps1 -Scope M0 -IncludeFormat"
       ],
       "evidence": {
         "commandsRun": [
@@ -184,7 +184,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [
@@ -218,7 +218,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [
@@ -252,7 +252,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [
@@ -288,7 +288,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [
@@ -325,7 +325,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [
@@ -365,7 +365,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -391,7 +391,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -417,7 +417,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -443,7 +443,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -469,7 +469,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1",
+        "powershell -File ./scripts/ci.ps1 -Scope M1",
         "dotnet run --project src/Floodline.Cli -- --help"
       ],
       "evidence": {
@@ -497,7 +497,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -523,7 +523,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -550,7 +550,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M1"
+        "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
         "commandsRun": [],
@@ -576,7 +576,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M2",
+        "powershell -File ./scripts/ci.ps1 -Scope M2",
         "dotnet test -c Release"
       ],
       "evidence": {
@@ -602,7 +602,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M2"
+        "powershell -File ./scripts/ci.ps1 -Scope M2"
       ],
       "evidence": {
         "commandsRun": [],
@@ -627,7 +627,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M2"
+        "powershell -File ./scripts/ci.ps1 -Scope M2"
       ],
       "evidence": {
         "commandsRun": [],
@@ -652,7 +652,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M2"
+        "powershell -File ./scripts/ci.ps1 -Scope M2"
       ],
       "evidence": {
         "commandsRun": [],
@@ -677,7 +677,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M2 -Golden"
+        "powershell -File ./scripts/ci.ps1 -Scope M2 -Golden"
       ],
       "evidence": {
         "commandsRun": [],
@@ -703,7 +703,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M3"
+        "powershell -File ./scripts/ci.ps1 -Scope M3"
       ],
       "evidence": {
         "commandsRun": [],
@@ -729,7 +729,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M3"
+        "powershell -File ./scripts/ci.ps1 -Scope M3"
       ],
       "evidence": {
         "commandsRun": [],
@@ -755,7 +755,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M3"
+        "powershell -File ./scripts/ci.ps1 -Scope M3"
       ],
       "evidence": {
         "commandsRun": [],
@@ -780,7 +780,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M3 -Replay"
+        "powershell -File ./scripts/ci.ps1 -Scope M3 -Replay"
       ],
       "evidence": {
         "commandsRun": [],
@@ -806,7 +806,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M4"
+        "powershell -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
         "commandsRun": [],
@@ -832,7 +832,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M4"
+        "powershell -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
         "commandsRun": [],
@@ -857,7 +857,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
       ],
       "evidence": {
         "commandsRun": [],
@@ -883,7 +883,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M5"
+        "powershell -File ./scripts/ci.ps1 -Scope M5"
       ],
       "evidence": {
         "commandsRun": [],
@@ -908,7 +908,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M5"
+        "powershell -File ./scripts/ci.ps1 -Scope M5"
       ],
       "evidence": {
         "commandsRun": [],
@@ -933,7 +933,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M5"
+        "powershell -File ./scripts/ci.ps1 -Scope M5"
       ],
       "evidence": {
         "commandsRun": [],
@@ -958,7 +958,7 @@
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "pwsh ./scripts/ci.ps1 -Scope M5 -Unity"
+        "powershell -File ./scripts/ci.ps1 -Scope M5 -Unity"
       ],
       "evidence": {
         "commandsRun": [],

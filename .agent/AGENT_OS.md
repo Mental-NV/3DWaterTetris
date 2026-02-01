@@ -211,7 +211,7 @@ Prohibitions:
 - Read the 4 canonical artifacts (Core GDD, Simulation Rules, AGENT_OS, backlog).
 - Confirm there is at most one `InProgress` item.
 - Run:
-  - [`pwsh ./scripts/preflight.ps1`](../scripts/preflight.ps1)
+  - [`powershell -File ./scripts/preflight.ps1`](../scripts/preflight.ps1)
 
 ### Step 1 — Select work
 - If there is a CURRENT `InProgress` item: continue it.
@@ -225,7 +225,7 @@ Prohibitions:
 ### Step 3 — Implement and verify
 - Implement per constraints.
 - Run validation commands exactly as listed in backlog item:
-  - prefer [`pwsh ./scripts/ci.ps1`](../scripts/ci.ps1)
+  - prefer [`powershell -File ./scripts/ci.ps1`](../scripts/ci.ps1)
 - Record commands + results in item evidence.
 
 ### Step 4 — Finish
@@ -271,11 +271,11 @@ Only if gates are satisfied:
 
 Use scripts to reduce per-item command drift:
 
-- [`pwsh ./scripts/preflight.ps1`](../scripts/preflight.ps1)
-- [`pwsh ./scripts/ci.ps1 -Scope Always -LockedRestore:$false`](../scripts/ci.ps1)
-- [`pwsh ./scripts/ci.ps1 -Scope M0 -UseLockFile`](../scripts/ci.ps1)
-- [`pwsh ./scripts/ci.ps1 -Scope M0 -IncludeFormat`](../scripts/ci.ps1)
-- [`pwsh ./scripts/ci.ps1 -Scope M1`](../scripts/ci.ps1)
+- [`powershell -File ./scripts/preflight.ps1`](../scripts/preflight.ps1)
+- [`powershell -File ./scripts/ci.ps1 -Scope Always -LockedRestore:$false`](../scripts/ci.ps1)
+- [`powershell -File ./scripts/ci.ps1 -Scope M0 -UseLockFile`](../scripts/ci.ps1)
+- [`powershell -File ./scripts/ci.ps1 -Scope M0 -IncludeFormat`](../scripts/ci.ps1)
+- [`powershell -File ./scripts/ci.ps1 -Scope M1`](../scripts/ci.ps1)
 
 **Reserved switches (placeholders):** `-Golden`, `-Replay`, `-ValidateLevels`, `-Unity`  
 These flags should become enforcing gates only after the related projects/tests/tools exist.

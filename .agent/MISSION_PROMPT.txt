@@ -29,7 +29,7 @@ If any conflict exists: contracts/schemas > tests > code > docs prose.
 Step 0 — Preflight (each session)
 - Working tree clean.
 - Read the 4 canonical artifacts.
-- Run: pwsh ./scripts/preflight.ps1
+- Run: powershell -File ./scripts/preflight.ps1
 - Confirm at most one InProgress item.
 
 Step 1 — Select work
@@ -59,7 +59,7 @@ Step 5 — Blocked
 ============================================================
 3) START NOW
 ============================================================
-1) Run pwsh ./scripts/preflight.ps1
+1) Run powershell -File ./scripts/preflight.ps1
 2) Open /.agent/backlog.json
 3) Identify DONE / CURRENT / NEXT
 4) If no CURRENT, set NEXT to InProgress and commit backlog-only change
