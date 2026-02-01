@@ -271,7 +271,9 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Level data model + loader (ticks-only, no floats)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-01T00:38:23Z",
+      "doneAt": "2026-02-01T03:41:00Z",
       "dependsOn": [
         "FL-0103"
       ],
@@ -289,8 +291,17 @@
         "pwsh ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M1 -UseLockFile"
+        ],
+        "notes": [
+          "Implemented Level record and supporting sub-records (LevelMeta, VoxelData, RotationConfig, BagConfig, ObjectiveConfig, HazardConfig).",
+          "Implemented LevelLoader with strict JSON schema validation and floating-point rejection for all numeric values.",
+          "Added System.Text.Json 8.0.5 dependency to fix vulnerabilities.",
+          "Added minimal_level.json test fixture and comprehensive LevelLoaderTests.cs.",
+          "Fixed multiple analyzer errors (CA1847, IDE0010, IDE0011, IDE0005, IDE0008, IDE0270, IDE0058, IDE0065, CA1707).",
+          "Updated Floodline.Core.Tests.csproj to copy fixtures to output directory."
+        ]
       }
     },
     {
