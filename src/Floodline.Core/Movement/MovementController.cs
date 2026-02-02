@@ -105,8 +105,17 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
                         ? ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.RollCCW, Grid))
                         : Reject(),
 
-                InputCommand.RotateWorld =>
-                    new InputApplyResult(Accepted: false, Moved: false, LockRequested: false), // Placeholder for FL-0108
+                InputCommand.RotateWorldForward =>
+                    ResolveWorldRotation(WorldRotationDirection.TiltForward),
+
+                InputCommand.RotateWorldBack =>
+                    ResolveWorldRotation(WorldRotationDirection.TiltBack),
+
+                InputCommand.RotateWorldLeft =>
+                    ResolveWorldRotation(WorldRotationDirection.TiltLeft),
+
+                InputCommand.RotateWorldRight =>
+                    ResolveWorldRotation(WorldRotationDirection.TiltRight),
 
                 InputCommand.None =>
                     new InputApplyResult(Accepted: true, Moved: false, LockRequested: false),
@@ -114,6 +123,44 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
                 _ =>
                     new InputApplyResult(Accepted: false, Moved: false, LockRequested: false)
             };
+
+    /// <summary>
+    /// Resolves a world rotation.
+    /// Updates gravity. Active piece continues falling under new gravity (stays fixed in grid).
+    /// </summary>
+    /// <param name="direction">The tilt direction.</param>
+    /// <returns>InputApplyResult indicating if the rotation was accepted.</returns>
+    public InputApplyResult ResolveWorldRotation(WorldRotationDirection direction)
+    {
+        // 1. Get rotation matrix
+        Matrix3x3 matrix = GravityTable.GetMatrix(direction);
+
+        // 2. Compute new gravity
+        GravityDirection? newGravity = GravityTable.GetRotatedGravity(Gravity, matrix);
+
+        // 3. Reject if new gravity is invalid (Up) or violates level constraints
+        if (newGravity == null)
+        {
+            return Reject();
+        }
+
+        // 4. Trace ungrounding signal (Input_Feel §4.2)
+        // Lock delay resets if the piece becomes ungrounded due to world rotation.
+        bool wasGrounded = CurrentPiece != null && !CurrentPiece.CanAdvance(Grid, Gravity);
+
+        // 5. Update gravity
+        // Per §3.2, active piece continues falling under new gravity.
+        // It does NOT rotate with the world (stays fixed relative to grid coordinates).
+        Gravity = newGravity.Value;
+
+        bool isUngroundedNow = CurrentPiece != null && CurrentPiece.CanAdvance(Grid, Gravity);
+        bool ungroundedReset = wasGrounded && isUngroundedNow;
+
+        // NOTE: Tilt Resolve for settled world (solids + water) must follow (FL-0109)
+        // TODO: Implement immediate Tilt Resolve per §3.2 requirement.
+
+        return new InputApplyResult(Accepted: true, Moved: ungroundedReset, LockRequested: false);
+    }
 
     private static InputApplyResult ResultFromMove(bool moved) =>
         new(Accepted: true, Moved: moved, LockRequested: false);

@@ -418,7 +418,9 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "World rotation (snap 90°) + gravity direction model",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-02T16:25:58Z",
+      "doneAt": "2026-02-02T16:35:00Z",
       "dependsOn": [
         "FL-0107"
       ],
@@ -426,17 +428,24 @@
       "rationale": "World rotation changes gravity; must be implemented as integer coordinate transforms with stable tie-break rules.",
       "sizeHint": "M",
       "deliverables": [
-        "Gravity direction enum and tie-break coordinate helpers (per Simulation_Rules)",
-        "World rotation updates gravity + transforms active piece as specified",
-        "Unit tests: rotation transforms and invariants"
+        "Gravity direction enum and tie-break coordinate helpers (per Simulation_Rules §2.4)",
+        "World rotation updates gravity (active piece orientation fixed; implementation choice)",
+        "Unit tests: rotation transforms and invariants (94 tests passing)"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
         "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/ci.ps1 -Scope M1"
+        ],
+        "notes": [
+          "Implemented GetRotatedGravity and GetMatrix in GravityTable (non-throwing).",
+          "Implemented ResolveWorldRotation in MovementController (rejection and ungrounding resets fixed).",
+          "Spec-compliant TieCoord (U = -g) implemented in DeterministicOrdering.",
+          "Verified with 94 unit tests passing in CI."
+        ]
       }
     },
     {
@@ -453,6 +462,7 @@
       "sizeHint": "M",
       "deliverables": [
         "Core step function: ApplyInputs → Gravity/Lock → Resolve (solids/water/drains/freeze) → Objectives",
+        "Includes immediate Tilt Resolve for settled world after successful world rotation (§3.2)",
         "Canonical iteration orders implemented as utilities",
         "Unit tests: step order observable via small fixtures"
       ],
