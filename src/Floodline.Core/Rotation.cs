@@ -1,5 +1,26 @@
 namespace Floodline.Core;
 
+/// <summary>
+/// Defines the local axes for piece rotation.
+/// </summary>
+public enum RotationAxis
+{
+    /// <summary>
+    /// Around the Y-axis (Standard 2D rotation).
+    /// </summary>
+    Yaw,
+
+    /// <summary>
+    /// Around the X-axis.
+    /// </summary>
+    Pitch,
+
+    /// <summary>
+    /// Around the Z-axis.
+    /// </summary>
+    Roll
+}
+
 public readonly record struct Matrix3x3(
     int M11, int M12, int M13,
     int M21, int M22, int M23,
@@ -12,6 +33,21 @@ public readonly record struct Matrix3x3(
     );
 
     public static readonly IReadOnlyList<Matrix3x3> AllRotations = GenerateRotations();
+
+    // Canonical 90-degree rotations
+    public static readonly Matrix3x3 Identity = new(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+    // Yaw (Y-axis)
+    public static readonly Matrix3x3 YawCW = new(0, 0, 1, 0, 1, 0, -1, 0, 0); // Rotates X to -Z
+    public static readonly Matrix3x3 YawCCW = new(0, 0, -1, 0, 1, 0, 1, 0, 0); // Rotates X to Z
+
+    // Pitch (X-axis)
+    public static readonly Matrix3x3 PitchCW = new(1, 0, 0, 0, 0, -1, 0, 1, 0); // Rotates Y to Z
+    public static readonly Matrix3x3 PitchCCW = new(1, 0, 0, 0, 0, 1, 0, -1, 0); // Rotates Y to -Z
+
+    // Roll (Z-axis)
+    public static readonly Matrix3x3 RollCW = new(0, -1, 0, 1, 0, 0, 0, 0, 1); // Rotates X to Y
+    public static readonly Matrix3x3 RollCCW = new(0, 1, 0, -1, 0, 0, 0, 0, 1); // Rotates X to -Y
 
     private static List<Matrix3x3> GenerateRotations()
     {
@@ -92,11 +128,21 @@ public readonly record struct Matrix3x3(
     }
 }
 
+/// <summary>
+/// Provides utilities for generating and normalizing unique piece orientations.
+/// </summary>
 public static class OrientationGenerator
 {
-    public static IReadOnlyList<IReadOnlyList<Int3>> GetUniqueOrientations(IReadOnlyList<Int3> voxels)
+    /// <summary>
+    /// Generates all unique orientations for a given set of voxels by applying all 24 proper cube rotations.
+    /// Orientations are deduplicated by normalizing and hashing their voxel sets.
+    /// </summary>
+    /// <param name="voxels">The initial voxel offsets defining the piece.</param>
+    /// <returns>A tuple containing lists of both rotated (absolute) and normalized voxel sets.</returns>
+    public static (IReadOnlyList<IReadOnlyList<Int3>> Rotated, IReadOnlyList<IReadOnlyList<Int3>> Normalized) GetUniqueOrientations(IReadOnlyList<Int3> voxels)
     {
-        List<List<Int3>> unique = [];
+        List<List<Int3>> rotatedList = [];
+        List<List<Int3>> normalizedList = [];
         HashSet<string> seenHashes = [];
 
         foreach (Matrix3x3 matrix in Matrix3x3.AllRotations)
@@ -108,14 +154,25 @@ public static class OrientationGenerator
             if (!seenHashes.Contains(hash))
             {
                 _ = seenHashes.Add(hash);
-                unique.Add(rotated);
+                rotatedList.Add(rotated);
+                normalizedList.Add(normalized);
             }
         }
 
-        return [.. unique.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())];
+        return (
+            [.. rotatedList.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())],
+            [.. normalizedList.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())]
+        );
     }
 
-    private static List<Int3> Normalize(List<Int3> voxels)
+    /// <summary>
+    /// Normalizes a set of voxels by translating them to the origin (minX, minY, minZ shifted to 0,0,0)
+    /// and sorting them in a canonical order (X then Y then Z).
+    /// Used for orientation deduplication and comparison.
+    /// </summary>
+    /// <param name="voxels">The set of voxels to normalize.</param>
+    /// <returns>A new list of normalized and sorted voxels.</returns>
+    public static List<Int3> Normalize(List<Int3> voxels)
     {
         int minX = voxels.Min(v => v.X);
         int minY = voxels.Min(v => v.Y);

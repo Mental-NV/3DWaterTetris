@@ -11,7 +11,7 @@ public sealed class ActivePiece(OrientedPiece piece, Int3 origin)
     /// <summary>
     /// Gets the oriented piece definition (shape and voxels).
     /// </summary>
-    public OrientedPiece Piece { get; } = piece ?? throw new ArgumentNullException(nameof(piece));
+    public OrientedPiece Piece { get; private set; } = piece ?? throw new ArgumentNullException(nameof(piece));
 
     /// <summary>
     /// Gets or sets the origin position of the piece in grid coordinates.
@@ -73,6 +73,42 @@ public sealed class ActivePiece(OrientedPiece piece, Int3 origin)
         Int3 gravityVector = GravityTable.GetVector(gravity);
         Int3 newOrigin = Origin + gravityVector;
         return IsValidPlacement(newOrigin, Piece.Voxels, grid);
+    }
+
+    /// <summary>
+    /// Attempts to rotate the piece using the provided rotation matrix and deterministic kick table.
+    /// Per Content_Pack_v0_2 Section 3.
+    /// </summary>
+    /// <param name="rotation">The rotation matrix to apply.</param>
+    /// <param name="grid">The grid to check collision against.</param>
+    /// <returns>True if the rotation succeeded (possibly with a kick); otherwise, false.</returns>
+    public bool AttemptRotation(Matrix3x3 rotation, Grid grid)
+    {
+        if (grid is null)
+        {
+            throw new ArgumentNullException(nameof(grid));
+        }
+
+        // 1. Calculate next orientation
+        OrientedPiece nextPiece = PieceLibrary.Rotate(Piece, rotation);
+
+        // 2. Try kicks in deterministic order
+        foreach (Int3 kick in KickTable.Kicks)
+        {
+            // "If you use wall-kick, it shifts the piece origin cell, not the voxel offsets."
+            Int3 testOrigin = Origin + kick;
+
+            if (IsValidPlacement(testOrigin, nextPiece.Voxels, grid))
+            {
+                // Found a valid placement
+                Origin = testOrigin;
+                Piece = nextPiece;
+                return true;
+            }
+        }
+
+        // 3. Reject if no valid placement
+        return false;
     }
 
     /// <summary>

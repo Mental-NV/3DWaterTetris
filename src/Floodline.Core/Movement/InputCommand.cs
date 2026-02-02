@@ -32,9 +32,34 @@ public enum InputCommand
     MoveBack,
 
     /// <summary>
-    /// Rotate the piece locally (implementation in FL-0107).
+    /// Rotate the piece Yaw CW (around the vertical Y axis).
     /// </summary>
-    RotatePiece,
+    RotatePieceYawCW,
+
+    /// <summary>
+    /// Rotate the piece Yaw CCW (around the vertical Y axis).
+    /// </summary>
+    RotatePieceYawCCW,
+
+    /// <summary>
+    /// Rotate the piece Pitch CW (around the horizontal X axis).
+    /// </summary>
+    RotatePiecePitchCW,
+
+    /// <summary>
+    /// Rotate the piece Pitch CCW (around the horizontal X axis).
+    /// </summary>
+    RotatePiecePitchCCW,
+
+    /// <summary>
+    /// Rotate the piece Roll CW (around the depth Z axis).
+    /// </summary>
+    RotatePieceRollCW,
+
+    /// <summary>
+    /// Rotate the piece Roll CCW (around the depth Z axis).
+    /// </summary>
+    RotatePieceRollCCW,
 
     /// <summary>
     /// Soft drop - accelerate gravity stepping to 1 cell per tick.
@@ -50,27 +75,6 @@ public enum InputCommand
     /// Rotate the world (snap 90°) - implementation in FL-0108.
     /// </summary>
     RotateWorld
-}
-
-/// <summary>
-/// Defines local piece rotation axes (placeholder for FL-0107).
-/// </summary>
-public enum PieceRotationAxis
-{
-    /// <summary>
-    /// Yaw rotation (around vertical axis).
-    /// </summary>
-    Yaw,
-
-    /// <summary>
-    /// Pitch rotation (around horizontal axis).
-    /// </summary>
-    Pitch,
-
-    /// <summary>
-    /// Roll rotation (around depth axis).
-    /// </summary>
-    Roll
 }
 
 /// <summary>

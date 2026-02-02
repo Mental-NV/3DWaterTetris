@@ -48,7 +48,7 @@ public class PieceTests
     public void OrientationGeneratorProducesExpectedUniqueCounts(PieceId id, int expectedUnique)
     {
         PieceDefinition piece = PieceLibrary.Get(id);
-        IReadOnlyList<IReadOnlyList<Int3>> unique = OrientationGenerator.GetUniqueOrientations(piece.Voxels);
+        (var unique, _) = OrientationGenerator.GetUniqueOrientations(piece.Voxels);
         Assert.Equal(expectedUnique, unique.Count);
     }
 
@@ -59,7 +59,7 @@ public class PieceTests
         // It is NOT re-centered per Content_Pack_v0_2 Section 1.2
         foreach (PieceDefinition piece in PieceLibrary.All())
         {
-            IReadOnlyList<IReadOnlyList<Int3>> unique = OrientationGenerator.GetUniqueOrientations(piece.Voxels);
+            (var unique, _) = OrientationGenerator.GetUniqueOrientations(piece.Voxels);
             foreach (IReadOnlyList<Int3> orientationVoxels in unique)
             {
                 // In my implementation, Matrix3x3.Transform rotates relative to origin (0,0,0).
