@@ -152,7 +152,7 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
         // NOTE: Tilt Resolve for settled world (solids + water) must follow (FL-0109)
         // TODO: Implement immediate Tilt Resolve per §3.2 requirement.
 
-        return new InputApplyResult(Accepted: true, Moved: true, LockRequested: false);
+        return new InputApplyResult(Accepted: true, Moved: false, LockRequested: false);
     }
 
     private static InputApplyResult ResultFromMove(bool moved) =>

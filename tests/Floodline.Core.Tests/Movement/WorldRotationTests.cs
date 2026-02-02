@@ -17,6 +17,7 @@ public class WorldRotationTests
         // Tilt Forward (PitchCW) -> Gravity becomes North (0,0,-1)
         var result = controller.ResolveWorldRotation(WorldRotationDirection.TiltForward);
         Assert.True(result.Accepted);
+        Assert.False(result.Moved); // Refinement: world rotation doesn't count as "piece move" for lock delay
         Assert.Equal(GravityDirection.North, controller.Gravity);
 
         // Reset gravity for next check
@@ -25,6 +26,7 @@ public class WorldRotationTests
         // Tilt Back (PitchCCW) -> Gravity becomes South (0,0,1)
         result = controller.ResolveWorldRotation(WorldRotationDirection.TiltBack);
         Assert.True(result.Accepted);
+        Assert.False(result.Moved);
         Assert.Equal(GravityDirection.South, controller.Gravity);
     }
 

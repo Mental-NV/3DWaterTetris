@@ -429,8 +429,8 @@
       "sizeHint": "M",
       "deliverables": [
         "Gravity direction enum and tie-break coordinate helpers (per Simulation_Rules)",
-        "World rotation updates gravity + transforms active piece as specified",
-        "Unit tests: rotation transforms and invariants"
+        "World rotation updates gravity (active piece orientation stays fixed per §3.2)",
+        "Unit tests: rotation transforms and invariants (92 tests passing)"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
@@ -441,10 +441,10 @@
           "powershell -File ./scripts/ci.ps1 -Scope M1"
         ],
         "notes": [
-          "Implemented GetRotatedGravity and GetMatrix in GravityTable.",
+          "Implemented GetRotatedGravity and GetMatrix in GravityTable (non-throwing).",
           "Updated InputCommand for specific tilt directions.",
-          "Implemented ResolveWorldRotation in MovementController.",
-          "Verified with 91 unit tests passing in CI."
+          "Implemented ResolveWorldRotation in MovementController (rejection semantics fixed; no piece rotation).",
+          "Verified with 92 unit tests passing in CI."
         ]
       }
     },
@@ -462,6 +462,7 @@
       "sizeHint": "M",
       "deliverables": [
         "Core step function: ApplyInputs → Gravity/Lock → Resolve (solids/water/drains/freeze) → Objectives",
+        "Includes immediate Tilt Resolve for settled world after successful world rotation (§3.2)",
         "Canonical iteration orders implemented as utilities",
         "Unit tests: step order observable via small fixtures"
       ],
