@@ -390,7 +390,9 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Piece rotation + kick rules (deterministic)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-02T02:51:41+03:00",
+      "completedAt": "2026-02-02T18:15:00+03:00",
       "dependsOn": [
         "FL-0106"
       ],

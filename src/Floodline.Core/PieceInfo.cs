@@ -19,4 +19,8 @@ public enum PieceId
 public sealed record PieceDefinition(
     PieceId Id,
     IReadOnlyList<Int3> Voxels,
-    IReadOnlyList<string> Tags);
+    IReadOnlyList<string> Tags)
+{
+    public IReadOnlyList<IReadOnlyList<Int3>> UniqueOrientations { get; init; } = [];
+    public IReadOnlyList<IReadOnlyList<Int3>> NormalizedOrientations { get; init; } = [];
+}

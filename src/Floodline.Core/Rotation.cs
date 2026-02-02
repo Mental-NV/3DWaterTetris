@@ -13,6 +13,21 @@ public readonly record struct Matrix3x3(
 
     public static readonly IReadOnlyList<Matrix3x3> AllRotations = GenerateRotations();
 
+    // Canonical 90-degree rotations
+    public static readonly Matrix3x3 Identity = new(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+    // Yaw (Y-axis)
+    public static readonly Matrix3x3 YawCW = new(0, 0, 1, 0, 1, 0, -1, 0, 0); // Rotates X to -Z
+    public static readonly Matrix3x3 YawCCW = new(0, 0, -1, 0, 1, 0, 1, 0, 0); // Rotates X to Z
+
+    // Pitch (X-axis)
+    public static readonly Matrix3x3 PitchCW = new(1, 0, 0, 0, 0, -1, 0, 1, 0); // Rotates Y to Z
+    public static readonly Matrix3x3 PitchCCW = new(1, 0, 0, 0, 0, 1, 0, -1, 0); // Rotates Y to -Z
+
+    // Roll (Z-axis)
+    public static readonly Matrix3x3 RollCW = new(0, -1, 0, 1, 0, 0, 0, 0, 1); // Rotates X to Y
+    public static readonly Matrix3x3 RollCCW = new(0, 1, 0, -1, 0, 0, 0, 0, 1); // Rotates X to -Y
+
     private static List<Matrix3x3> GenerateRotations()
     {
         List<Matrix3x3> rotations = [];
@@ -94,9 +109,10 @@ public readonly record struct Matrix3x3(
 
 public static class OrientationGenerator
 {
-    public static IReadOnlyList<IReadOnlyList<Int3>> GetUniqueOrientations(IReadOnlyList<Int3> voxels)
+    public static (IReadOnlyList<IReadOnlyList<Int3>> Rotated, IReadOnlyList<IReadOnlyList<Int3>> Normalized) GetUniqueOrientations(IReadOnlyList<Int3> voxels)
     {
-        List<List<Int3>> unique = [];
+        List<List<Int3>> rotatedList = [];
+        List<List<Int3>> normalizedList = [];
         HashSet<string> seenHashes = [];
 
         foreach (Matrix3x3 matrix in Matrix3x3.AllRotations)
@@ -108,14 +124,18 @@ public static class OrientationGenerator
             if (!seenHashes.Contains(hash))
             {
                 _ = seenHashes.Add(hash);
-                unique.Add(rotated);
+                rotatedList.Add(rotated);
+                normalizedList.Add(normalized);
             }
         }
 
-        return [.. unique.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())];
+        return (
+            [.. rotatedList.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())],
+            [.. normalizedList.Select(l => (IReadOnlyList<Int3>)l.AsReadOnly())]
+        );
     }
 
-    private static List<Int3> Normalize(List<Int3> voxels)
+    public static List<Int3> Normalize(List<Int3> voxels)
     {
         int minX = voxels.Min(v => v.X);
         int minY = voxels.Min(v => v.Y);

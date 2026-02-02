@@ -58,8 +58,23 @@ public sealed class MovementController(Grid grid)
                 InputCommand.HardDrop =>
                     ApplyHardDropResult(),
 
-                InputCommand.RotatePiece =>
-                    new InputApplyResult(Accepted: false, Moved: false, LockRequested: false), // Placeholder for FL-0107
+                InputCommand.RotatePieceYawCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.YawCW, Grid)),
+
+                InputCommand.RotatePieceYawCCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.YawCCW, Grid)),
+
+                InputCommand.RotatePiecePitchCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.PitchCW, Grid)),
+
+                InputCommand.RotatePiecePitchCCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.PitchCCW, Grid)),
+
+                InputCommand.RotatePieceRollCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.RollCW, Grid)),
+
+                InputCommand.RotatePieceRollCCW =>
+                    ResultFromMove(CurrentPiece.AttemptRotation(Matrix3x3.RollCCW, Grid)),
 
                 InputCommand.RotateWorld =>
                     new InputApplyResult(Accepted: false, Moved: false, LockRequested: false), // Placeholder for FL-0108
