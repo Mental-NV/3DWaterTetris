@@ -69,7 +69,6 @@ public class PrimitiveTests
         // [1 0 0] [0] = [1]
         // [0 0 1] [0]   [0]
         // Gravity (1,0,0) becomes (0,1,0) which is Up.
-        // Wait, in my GetRotatedGravity I throw if it's Up.
-        Assert.Throws<InvalidOperationException>(() => GravityTable.GetRotatedGravity(GravityDirection.East, Matrix3x3.RollCW));
+        Assert.Null(GravityTable.GetRotatedGravity(GravityDirection.East, Matrix3x3.RollCW));
     }
 }

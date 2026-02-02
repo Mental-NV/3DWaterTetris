@@ -43,7 +43,7 @@ public static class GravityTable
     /// <summary>
     /// Gets the new gravity direction after applying a world rotation.
     /// </summary>
-    public static GravityDirection GetRotatedGravity(GravityDirection current, Matrix3x3 rotation)
+    public static GravityDirection? GetRotatedGravity(GravityDirection current, Matrix3x3 rotation)
     {
         Int3 g = GetVector(current);
         Int3 rotatedG = rotation.Transform(g);
@@ -55,7 +55,7 @@ public static class GravityTable
             { X: 0, Y: 0, Z: 1 } => GravityDirection.South,
             { X: 1, Y: 0, Z: 0 } => GravityDirection.East,
             { X: -1, Y: 0, Z: 0 } => GravityDirection.West,
-            _ => throw new InvalidOperationException($"Rotated gravity vector {rotatedG} is not a valid cardinal direction")
+            _ => null
         };
     }
 

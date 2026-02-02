@@ -106,16 +106,16 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
                         : Reject(),
 
                 InputCommand.RotateWorldForward =>
-                    ResultFromMove(ResolveWorldRotation(WorldRotationDirection.TiltForward)),
+                    ResolveWorldRotation(WorldRotationDirection.TiltForward),
 
                 InputCommand.RotateWorldBack =>
-                    ResultFromMove(ResolveWorldRotation(WorldRotationDirection.TiltBack)),
+                    ResolveWorldRotation(WorldRotationDirection.TiltBack),
 
                 InputCommand.RotateWorldLeft =>
-                    ResultFromMove(ResolveWorldRotation(WorldRotationDirection.TiltLeft)),
+                    ResolveWorldRotation(WorldRotationDirection.TiltLeft),
 
                 InputCommand.RotateWorldRight =>
-                    ResultFromMove(ResolveWorldRotation(WorldRotationDirection.TiltRight)),
+                    ResolveWorldRotation(WorldRotationDirection.TiltRight),
 
                 InputCommand.None =>
                     new InputApplyResult(Accepted: true, Moved: false, LockRequested: false),
@@ -126,43 +126,33 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
 
     /// <summary>
     /// Resolves a world rotation.
-    /// Updates gravity and transforms the active piece's orientation.
+    /// Updates gravity. Active piece continues falling under new gravity (stays fixed in grid).
     /// </summary>
     /// <param name="direction">The tilt direction.</param>
-    /// <returns>True if the rotation was accepted and applied; otherwise, false.</returns>
-    public bool ResolveWorldRotation(WorldRotationDirection direction)
+    /// <returns>InputApplyResult indicating if the rotation was accepted.</returns>
+    public InputApplyResult ResolveWorldRotation(WorldRotationDirection direction)
     {
         // 1. Get rotation matrix
         Matrix3x3 matrix = GravityTable.GetMatrix(direction);
 
         // 2. Compute new gravity
-        GravityDirection newGravity = GravityTable.GetRotatedGravity(Gravity, matrix);
+        GravityDirection? newGravity = GravityTable.GetRotatedGravity(Gravity, matrix);
 
-        // 3. Check level constraints (future work: cooldown, budget)
-        // For now, assume all directions in {Down, North, South, East, West} are valid
-        // per Simulation_Rules §2.3.
-
-        // 4. Update active piece if it exists
-        if (CurrentPiece is not null)
+        // 3. Reject if new gravity is invalid (Up) or violates level constraints
+        if (newGravity == null)
         {
-            // Per Simulation_Rules §3.2, rotation is rejected if active piece would collide
-            // In world rotation, the piece voxels transform, but they should stay at the same
-            // board positions relative to the piece origin.
-            // Wait, the piece orientation must change so it follows the world.
-            // If the world rotates PitchCW, the piece must rotate PitchCW relative to its local origin.
-
-            if (!CurrentPiece.AttemptRotation(matrix, Grid))
-            {
-                // Partial implementation: rotation rejected if piece can't fit in new orientation
-                return false;
-            }
+            return Reject();
         }
 
-        // 5. Apply new gravity
-        Gravity = newGravity;
+        // 4. Update gravity
+        // Per §3.2, active piece continues falling under new gravity.
+        // It does NOT rotate with the world (stays fixed relative to grid coordinates).
+        Gravity = newGravity.Value;
 
-        // Note: Tilt Resolve for settled world (solids + water) will be handled in Resolve Phase (FL-0109+)
-        return true;
+        // NOTE: Tilt Resolve for settled world (solids + water) must follow (FL-0109)
+        // TODO: Implement immediate Tilt Resolve per §3.2 requirement.
+
+        return new InputApplyResult(Accepted: true, Moved: true, LockRequested: false);
     }
 
     private static InputApplyResult ResultFromMove(bool moved) =>
