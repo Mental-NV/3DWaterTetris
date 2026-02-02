@@ -53,6 +53,32 @@ public class WorldRotationTests
     }
 
     [Fact]
+    public void WorldRotationResetsMovedWhenUngrounded()
+    {
+        Grid grid = new(new Int3(10, 10, 10));
+        MovementController controller = new(grid);
+
+        // Piece at bottom (Y=0)
+        PieceDefinition def = PieceLibrary.Get(PieceId.I4);
+        OrientedPiece piece = new(PieceId.I4, def.UniqueOrientations[0], 0);
+        Int3 origin = new(5, 0, 5); // Sitting on bottom floor
+        controller.CurrentPiece = new ActivePiece(piece, origin);
+
+        // 1. Initially grounded in DOWN gravity
+        Assert.False(controller.CurrentPiece.CanAdvance(grid, GravityDirection.Down));
+
+        // 2. Resolve world rotation (Tilt Forward -> Gravity becomes North)
+        // North is (0,0,-1). Origin (5,0,5) can move to (5,0,4) because grid is 10x10x10.
+        var result = controller.ResolveWorldRotation(WorldRotationDirection.TiltForward);
+
+        // 3. Should be Accepted and Moved: true (because it became ungrounded)
+        Assert.True(result.Accepted);
+        Assert.True(result.Moved);
+        Assert.Equal(GravityDirection.North, controller.Gravity);
+        Assert.True(controller.CurrentPiece.CanAdvance(grid, GravityDirection.North));
+    }
+
+    [Fact]
     public void WorldRotationRejectedIfResultIsUp()
     {
         Grid grid = new(new Int3(10, 20, 10));

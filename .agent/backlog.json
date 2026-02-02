@@ -428,9 +428,9 @@
       "rationale": "World rotation changes gravity; must be implemented as integer coordinate transforms with stable tie-break rules.",
       "sizeHint": "M",
       "deliverables": [
-        "Gravity direction enum and tie-break coordinate helpers (per Simulation_Rules)",
-        "World rotation updates gravity (active piece orientation stays fixed per §3.2)",
-        "Unit tests: rotation transforms and invariants (92 tests passing)"
+        "Gravity direction enum and tie-break coordinate helpers (per Simulation_Rules §2.4)",
+        "World rotation updates gravity (active piece orientation fixed; implementation choice)",
+        "Unit tests: rotation transforms and invariants (94 tests passing)"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
@@ -442,9 +442,9 @@
         ],
         "notes": [
           "Implemented GetRotatedGravity and GetMatrix in GravityTable (non-throwing).",
-          "Updated InputCommand for specific tilt directions.",
-          "Implemented ResolveWorldRotation in MovementController (rejection semantics fixed; no piece rotation).",
-          "Verified with 92 unit tests passing in CI."
+          "Implemented ResolveWorldRotation in MovementController (rejection and ungrounding resets fixed).",
+          "Spec-compliant TieCoord (U = -g) implemented in DeterministicOrdering.",
+          "Verified with 94 unit tests passing in CI."
         ]
       }
     },

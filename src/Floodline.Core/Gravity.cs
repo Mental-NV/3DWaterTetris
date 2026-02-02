@@ -98,14 +98,14 @@ public static class DeterministicOrdering
 {
     public static TieCoord GetTieCoord(Int3 c, GravityDirection dir)
     {
-        Int3 u = GravityTable.GetVector(dir); // Spec §2.1.2: U is depth (direction gravity pulls)
+        Int3 u = GravityTable.GetUpVector(dir);
         Int3 r = GravityTable.GetRightVector(dir);
-        Int3 f = u.Cross(r); // F = U x R
+        Int3 f = GravityTable.GetForwardVector(dir);
 
         return new TieCoord(c.Dot(u), c.Dot(r), c.Dot(f));
     }
 
-    public static int GetGravElev(Int3 c, GravityDirection dir) => c.Dot(GravityTable.GetVector(dir));
+    public static int GetGravElev(Int3 c, GravityDirection dir) => c.Dot(GravityTable.GetUpVector(dir));
 
     public static Comparison<Int3> GetComparison(GravityDirection dir) => (a, b) =>
     {

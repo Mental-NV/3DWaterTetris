@@ -144,15 +144,22 @@ public sealed class MovementController(Grid grid, RotationConfig? rotationConfig
             return Reject();
         }
 
-        // 4. Update gravity
+        // 4. Trace ungrounding signal (Input_Feel §4.2)
+        // Lock delay resets if the piece becomes ungrounded due to world rotation.
+        bool wasGrounded = CurrentPiece != null && !CurrentPiece.CanAdvance(Grid, Gravity);
+
+        // 5. Update gravity
         // Per §3.2, active piece continues falling under new gravity.
         // It does NOT rotate with the world (stays fixed relative to grid coordinates).
         Gravity = newGravity.Value;
 
+        bool isUngroundedNow = CurrentPiece != null && CurrentPiece.CanAdvance(Grid, Gravity);
+        bool ungroundedReset = wasGrounded && isUngroundedNow;
+
         // NOTE: Tilt Resolve for settled world (solids + water) must follow (FL-0109)
         // TODO: Implement immediate Tilt Resolve per §3.2 requirement.
 
-        return new InputApplyResult(Accepted: true, Moved: false, LockRequested: false);
+        return new InputApplyResult(Accepted: true, Moved: ungroundedReset, LockRequested: false);
     }
 
     private static InputApplyResult ResultFromMove(bool moved) =>
