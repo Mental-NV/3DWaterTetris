@@ -525,10 +525,12 @@
       "rationale": "Settled solids must obey stability rules and deterministic dropping after gravity changes.",
       "sizeHint": "L",
       "deliverables": [
+        "Simulation.ResolveTilt() and internal gravity/lock timing logic",
+        "Canonical sorting utilities (gravElev, tieCoord) for deterministic iteration",
         "Connected components detection for solids",
         "Component drop distance computation with canonical ordering",
-        "Displaced water handling hook points (no Unity)",
-        "Unit tests: multi-component drop cases"
+        "BagConfig alignment in SpawnNextPiece",
+        "Unit tests: multi-component drop cases and tilt-rotation non-locking behavior"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
