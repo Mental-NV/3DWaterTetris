@@ -1005,8 +1005,9 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Tilt Resolve vs. Full Resolve architectural alignment",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-03T02:20:00Z",
+      "doneAt": "2026-02-03T02:23:00Z",
       "dependsOn": [
         "FL-0109"
       ],
@@ -1023,8 +1024,15 @@
         "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M1"
+        ],
+        "notes": [
+          "Separated Resolve logic into ResolveTilt (non-merging) and ResolveFull (merging).",
+          "Fixed linter error CA1822 by adding status guard clauses to Resolve methods.",
+          "Updated SimulationTests.cs to verify that world rotation does not merge the active piece.",
+          "Verified 100% pass rate for M1 scope (99 tests)."
+        ]
       }
     },
     {

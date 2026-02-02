@@ -65,24 +65,44 @@ public class SimulationTests
     }
 
     [Fact]
-    public void Simulation_WorldRotation_Triggers_Resolve_Skeleton()
+    public void Simulation_WorldRotation_Triggers_TiltResolve_And_Does_Not_Merge_Piece()
     {
         // Arrange
         var sim = new Simulation(CreateTestLevel(), new Pcg32(1));
+        var initialId = sim.ActivePiece!.Piece.Id;
 
         // Act
         sim.Tick(InputCommand.RotateWorldForward);
 
         // Assert
-        // In our current skeleton, Resolve() merges active piece.
-        // So after RotateWorldForward, the piece should be merged.
+        // After RotateWorldForward, the piece should still be active and NOT merged.
         Assert.Equal(SimulationStatus.InProgress, sim.State.Status);
-        // Note: In current skeleton, Resolve does NOT reset ActivePiece, 
-        // but it sets voxels in grid.
-        var positions = sim.ActivePiece!.GetWorldPositions();
+        Assert.Equal(0, sim.State.PiecesLocked);
+        Assert.NotNull(sim.ActivePiece);
+        Assert.Equal(initialId, sim.ActivePiece!.Piece.Id);
+
+        // Piece voxels should NOT be in the grid as solid
+        var positions = sim.ActivePiece.GetWorldPositions();
         foreach (var pos in positions)
         {
-            Assert.Equal(OccupancyType.Solid, sim.Grid.GetVoxel(pos).Type);
+            Assert.Equal(OccupancyType.Empty, sim.Grid.GetVoxel(pos).Type);
         }
+    }
+
+    [Fact]
+    public void Simulation_ResolveFull_Merges_Piece()
+    {
+        // Arrange
+        var sim = new Simulation(CreateTestLevel(), new Pcg32(1));
+        var initialOrigin = sim.ActivePiece!.Origin;
+
+        // Act
+        sim.Tick(InputCommand.HardDrop);
+
+        // Assert
+        Assert.Equal(1, sim.State.PiecesLocked);
+        // Initial piece should now be solid in grid
+        // Note: HardDrop moves the piece down to 0 elevation in our test level
+        Assert.Equal(OccupancyType.Solid, sim.Grid.GetVoxel(new Int3(initialOrigin.X, 0, initialOrigin.Z)).Type);
     }
 }

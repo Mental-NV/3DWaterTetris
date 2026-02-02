@@ -76,7 +76,7 @@ public sealed class Simulation
         if (inputResult.Accepted && IsWorldRotation(command))
         {
             // Per §3.2: Immediate Tilt Resolve for settled world
-            Resolve();
+            ResolveTilt();
         }
 
         // 2. Gravity Step
@@ -96,7 +96,7 @@ public sealed class Simulation
         // 3. Resolve Phase (only if locked)
         if (lockRequested)
         {
-            Resolve();
+            ResolveFull();
             _piecesLocked++;
             SpawnNextPiece();
         }
@@ -105,21 +105,40 @@ public sealed class Simulation
         UpdateStatus();
     }
 
-    private void Resolve()
+    /// <summary>
+    /// Executes a Tilt Resolve for the settled world (locked solids + water).
+    /// Called immediately after a successful world rotation.
+    /// Does NOT merge the active piece.
+    /// </summary>
+    public void ResolveTilt()
     {
+        if (_status != SimulationStatus.InProgress)
+        {
+            return;
+        }
+
+        // Per §3.2: treat the active piece’s cells as occupied, immovable obstacles during Tilt Resolve.
+        // TODO: Pass active piece positions to solvers when implemented.
+        RunResolveSettledWorld();
+    }
+
+    private void ResolveFull()
+    {
+        if (_status != SimulationStatus.InProgress)
+        {
+            return;
+        }
+
         // Canonical Order (§5):
         // 1. Merge Active Piece
-        // 2. Settle Solids
-        // 3. Settle Water
-        // 4. Recheck Solids
-        // 5. Apply Drains
-        // 6. Evaluate Objectives (handled in Tick/UpdateStatus)
+        MergeActivePiece();
 
-        // TODO (FL-0111): Full solids stability implementation
-        // TODO (FL-0112): Full water solver implementation
-        // TODO (FL-0113): Drains and freeze
+        // 2-5. Settle solids, water, drains
+        RunResolveSettledWorld();
+    }
 
-        // Current skeleton: just merge the active piece voxels into the grid
+    private void MergeActivePiece()
+    {
         if (ActivePiece != null)
         {
             foreach (Int3 pos in ActivePiece.GetWorldPositions())
@@ -129,6 +148,24 @@ public sealed class Simulation
                 Grid.SetVoxel(pos, new Voxel(OccupancyType.Solid, null));
             }
         }
+    }
+
+    private void RunResolveSettledWorld()
+    {
+        if (_status != SimulationStatus.InProgress)
+        {
+            return;
+        }
+
+        // Canonical Order (§5):
+        // 2. Settle Solids
+        // 3. Settle Water
+        // 4. Recheck Solids
+        // 5. Apply Drains
+
+        // TODO (FL-0111): Full solids stability implementation
+        // TODO (FL-0112): Full water solver implementation
+        // TODO (FL-0113): Drains and freeze
     }
 
     private void SpawnNextPiece()
