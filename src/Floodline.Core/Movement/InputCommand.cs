@@ -32,32 +32,32 @@ public enum InputCommand
     MoveBack,
 
     /// <summary>
-    /// Rotate the piece Yaw CW (around Y axis).
+    /// Rotate the piece Yaw CW (around the vertical Y axis).
     /// </summary>
     RotatePieceYawCW,
 
     /// <summary>
-    /// Rotate the piece Yaw CCW (around Y axis).
+    /// Rotate the piece Yaw CCW (around the vertical Y axis).
     /// </summary>
     RotatePieceYawCCW,
 
     /// <summary>
-    /// Rotate the piece Pitch CW (around X axis).
+    /// Rotate the piece Pitch CW (around the horizontal X axis).
     /// </summary>
     RotatePiecePitchCW,
 
     /// <summary>
-    /// Rotate the piece Pitch CCW (around X axis).
+    /// Rotate the piece Pitch CCW (around the horizontal X axis).
     /// </summary>
     RotatePiecePitchCCW,
 
     /// <summary>
-    /// Rotate the piece Roll CW (around Z axis).
+    /// Rotate the piece Roll CW (around the depth Z axis).
     /// </summary>
     RotatePieceRollCW,
 
     /// <summary>
-    /// Rotate the piece Roll CCW (around Z axis).
+    /// Rotate the piece Roll CCW (around the depth Z axis).
     /// </summary>
     RotatePieceRollCCW,
 

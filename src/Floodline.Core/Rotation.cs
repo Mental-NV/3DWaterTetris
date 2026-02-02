@@ -128,8 +128,17 @@ public readonly record struct Matrix3x3(
     }
 }
 
+/// <summary>
+/// Provides utilities for generating and normalizing unique piece orientations.
+/// </summary>
 public static class OrientationGenerator
 {
+    /// <summary>
+    /// Generates all unique orientations for a given set of voxels by applying all 24 proper cube rotations.
+    /// Orientations are deduplicated by normalizing and hashing their voxel sets.
+    /// </summary>
+    /// <param name="voxels">The initial voxel offsets defining the piece.</param>
+    /// <returns>A tuple containing lists of both rotated (absolute) and normalized voxel sets.</returns>
     public static (IReadOnlyList<IReadOnlyList<Int3>> Rotated, IReadOnlyList<IReadOnlyList<Int3>> Normalized) GetUniqueOrientations(IReadOnlyList<Int3> voxels)
     {
         List<List<Int3>> rotatedList = [];
@@ -156,6 +165,13 @@ public static class OrientationGenerator
         );
     }
 
+    /// <summary>
+    /// Normalizes a set of voxels by translating them to the origin (minX, minY, minZ shifted to 0,0,0)
+    /// and sorting them in a canonical order (X then Y then Z).
+    /// Used for orientation deduplication and comparison.
+    /// </summary>
+    /// <param name="voxels">The set of voxels to normalize.</param>
+    /// <returns>A new list of normalized and sorted voxels.</returns>
     public static List<Int3> Normalize(List<Int3> voxels)
     {
         int minX = voxels.Min(v => v.X);

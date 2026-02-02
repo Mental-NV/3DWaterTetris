@@ -2,6 +2,9 @@ using System.Collections.ObjectModel;
 
 namespace Floodline.Core;
 
+/// <summary>
+/// Central registry for all piece definitions in Level Content Pack v0.2.
+/// </summary>
 public static class PieceLibrary
 {
     private static readonly ReadOnlyDictionary<PieceId, PieceDefinition> PiecesMap;
@@ -49,6 +52,14 @@ public static class PieceLibrary
 
     public static IEnumerable<PieceDefinition> All() => PiecesMap.Values;
 
+    /// <summary>
+    /// Returns the expected oriented piece structure after applying a rotation matrix.
+    /// Performs a lookup in the piece's canonical orientation list to maintain valid orientation indices.
+    /// </summary>
+    /// <param name="piece">The current oriented piece.</param>
+    /// <param name="rotation">The rotation matrix to apply.</param>
+    /// <returns>A new oriented piece representing the rotated state.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resulting orientation is not found in the library.</exception>
     public static OrientedPiece Rotate(OrientedPiece piece, Matrix3x3 rotation)
     {
         PieceDefinition def = Get(piece.Id);

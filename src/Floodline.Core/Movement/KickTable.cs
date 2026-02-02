@@ -7,8 +7,8 @@ namespace Floodline.Core.Movement;
 public static class KickTable
 {
     /// <summary>
-    /// The canonical kick sequence.
-    /// Tries no kick first, then small translations.
+    /// The canonical 10-step kick sequence per Simulation_Rules_v0_2 §3.
+    /// Tries no kick first, then cardinal offsets, followed by secondary 3D offsets.
     /// </summary>
     public static readonly IReadOnlyList<Int3> Kicks =
     [
