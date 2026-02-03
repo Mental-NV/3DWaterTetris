@@ -1367,7 +1367,7 @@
       "epic": "AI",
       "milestone": "M0",
       "title": "Add self-review checklist to Step 5",
-      "status": "InProgress",
+      "status": "InReview",
       "startedAt": "2026-02-03T17:52:06Z",
       "dependsOn": [],
       "requirementRef": "/.agent/AGENT_OS.md#execution-loop",
@@ -1381,8 +1381,14 @@
         "powershell -File ./scripts/preflight.ps1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/preflight.ps1"
+        ],
+        "notes": [
+          "Validation run on main (feature branch intentionally fails preflight by design).",
+          "PR: https://github.com/Mental-NV/Floodline/pull/43",
+          "CI: powershell -File ./scripts/preflight.ps1 (pass)."
+        ]
       }
     },
     {
