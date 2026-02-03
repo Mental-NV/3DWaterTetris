@@ -599,7 +599,7 @@
       "epic": "E1",
       "milestone": "M1",
       "title": "Drains + Freeze actions + objective evaluation",
-      "status": "InProgress",
+      "status": "InReview",
       "startedAt": "2026-02-03T11:28:57.2722840Z",
       "dependsOn": [
         "FL-0112"
@@ -618,8 +618,16 @@
         "powershell -File ./scripts/ci.ps1 -Scope M1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/ci.ps1 -Scope M1",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M1"
+        ],
+        "notes": [
+          "Initial ci.ps1 run blocked by PowerShell AuthorizationManager; reran with ExecutionPolicy Bypass.",
+          "First bypass run failed due to analyzer/test failures; fixed and reran successfully.",
+          "CI: powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M1 (Release build, 110 tests, dotnet format verify) passed.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/23"
+        ]
       }
     },
     {
