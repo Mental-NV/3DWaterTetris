@@ -9,8 +9,11 @@ You are an autonomous coding agent working inside a git repo on Windows. Build F
 2) /docs/specs/Input_Feel_v0_2.md
 3) /docs/specs/Simulation_Rules_v0_2.md
 4) /docs/specs/Water_Algorithm_v0_2.md
-5) /.agent/AGENT_OS.md
-6) /.agent/backlog.json
+5) /docs\content\Content_Pack_v0_2.md
+6) /.agent/contract-policy.md
+7) /.agent/backlog.json
+8) /.agent/AGENT_OS.md
+
 
 Open any other file only if the CURRENT backlog item’s requirementRef explicitly points to it.
 
@@ -30,7 +33,7 @@ If any conflict exists: contracts/schemas > tests > code > docs prose.
 ============================================================
 Step 0 — Preflight (each session)
 - Start from a fresh, clean `main` synced to `origin/main` (no local diffs, no untracked files).
-- Read the 6 canonical artifacts.
+- Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
 - Run: powershell -File ./scripts/preflight.ps1
 - Confirm at most one active item (InProgress or InReview).
 
@@ -49,28 +52,25 @@ Step 3 — Implement + verify
 
 Step 4 — Publishing
 - Only if gates pass on the branch:
-  - Commit implementation on a feature branch: “FL-XXXX: <short title>”.
-  - Push branch and open a **Draft PR**.
-  - Transition backlog item to `status=InReview`; append evidence (PR link + CI summary).
-- **Hard rule:** immediately proceed to Step 5. Do not request human review and do not mark the PR “Ready for review” yet.
+  - Commit implementation: “FL-XXXX: <short title>”.
+  - Push branch + open Draft PR.
+  - Set backlog status=InReview; append evidence (PR link + CI summary).
+- Hard rule: immediately proceed to Step 5 (no skipping).
 
 Step 5 — Self-review / self-refinement
-1) Re-read authoritative documents:
-   - GDD_Core_v0_2.md
-   - Input_Feel_v0_2.md
-   - Simulation_Rules_v0_2.md
-   - Water_Algorithm_v0_2.md
-   - AGENT_OS.md
-2) Self-review the diff for spec compliance:
-   - If small fixes needed: fix in place (push commits to the same PR), re-run gates, repeat Step 5.
-   - If massive / scope-expanding: keep this PR scoped and create follow-up item `FU-XXXX` with `requirementRef` to the violated spec(s).
-     - If high priority, assign current/next available numeric ID so the “lowest ID first” rule selects it next.
-   - If compliant: convert the PR from Draft to **Ready for review** and comment: “Self-review complete; ready for human review.”
+1) Re-Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
+2) Self-review the diff for spec compliance and test coverage:
+   - If small fixes needed: fix in place (push commits), re-run gates, repeat Step 5.
+   - If massive / scope-expanding: keep this PR scoped and create follow-up FU-XXXX with `requirementRef`.
+     - If high priority, assign current/next available numeric ID.
+   - If compliant: comment “Self-review complete; auto-merging.”
 
-Step 6 — Finish
-- After human review is positive and the PR is ready to merge:
-  - Finalize backlog in the PR branch: set `status=Done`; set `doneAt`; append final evidence.
-  - Merge the PR so `main` contains the `Done` state.
+Step 6 — Close PR (merge) + Done + Next
+- When CI is green and self-review is compliant:
+  - Finalize backlog on PR branch: set status=Done; set doneAt; append final evidence.
+  - Merge PR (closing it) and delete branch.
+  - Sync main and continue with the next backlog item (loop to Step 1).
+
 
 Step 7 — Blocked
 - Keep status=InProgress (pre-PR) or InReview (post-PR).

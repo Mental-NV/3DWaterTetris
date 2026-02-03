@@ -29,10 +29,16 @@
 4) [`docs/specs/Water_Algorithm_v0_2.md`](../docs/specs/Water_Algorithm_v0_2.md)  
    Exact water propagation / drains / freeze behavior.
 
-5) [`AGENT_OS.md`](AGENT_OS.md) (this file)  
+5) [`docs/content/Content_Pack_v0_2.md`](../docs/content/Content_Pack_v0_2.md)  
+   Canonical content pack (level/content definitions, schemas, and any content invariants referenced by work items).
+
+6) [`contract-policy.md`](contract-policy.md)  
+   Canonical change/versioning rules for autonomous work (scope control, follow-ups, compatibility).
+
+7) [`AGENT_OS.md`](AGENT_OS.md) (this file)  
    The only canonical agent workflow + gates + milestone order.
 
-6) [`backlog.json`](backlog.json)  
+8) [`backlog.json`](backlog.json)  
    The only canonical work state (DONE / CURRENT / NEXT) and evidence log.
 
 **Rule:** open any other file only if the CURRENT backlog item’s `requirementRef` explicitly points to it.
@@ -217,67 +223,60 @@ Prohibitions:
 ## 6) Execution loop
 <a id="execution-loop"></a>
 
-### Step 0 — Preflight
+### Step 0 — Preflight (each session)
 - Start from a fresh, clean `main` synced to `origin/main`.
-- Read the 6 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, AGENT_OS, backlog).
+- Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
 - Confirm there is at most one active item (`InProgress` or `InReview`).
-- Run:
-  - [`powershell -File ./scripts/preflight.ps1`](../scripts/preflight.ps1)
+- Run: `powershell -File ./scripts/preflight.ps1`
 
 ### Step 1 — Select work
 - If there is a CURRENT active item (`InProgress` or `InReview`): continue it.
 - Else select NEXT = lowest ID `New` item with all `dependsOn` = `Done`.
 
-### Step 2 — Start work
-- Set item `status=InProgress`, set `startedAt` (UTC ISO 8601).
-- Commit this backlog-only change immediately (no code yet):
-  - `FL-XXXX: start <short title>`
+### Step 2 — Start work (backlog-only commit)
+- Set `status=InProgress`; set `startedAt` (UTC ISO 8601).
+- Commit backlog-only change immediately: `FL-XXXX: start <short title>`.
 
-### Step 3 — Implement and verify
+### Step 3 — Implement + verify
 - Implement only what the item requires (no opportunistic refactors).
-- Run validation commands exactly as listed in the backlog item:
-  - prefer [`powershell -File ./scripts/ci.ps1`](../scripts/ci.ps1)
-- Record commands + results in item evidence.
+- Run the item’s `validation.commands` exactly (prefer `scripts/ci.ps1`).
+- Record commands + results into evidence.
 
-### Step 4 — Publishing
+### Step 4 — Publishing (PR open)
 Only if gates are satisfied on the branch:
-- Ensure the implementation commit exists on a feature branch:
+- Ensure implementation commit exists on a feature branch:
   - `FL-XXXX: <short title>`
-- Push branch and open a PR as **Draft** (not ready for human review yet).
-- Transition the backlog item to `status=InReview` and append evidence including:
+- Push branch and open a PR as **Draft** (not ready yet).
+- Transition backlog item to `status=InReview` and append evidence:
   - PR link
   - CI run link(s) / summary
 
-**Hard rule:** after opening the draft PR, you MUST immediately do Step 5 before requesting any human review or marking the PR “Ready for review”.
+**Hard rule:** after opening the PR, you MUST immediately do Step 5 before merging.
 
-### Step 5 — Self-review and self-refinement
-- Re-read authoritative documents:
-  - `/docs/GDD_Core_v0_2.md`
-  - `/docs/specs/Input_Feel_v0_2.md`
-  - `/docs/specs/Simulation_Rules_v0_2.md`
-  - `/docs/specs/Water_Algorithm_v0_2.md`
-  - `/.agent/AGENT_OS.md`
-- Perform a self-review of the diff vs. specs + gates:
-  - If non-compliant and the fix is small: push fix commits to the same PR branch and re-run gates; repeat Step 5.
-  - If non-compliant and the fix is large / scope-expanding: keep this PR scoped and create a follow-up item `FU-XXXX`.
-    - If follow-up is high priority, assign it the current or next available numeric ID so the “lowest ID first” rule selects it next.
-    - The follow-up item MUST include `requirementRef` pointing to the violated spec section(s) and evidence explaining the gap.
-  - If compliant: convert the PR from Draft to **Ready for review** and leave a PR comment:
-    - “Self-review complete; ready for human review.”
+### Step 5 — Self-review and self-refinement (autonomous)
+- Re-Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
+- Self-review the diff vs. specs + gates:
+  - If non-compliant and fix is small: fix in place (push commits to same PR), re-run gates, repeat Step 5.
+  - If non-compliant and fix is large / scope-expanding: keep this PR scoped and create follow-up item `FU-XXXX`.
+    - If high priority, assign current/next available numeric ID so “lowest ID first” picks it next.
+    - Follow-up MUST include `requirementRef` to violated spec sections + evidence explaining the gap.
+  - If compliant: convert PR to **Ready** (optional) and comment:
+    - “Self-review complete; auto-merging.”
 
-### Step 6 — Finish
-Only when the PR is approved and ready to merge:
-- Add a final commit that transitions the backlog item to `status=Done`, sets `doneAt` (UTC ISO 8601), and appends final evidence (PR link + CI + “ready to merge” note).
-- Merge the PR so `main` contains the `Done` state.
+### Step 6 — Close PR (merge) + Done + Next
+Only when self-review is compliant AND CI is green:
+- On the PR branch, make a final commit that updates backlog:
+  - set `status=Done`
+  - set `doneAt` (UTC ISO 8601)
+  - append final evidence (PR link + CI + “self-review pass”)
+- Merge the PR (this closes it) and delete the branch.
+- Sync local `main` to `origin/main` and re-run preflight/CI if required by gates.
+- Return to Step 1 and continue with the next backlog item.
 
-### Step 7 — If blocked
+### Step 7 — Blocked
 - Keep `status=InProgress` (pre-PR) or `status=InReview` (post-PR).
-- Write a Blocking Note into evidence:
-  - what failed
-  - 2–3 options
-  - recommended option + why
-  - what info is needed
-- If allowed, add an enabler/bugfix/change-proposal backlog item with `requirementRef`.
+- Add evidence.notes: what failed, options, recommendation, needed info.
+- If allowed, add an enabler/bugfix/change-proposal item with `requirementRef`.
 
 
 ## 7) Gates (canonical)
