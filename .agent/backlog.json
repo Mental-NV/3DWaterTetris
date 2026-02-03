@@ -1058,8 +1058,204 @@
       "rationale": "Campaign-wide validation must be a CI gate before any Unity work begins.",
       "sizeHint": "M",
       "deliverables": [
-        "Repository stores campaign levels list + all level JSONs",
-        "scripts/ci.ps1: -ValidateLevels runs validator on the whole campaign and fails on any error"
+        "Repository stores a campaign levels list file + all level JSONs referenced by it",
+        "scripts/ci.ps1: -ValidateLevels runs validator on the campaign levels list and fails on any error"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0403",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Campaign v0.2.0 scaffold + authoring conventions",
+      "status": "New",
+      "dependsOn": [
+        "FL-0402"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Before bulk authoring, lock the campaign file layout, naming/ID conventions, and a repeatable validation workflow so subsequent level batches are mechanical and low-risk.",
+      "sizeHint": "M",
+      "deliverables": [
+        "Add campaign manifest: /levels/campaign.v0.2.0.json (schemaVersion=0.2.0) with deterministic ordering of levels as they are added",
+        "Define conventions (in-repo doc or README section): level file naming (L01_..., L02_...), level meta.id equals campaign levelRef.id, seeds deterministic, and tick-only numeric policy (no floats)",
+        "Add/confirm a single test or validator invocation that enumerates all levels referenced by the campaign manifest and fails with actionable pointers",
+        "Keep tutorial guidance: use bag.type=FIXED_SEQUENCE where required by the campaign plan"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0404",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 1A levels (Lv 1–5)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0403"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Implement the first five Foundation levels exactly as specified (titles, teach beats, primary objectives, constraints/star hooks), establishing the baseline for all later levels.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs under /levels/campaign/ (or equivalent): Lv1 First Stack, Lv2 First Tilt, Lv3 Four Winds, Lv4 Unsupported, Lv5 Parking Lot",
+        "Update /levels/campaign.v0.2.0.json to reference these 5 levels in order (id+path)",
+        "Encoding requirements per level.schema.v0.2.0: meta/bounds/initialVoxels/objectives/rotation/bag/hazards present and valid",
+        "Rotation knobs per plan (e.g., Lv1 no world rotation; Lv2 E/W; Lv3 N/S; Lv3 cooldown stored as integer ticks)",
+        "Represent constraints/star hooks as hazards/config in a schema-compatible way (no extra top-level fields)",
+        "Add/extend golden-smoke coverage (minimum): load + schema validate + semantic validate for the 5 new levels"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0405",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 1B levels (Lv 6–10)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0404"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Complete Foundation (Hold, reinforced bridging, tilt scarcity, cavities, exam) while keeping progression and constraints identical to the Content Pack.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs: Lv6 Hold It, Lv7 Reinforced Intro, Lv8 Tilt Budget, Lv9 Cavity Bonus, Lv10 Foundation Exam",
+        "Update campaign manifest to include Lv6–Lv10",
+        "Ensure per-level unlock cadence is expressed via level config where applicable (e.g., Hold enabled/disabled per level)",
+        "Ensure piece set aligns with Chapter 1 recommended pack (O2/I3/L3/T3/I4) unless the level explicitly needs something else",
+        "Extend golden-smoke coverage to include Lv6–Lv10"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0406",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 2A levels (Lv 11–15)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0405"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Introduce Floodplain mechanics (water non-support, drains, channels, multi-basin) with level geometry and objectives matching the Content Pack exactly.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs: Lv11 First Basin, Lv12 Meet the Drain, Lv13 Dig a Channel, Lv14 Two Basins, Lv15 Don’t Build on Water",
+        "Update campaign manifest to include Lv11–Lv15",
+        "Use initialVoxels to author starter pools/shelves/drain tiles as specified; represent drains via voxel type=Drain + drain config (ratePerResolve/scope)",
+        "Ensure water constraints (no build on water / forbidden water behavior if used) are represented via hazards/fail-state knobs",
+        "Extend golden-smoke coverage to include Lv11–Lv15"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0407",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 2B levels (Lv 16–20)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0406"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Finish Floodplain (freeze, temporary bridge, drain placement, forbidden zone, exam) while keeping constraints and objectives identical to the plan.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs: Lv16 Freeze 101, Lv17 Temporary Bridge, Lv18 Drain Placement, Lv19 Forbidden Zone, Lv20 Floodplain Exam",
+        "Update campaign manifest to include Lv16–Lv20",
+        "Ensure freeze/drain placement constraints are encoded in hazards/config with integer values only (Freeze duration is in resolves; no floats)",
+        "Extend golden-smoke coverage to include Lv16–Lv20"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0408",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 3A levels (Lv 21–25)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0407"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Start High-Rise (weight, heavy tradeoffs, footprint, first wind, stabilize) using deterministic hazard scheduling and constraints exactly as specified.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs: Lv21 Weight Limit, Lv22 Heavy Pieces, Lv23 Skyline Footprint, Lv24 First Gust, Lv25 Stabilize",
+        "Update campaign manifest to include Lv21–Lv25",
+        "Represent weight limit as objective/hazard per Rules/GDD (Stay Under Weight); represent heavy bias via bag weights/material roll knobs (as supported by Core)",
+        "Wind: encode WIND_GUST hazard with integer tick params (intervalTicks, pushStrength, directionMode, firstGustOffsetTicks) in a schema-compatible way",
+        "Lv23 uses reduced field size (8×8) as specified; ensure bounds reflect this",
+        "Extend golden-smoke coverage to include Lv21–Lv25"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0409",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Author Campaign Chapter 3B levels (Lv 26–30) + finalize 30-level manifest",
+      "status": "New",
+      "dependsOn": [
+        "FL-0408"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Complete High-Rise with mixed hazards and the final exam, producing a fully populated 30-level campaign that can be CI-gated as M4 requires.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Create 5 schema-valid level JSONs: Lv26 Cantilever, Lv27 Tight Budget, Lv28 Alternating Wind, Lv29 Wet Foundation, Lv30 High-Rise Exam",
+        "Update campaign manifest to include Lv26–Lv30 (campaign now has Lv1–Lv30 complete in order)",
+        "Ensure alternating wind and tighter intervals are expressed deterministically and tick-only; keep wind predictable/telegraphed intent via hazard params",
+        "Encode combined objectives for Lv30 (Height 30 AND weight ≤400) as multiple objectives, matching GDD multi-objective exam intent",
+        "Extend golden-smoke coverage to include Lv26–Lv30"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
