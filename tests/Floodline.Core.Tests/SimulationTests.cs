@@ -85,4 +85,74 @@ public class SimulationTests
             Assert.Equal(OccupancyType.Empty, sim.Grid.GetVoxel(pos).Type);
         }
     }
+
+    [Fact]
+    public void Simulation_WorldRotation_Rejected_When_TiltResolve_Would_Collide_With_ActivePiece()
+    {
+        // Arrange
+        Level level = new(
+            new("test_id", "Test Title", 1, 12345U),
+            new(6, 6, 6),
+            [],
+            [],
+            new(),
+            new("FIXED_SEQUENCE", ["I4"], null),
+            []
+        );
+        Simulation sim = new(level, new FixedRandom(0));
+        ActivePiece activePiece = sim.ActivePiece!;
+        IReadOnlyList<Int3> positions = activePiece.GetWorldPositions();
+
+        bool found = false;
+        Int3 activePos = default;
+        foreach (Int3 pos in positions)
+        {
+            if (pos.Z + 1 < sim.Grid.Size.Z)
+            {
+                activePos = pos;
+                found = true;
+                break;
+            }
+        }
+
+        Assert.True(found);
+
+        Int3 solidPos = new(activePos.X, activePos.Y, activePos.Z + 1);
+        Assert.Equal(OccupancyType.Empty, sim.Grid.GetVoxel(solidPos).Type);
+        sim.Grid.SetVoxel(solidPos, new Voxel(OccupancyType.Solid, null));
+
+        // Act
+        sim.Tick(InputCommand.RotateWorldForward);
+
+        // Assert
+        Assert.Equal(GravityDirection.Down, sim.Gravity);
+        Assert.Equal(OccupancyType.Solid, sim.Grid.GetVoxel(solidPos).Type);
+        Assert.Equal(OccupancyType.Empty, sim.Grid.GetVoxel(activePos).Type);
+    }
+
+    private sealed class FixedRandom(int value) : IRandom
+    {
+        private readonly int _value = value;
+
+        public uint Nextuint() => (uint)_value;
+
+        public int NextInt(int max) => Clamp(_value, 0, max - 1);
+
+        public int NextInt(int min, int max) => Clamp(_value, min, max - 1);
+
+        private static int Clamp(int value, int min, int max)
+        {
+            if (value < min)
+            {
+                return min;
+            }
+
+            if (value > max)
+            {
+                return max;
+            }
+
+            return value;
+        }
+    }
 }

@@ -34,6 +34,11 @@ public sealed class Simulation
     public ActivePiece? ActivePiece => _movement.CurrentPiece;
 
     /// <summary>
+    /// Gets the current gravity direction.
+    /// </summary>
+    public GravityDirection Gravity => _movement.Gravity;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Simulation"/> class.
     /// </summary>
     /// <param name="level">The level definition.</param>
@@ -69,6 +74,8 @@ public sealed class Simulation
 
         _ticksElapsed++;
 
+        GravityDirection previousGravity = _movement.Gravity;
+
         // 1. Apply Input
         InputApplyResult inputResult = _movement.ProcessInput(command);
 
@@ -76,7 +83,12 @@ public sealed class Simulation
         if (inputResult.Accepted && IsWorldRotation(command))
         {
             // Per §3.2: Immediate Tilt Resolve for settled world
-            ResolveTilt();
+            bool tiltAccepted = ResolveTilt();
+            if (!tiltAccepted)
+            {
+                _movement.SetGravity(previousGravity);
+                inputResult = new InputApplyResult(Accepted: false, Moved: false, LockRequested: false);
+            }
         }
 
         // 2. Gravity Step
@@ -141,7 +153,33 @@ public sealed class Simulation
     //
     // TODO (FL-0112): Full water solver implementation
     // TODO (FL-0113): Drains and freeze
-    private void ResolveTilt() => SolidSettler.Settle(Grid, _movement.Gravity);
+    private bool ResolveTilt()
+    {
+        if (ActivePiece is null)
+        {
+            _ = SolidSettler.Settle(Grid, _movement.Gravity);
+            return true;
+        }
+
+        HashSet<Int3> blockedCells = [];
+        foreach (Int3 pos in ActivePiece.GetWorldPositions())
+        {
+            if (Grid.IsInBounds(pos))
+            {
+                blockedCells.Add(pos);
+            }
+        }
+
+        Grid snapshot = Grid.Clone();
+        bool settled = SolidSettler.TrySettle(Grid, _movement.Gravity, blockedCells, out _);
+        if (!settled)
+        {
+            Grid.CopyFrom(snapshot);
+            return false;
+        }
+
+        return true;
+    }
 
     private void SpawnNextPiece()
     {

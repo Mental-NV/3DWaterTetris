@@ -94,4 +94,53 @@ public sealed class Grid
         voxel = Voxel.Empty;
         return false;
     }
+
+    /// <summary>
+    /// Creates a deep copy of the grid state.
+    /// </summary>
+    /// <returns>A new grid instance with identical contents.</returns>
+    public Grid Clone()
+    {
+        Grid clone = new(Size);
+        for (int x = 0; x < Size.X; x++)
+        {
+            for (int y = 0; y < Size.Y; y++)
+            {
+                for (int z = 0; z < Size.Z; z++)
+                {
+                    clone._cells[x, y, z] = _cells[x, y, z];
+                }
+            }
+        }
+
+        return clone;
+    }
+
+    /// <summary>
+    /// Copies the contents of another grid into this instance.
+    /// </summary>
+    /// <param name="source">The grid to copy from.</param>
+    public void CopyFrom(Grid source)
+    {
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        if (source.Size != Size)
+        {
+            throw new ArgumentException("Grid sizes must match to copy data.", nameof(source));
+        }
+
+        for (int x = 0; x < Size.X; x++)
+        {
+            for (int y = 0; y < Size.Y; y++)
+            {
+                for (int z = 0; z < Size.Z; z++)
+                {
+                    _cells[x, y, z] = source._cells[x, y, z];
+                }
+            }
+        }
+    }
 }

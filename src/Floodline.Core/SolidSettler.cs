@@ -16,13 +16,32 @@ public static class SolidSettler
         new Int3(0, 0, -1)
     ];
 
-    public static SolidSettleResult Settle(Grid grid, GravityDirection gravity)
+    public static SolidSettleResult Settle(Grid grid, GravityDirection gravity) =>
+        SettleInternal(grid, gravity, null, out _);
+
+    public static bool TrySettle(Grid grid, GravityDirection gravity, ISet<Int3> blockedCells, out SolidSettleResult result)
+    {
+        if (blockedCells is null)
+        {
+            throw new ArgumentNullException(nameof(blockedCells));
+        }
+
+        result = SettleInternal(grid, gravity, blockedCells, out bool blockedCollision);
+        return !blockedCollision;
+    }
+
+    private static SolidSettleResult SettleInternal(
+        Grid grid,
+        GravityDirection gravity,
+        ISet<Int3>? blockedCells,
+        out bool blockedCollision)
     {
         if (grid is null)
         {
             throw new ArgumentNullException(nameof(grid));
         }
 
+        blockedCollision = false;
         List<Int3> displacedWater = [];
         Int3 gravityVector = GravityTable.GetVector(gravity);
 
@@ -43,7 +62,13 @@ public static class SolidSettler
                     continue;
                 }
 
-                int dropDistance = ComputeDropDistance(component, grid, gravityVector);
+                int dropDistance = ComputeDropDistance(component, grid, gravityVector, blockedCells, out bool hitBlocked);
+                if (hitBlocked)
+                {
+                    blockedCollision = true;
+                    return new SolidSettleResult(displacedWater);
+                }
+
                 if (dropDistance <= 0)
                 {
                     continue;
@@ -195,8 +220,14 @@ public static class SolidSettler
         return false;
     }
 
-    private static int ComputeDropDistance(SolidComponent component, Grid grid, Int3 gravityVector)
+    private static int ComputeDropDistance(
+        SolidComponent component,
+        Grid grid,
+        Int3 gravityVector,
+        ISet<Int3>? blockedCells,
+        out bool blockedCollision)
     {
+        blockedCollision = false;
         int distance = 0;
 
         while (true)
@@ -211,6 +242,12 @@ public static class SolidSettler
                 {
                     canMove = false;
                     break;
+                }
+
+                if (blockedCells != null && blockedCells.Contains(target) && !component.CellSet.Contains(target))
+                {
+                    blockedCollision = true;
+                    return distance;
                 }
 
                 Voxel targetVoxel = grid.GetVoxel(target);
