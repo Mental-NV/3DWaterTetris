@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 using Floodline.Core.Levels;
 using Floodline.Core.Movement;
 using Floodline.Core.Random;
@@ -127,21 +127,34 @@ public sealed class Simulation
         // 5. Apply Drains
         // 6. Evaluate Objectives (handled in Tick/UpdateStatus)
 
-        // TODO (FL-0112): Full water solver implementation
         // TODO (FL-0113): Drains and freeze
 
-        // Current skeleton: just merge the active piece voxels into the grid
+        List<Int3> displacedWater = [];
+
         if (ActivePiece != null)
         {
             foreach (Int3 pos in ActivePiece.GetWorldPositions())
             {
-                // MaterialId is not in OrientedPiece yet, using default or piece-based if needed.
-                // For now, using default MaterialId from PieceDefinition if available.
+                Voxel existing = Grid.GetVoxel(pos);
+                if (existing.Type == OccupancyType.Water)
+                {
+                    displacedWater.Add(pos);
+                }
+
                 Grid.SetVoxel(pos, new Voxel(OccupancyType.Solid, null));
             }
         }
 
-        _ = SolidSettler.Settle(Grid, _movement.Gravity);
+        SolidSettleResult settleResult = SolidSettler.Settle(Grid, _movement.Gravity);
+        displacedWater.AddRange(settleResult.DisplacedWater);
+
+        _ = WaterSolver.Settle(Grid, _movement.Gravity, displacedWater);
+
+        SolidSettleResult recheckResult = SolidSettler.Settle(Grid, _movement.Gravity);
+        if (recheckResult.DisplacedWater.Count > 0)
+        {
+            _ = WaterSolver.Settle(Grid, _movement.Gravity, recheckResult.DisplacedWater);
+        }
     }
 
     // Canonical Tilt Resolve (§3.2):
@@ -151,13 +164,20 @@ public sealed class Simulation
     // 3. Recheck Solids
     // 4. Apply Drains
     //
-    // TODO (FL-0112): Full water solver implementation
     // TODO (FL-0113): Drains and freeze
     private bool ResolveTilt()
     {
         if (ActivePiece is null)
         {
-            _ = SolidSettler.Settle(Grid, _movement.Gravity);
+            SolidSettleResult settleResultNoPiece = SolidSettler.Settle(Grid, _movement.Gravity);
+            _ = WaterSolver.Settle(Grid, _movement.Gravity, settleResultNoPiece.DisplacedWater);
+
+            SolidSettleResult recheckResultNoPiece = SolidSettler.Settle(Grid, _movement.Gravity);
+            if (recheckResultNoPiece.DisplacedWater.Count > 0)
+            {
+                _ = WaterSolver.Settle(Grid, _movement.Gravity, recheckResultNoPiece.DisplacedWater);
+            }
+
             return true;
         }
 
@@ -171,11 +191,25 @@ public sealed class Simulation
         }
 
         Grid snapshot = Grid.Clone();
-        bool settled = SolidSettler.TrySettle(Grid, _movement.Gravity, blockedCells, out _);
+        bool settled = SolidSettler.TrySettle(Grid, _movement.Gravity, blockedCells, out SolidSettleResult settleResult);
         if (!settled)
         {
             Grid.CopyFrom(snapshot);
             return false;
+        }
+
+        _ = WaterSolver.Settle(Grid, _movement.Gravity, settleResult.DisplacedWater, blockedCells);
+
+        bool recheckSettled = SolidSettler.TrySettle(Grid, _movement.Gravity, blockedCells, out SolidSettleResult recheckResult);
+        if (!recheckSettled)
+        {
+            Grid.CopyFrom(snapshot);
+            return false;
+        }
+
+        if (recheckResult.DisplacedWater.Count > 0)
+        {
+            _ = WaterSolver.Settle(Grid, _movement.Gravity, recheckResult.DisplacedWater, blockedCells);
         }
 
         return true;
