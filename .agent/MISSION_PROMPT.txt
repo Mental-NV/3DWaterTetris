@@ -47,14 +47,14 @@ Step 3 — Implement + verify
 - Run the item’s validation.commands exactly (prefer scripts/ci.ps1).
 - Record commands + results into evidence.
 
-Step 4 — Reviewing (PR open)
+Step 4 — Publishing
 - Only if gates pass on the branch:
-  - Create/switch to a separate git branch (if not already).
-  - Commit: “FL-XXXX: <short title>”.
-  - Push branch + create PR (GitHub).
-  - Status is already InProgress; after PR is created/pushed, set status=InReview; append evidence (PR link + CI summary).
+  - Commit implementation on a feature branch: “FL-XXXX: <short title>”.
+  - Push branch and open a **Draft PR**.
+  - Transition backlog item to `status=InReview`; append evidence (PR link + CI summary).
+- **Hard rule:** immediately proceed to Step 5. Do not request human review and do not mark the PR “Ready for review” yet.
 
-Step 5 — Self-review / self-refinement (pre-merge)
+Step 5 — Self-review / self-refinement
 1) Re-read authoritative documents:
    - GDD_Core_v0_2.md
    - Input_Feel_v0_2.md
@@ -62,15 +62,15 @@ Step 5 — Self-review / self-refinement (pre-merge)
    - Water_Algorithm_v0_2.md
    - AGENT_OS.md
 2) Self-review the diff for spec compliance:
-   - If compliant: proceed to Step 6.
-   - If small fixes needed: fix in place (push commits to same PR), re-run gates.
-   - If massive / scope-expanding: create follow-up item FU-XXXX (high priority).
-     - If high priority, assign current/next available numeric ID so preflight selects it next.
+   - If small fixes needed: fix in place (push commits to the same PR), re-run gates, repeat Step 5.
+   - If massive / scope-expanding: keep this PR scoped and create follow-up item `FU-XXXX` with `requirementRef` to the violated spec(s).
+     - If high priority, assign current/next available numeric ID so the “lowest ID first” rule selects it next.
+   - If compliant: convert the PR from Draft to **Ready for review** and comment: “Self-review complete; ready for human review.”
 
-Step 6 — Finish (merge → Done)
-- Only when PR is ready to merge:
-  - Set status=Done; set doneAt; append evidence (PR link + merge confirmation).
-  - Merge PR so main contains the Done state.
+Step 6 — Finish
+- After human review is positive and the PR is ready to merge:
+  - Finalize backlog in the PR branch: set `status=Done`; set `doneAt`; append final evidence.
+  - Merge the PR so `main` contains the `Done` state.
 
 Step 7 — Blocked
 - Keep status=InProgress (pre-PR) or InReview (post-PR).

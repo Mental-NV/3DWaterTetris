@@ -214,11 +214,11 @@ Prohibitions:
 
 ---
 
-## 6) Execution loop (repeat until backlog complete)
+## 6) Execution loop
 <a id="execution-loop"></a>
 
-### Step 0 — Preflight (each session)
-- Start from a fresh, clean `main` synced to `origin/main` (no local diffs, no untracked files).
+### Step 0 — Preflight
+- Start from a fresh, clean `main` synced to `origin/main`.
 - Read the 6 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, AGENT_OS, backlog).
 - Confirm there is at most one active item (`InProgress` or `InReview`).
 - Run:
@@ -228,7 +228,7 @@ Prohibitions:
 - If there is a CURRENT active item (`InProgress` or `InReview`): continue it.
 - Else select NEXT = lowest ID `New` item with all `dependsOn` = `Done`.
 
-### Step 2 — Start work (mandatory backlog-only commit)
+### Step 2 — Start work
 - Set item `status=InProgress`, set `startedAt` (UTC ISO 8601).
 - Commit this backlog-only change immediately (no code yet):
   - `FL-XXXX: start <short title>`
@@ -239,40 +239,36 @@ Prohibitions:
   - prefer [`powershell -File ./scripts/ci.ps1`](../scripts/ci.ps1)
 - Record commands + results in item evidence.
 
-### Step 4 — Reviewing (PR open)
+### Step 4 — Publishing
 Only if gates are satisfied on the branch:
-- Create / switch to a separate git branch (if not already).
-- Commit implementation:
+- Ensure the implementation commit exists on a feature branch:
   - `FL-XXXX: <short title>`
-- Push branch and open a PR (GitHub).
-- Status remains `InProgress` while you create/push the PR; then transition the backlog item to `status=InReview` and append evidence including:
+- Push branch and open a PR as **Draft** (not ready for human review yet).
+- Transition the backlog item to `status=InReview` and append evidence including:
   - PR link
   - CI run link(s) / summary
-  - any known review TODOs
 
-> Note: `InReview` is a *WIP state*. You do **not** mark `Done` just because a PR exists.
+**Hard rule:** after opening the draft PR, you MUST immediately do Step 5 before requesting any human review or marking the PR “Ready for review”.
 
-### Step 5 — Self-review and self-refinement (pre-merge)
+### Step 5 — Self-review and self-refinement
 - Re-read authoritative documents:
   - `/docs/GDD_Core_v0_2.md`
   - `/docs/specs/Input_Feel_v0_2.md`
   - `/docs/specs/Simulation_Rules_v0_2.md`
   - `/docs/specs/Water_Algorithm_v0_2.md`
   - `/.agent/AGENT_OS.md`
-- Perform a self-review of the diff vs. specs + gates.
-  - If compliant: proceed to Step 6.
-  - If non-compliant and the fix is small: push fix commits to the same PR branch and re-run gates.
-  - If non-compliant and the fix is large / would expand scope: create a follow-up item `FU-XXXX` and keep this PR scoped.
-    - If follow-up is high priority, assign it the *current or next available numeric ID* so the preflight “lowest ID first” rule selects it next.
-    - The follow-up item MUST include `requirementRef` pointing to the violated spec section(s) and evidence explaining why it’s needed.
+- Perform a self-review of the diff vs. specs + gates:
+  - If non-compliant and the fix is small: push fix commits to the same PR branch and re-run gates; repeat Step 5.
+  - If non-compliant and the fix is large / scope-expanding: keep this PR scoped and create a follow-up item `FU-XXXX`.
+    - If follow-up is high priority, assign it the current or next available numeric ID so the “lowest ID first” rule selects it next.
+    - The follow-up item MUST include `requirementRef` pointing to the violated spec section(s) and evidence explaining the gap.
+  - If compliant: convert the PR from Draft to **Ready for review** and leave a PR comment:
+    - “Self-review complete; ready for human review.”
 
-### Step 6 — Finish (merge → Done)
-Only when the PR is ready to merge:
-- Update the backlog item:
-  - set `status=Done`
-  - set `doneAt` (UTC ISO 8601)
-  - append final evidence (PR link + merge commit / merge confirmation)
-- Merge the PR (or ensure it is merged immediately after this commit), so `main` reflects `Done`.
+### Step 6 — Finish
+Only when the PR is approved and ready to merge:
+- Add a final commit that transitions the backlog item to `status=Done`, sets `doneAt` (UTC ISO 8601), and appends final evidence (PR link + CI + “ready to merge” note).
+- Merge the PR so `main` contains the `Done` state.
 
 ### Step 7 — If blocked
 - Keep `status=InProgress` (pre-PR) or `status=InReview` (post-PR).
@@ -283,7 +279,6 @@ Only when the PR is ready to merge:
   - what info is needed
 - If allowed, add an enabler/bugfix/change-proposal backlog item with `requirementRef`.
 
----
 
 ## 7) Gates (canonical)
 <a id="dod"></a>
