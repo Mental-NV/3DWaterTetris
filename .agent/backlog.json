@@ -790,7 +790,8 @@
         "notes": [
           "Initial ci.ps1 run blocked by PowerShell AuthorizationManager; reran with ExecutionPolicy Bypass.",
           "CI: powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M2 (Release build, 126 tests, dotnet format verify) passed.",
-          "PR: https://github.com/Mental-NV/Floodline/pull/28"
+          "PR: https://github.com/Mental-NV/Floodline/pull/28",
+          "Self-review complete; auto-merging."
         ]
       }
     },
