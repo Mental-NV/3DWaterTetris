@@ -1367,7 +1367,9 @@
       "epic": "AI",
       "milestone": "M0",
       "title": "Add self-review checklist to Step 5",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-03T17:52:06Z",
+      "doneAt": "2026-02-03T17:56:18Z",
       "dependsOn": [],
       "requirementRef": "/.agent/AGENT_OS.md#execution-loop",
       "rationale": "Catch recurring misses (draft PR, lockfiles, encoding, evidence completeness) via a mechanical checklist.",
@@ -1380,8 +1382,15 @@
         "powershell -File ./scripts/preflight.ps1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/preflight.ps1"
+        ],
+        "notes": [
+          "Validation run on main (feature branch intentionally fails preflight by design).",
+          "PR: https://github.com/Mental-NV/Floodline/pull/43",
+          "CI: powershell -File ./scripts/preflight.ps1 (pass).",
+          "Self-review complete; auto-merging."
+        ]
       }
     },
     {
