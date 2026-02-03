@@ -16,13 +16,44 @@ public static class SolidSettler
         new Int3(0, 0, -1)
     ];
 
-    public static SolidSettleResult Settle(Grid grid, GravityDirection gravity)
+    public static SolidSettleResult Settle(Grid grid, GravityDirection gravity) =>
+        SettleInternal(grid, gravity, null, out _);
+
+    /// <summary>
+    /// Attempts to settle solids while treating blocked cells as immovable obstacles.
+    /// </summary>
+    /// <param name="grid">The grid to settle.</param>
+    /// <param name="gravity">The current gravity direction.</param>
+    /// <param name="blockedCells">Cells that must not be entered by settled solids.</param>
+    /// <param name="result">The settle result (displaced water) collected before any rejection.</param>
+    /// <returns>True if settle completed without hitting blocked cells; otherwise, false.</returns>
+    /// <remarks>
+    /// This method may partially mutate <paramref name="grid"/> before returning false.
+    /// Callers must snapshot/rollback grid state if they require no changes on rejection.
+    /// </remarks>
+    public static bool TrySettle(Grid grid, GravityDirection gravity, ISet<Int3> blockedCells, out SolidSettleResult result)
+    {
+        if (blockedCells is null)
+        {
+            throw new ArgumentNullException(nameof(blockedCells));
+        }
+
+        result = SettleInternal(grid, gravity, blockedCells, out bool blockedCollision);
+        return !blockedCollision;
+    }
+
+    private static SolidSettleResult SettleInternal(
+        Grid grid,
+        GravityDirection gravity,
+        ISet<Int3>? blockedCells,
+        out bool blockedCollision)
     {
         if (grid is null)
         {
             throw new ArgumentNullException(nameof(grid));
         }
 
+        blockedCollision = false;
         List<Int3> displacedWater = [];
         Int3 gravityVector = GravityTable.GetVector(gravity);
 
@@ -43,7 +74,13 @@ public static class SolidSettler
                     continue;
                 }
 
-                int dropDistance = ComputeDropDistance(component, grid, gravityVector);
+                int dropDistance = ComputeDropDistance(component, grid, gravityVector, blockedCells, out bool hitBlocked);
+                if (hitBlocked)
+                {
+                    blockedCollision = true;
+                    return new SolidSettleResult(displacedWater);
+                }
+
                 if (dropDistance <= 0)
                 {
                     continue;
@@ -195,8 +232,14 @@ public static class SolidSettler
         return false;
     }
 
-    private static int ComputeDropDistance(SolidComponent component, Grid grid, Int3 gravityVector)
+    private static int ComputeDropDistance(
+        SolidComponent component,
+        Grid grid,
+        Int3 gravityVector,
+        ISet<Int3>? blockedCells,
+        out bool blockedCollision)
     {
+        blockedCollision = false;
         int distance = 0;
 
         while (true)
@@ -211,6 +254,12 @@ public static class SolidSettler
                 {
                     canMove = false;
                     break;
+                }
+
+                if (blockedCells != null && blockedCells.Contains(target) && !component.CellSet.Contains(target))
+                {
+                    blockedCollision = true;
+                    return distance;
                 }
 
                 Voxel targetVoxel = grid.GetVoxel(target);
