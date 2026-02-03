@@ -1176,7 +1176,7 @@
       "epic": "AI",
       "milestone": "M0",
       "title": "Enforce feature branch before work",
-      "status": "InProgress",
+      "status": "InReview",
       "startedAt": "2026-02-03T17:07:21Z",
       "dependsOn": [],
       "requirementRef": "/.agent/AGENT_OS.md#execution-loop",
@@ -1191,8 +1191,13 @@
         "powershell -File ./scripts/preflight.ps1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/preflight.ps1"
+        ],
+        "notes": [
+          "Initial preflight failed on dirty working tree (implementation uncommitted); reran after commit and passed.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/37"
+        ]
       }
     },
     {
