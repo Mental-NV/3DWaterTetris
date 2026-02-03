@@ -838,7 +838,9 @@
       "epic": "E3",
       "milestone": "M3",
       "title": "Replay file format v0.1 (header + inputs)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-03T13:28:41.2238498Z",
+      "doneAt": "2026-02-03T13:41:08.5119594Z",
       "dependsOn": [
         "FL-0204"
       ],
@@ -855,8 +857,15 @@
         "powershell -File ./scripts/ci.ps1 -Scope M3"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -File ./scripts/ci.ps1 -Scope M3"
+        ],
+        "notes": [
+          "CI: powershell -File ./scripts/ci.ps1 -Scope M3 (Release build, 130 tests, dotnet format verify) passed.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/30",
+          "Self-review complete; auto-merging.",
+          "CI: https://github.com/Mental-NV/Floodline/actions/runs/21632448921/job/62348534795"
+        ]
       }
     },
     {
