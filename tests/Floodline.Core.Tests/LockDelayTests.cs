@@ -8,20 +8,20 @@ namespace Floodline.Core.Tests;
 
 public class LockDelayTests
 {
-    private static Level CreateTestLevel() =>
+    private static Level CreateTestLevel(RotationConfig? rotation = null) =>
         new(
             new("test_id", "Test Title", "0.2.0", 12345U),
             new(20, 20, 20),
             [],
             [],
-            new(),
+            rotation ?? new RotationConfig(),
             new("FIXED_SEQUENCE", ["I4"], null),
             []
         );
 
-    private static Simulation CreateSimulationWithGroundPlane()
+    private static Simulation CreateSimulationWithGroundPlane(Level? level = null)
     {
-        Simulation sim = new(CreateTestLevel(), new Pcg32(1));
+        Simulation sim = new(level ?? CreateTestLevel(), new Pcg32(1));
         ActivePiece piece = sim.ActivePiece!;
         int supportY = piece.Origin.Y - 1;
         Assert.True(supportY >= 0);
@@ -115,6 +115,20 @@ public class LockDelayTests
 
         sim.Tick(InputCommand.RotateWorldForward);
         sim.Tick(InputCommand.RotateWorldBack);
+
+        Assert.Equal(1, sim.State.PiecesLocked);
+    }
+
+    [Fact]
+    public void LockDelay_DoesNotReset_OnRejectedWorldRotation()
+    {
+        RotationConfig rotation = new(AllowedDirections: []);
+        Simulation sim = CreateSimulationWithGroundPlane(CreateTestLevel(rotation));
+        int delay = Constants.LockDelayTicks;
+
+        TickNTimes(sim, InputCommand.None, delay - 1);
+
+        sim.Tick(InputCommand.RotateWorldForward);
 
         Assert.Equal(1, sim.State.PiecesLocked);
     }
