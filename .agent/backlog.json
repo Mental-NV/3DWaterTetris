@@ -1181,15 +1181,8 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
-        "commandsRun": [
-          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels",
-          "git push -u origin feat/FL-0403-campaign-scaffold",
-          "gh pr create --title \"FL-0403: campaign scaffold conventions\" --body \"## Summary\n- add campaign authoring conventions to Content Pack\n- confirm manifest path/ordering and validation command\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels\""
-        ],
-        "notes": [
-          "Added campaign authoring conventions to Content Pack and confirmed campaign manifest path/ordering policy.",
-          "PR: https://github.com/Mental-NV/Floodline/pull/48"
-        ]
+        "commandsRun": [],
+        "notes": []
       }
     },
     {
@@ -1664,8 +1657,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Campaign v0.2.0 scaffold + authoring conventions",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-04T19:48:46Z",
+      "doneAt": "2026-02-04T19:51:32Z",
       "dependsOn": [
         "FL-0402"
       ],
@@ -1683,8 +1677,16 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels",
+          "git push -u origin feat/FL-0403-campaign-scaffold",
+          "gh pr create --title \"FL-0403: campaign scaffold conventions\" --body \"## Summary\n- add campaign authoring conventions to Content Pack\n- confirm manifest path/ordering and validation command\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels\""
+        ],
+        "notes": [
+          "Added campaign authoring conventions to Content Pack and confirmed campaign manifest path/ordering policy.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/48",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/48"
+        ]
       }
     },
     {
