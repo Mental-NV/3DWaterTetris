@@ -1239,11 +1239,12 @@
       "epic": "E1",
       "milestone": "M4",
       "title": "Core: gravity timing + lock delay/reset limits (Input_Feel v0.2)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T20:32:24Z",
       "dependsOn": [
         "FL-0413"
       ],
-      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#lock-behavior",
+      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#lock-behavior; /src/Floodline.Core/Simulation.cs; /src/Floodline.Core/SimulationState.cs; /src/Floodline.Core/Movement/MovementController.cs; /src/Floodline.Core/Movement/ActivePiece.cs; /src/Floodline.Core/Movement/InputApplyResult.cs; /src/Floodline.Core/Movement/InputCommand.cs; /src/Floodline.Core/Determinism/DeterminismHasher.cs; /src/Floodline.Core/Constants.cs; /tests/Floodline.Core.Tests/SimulationTests.cs; /tests/Floodline.Core.Tests/LockDelayTests.cs",
       "rationale": "Lock delay and deterministic tick-driven gravity are essential to match the Input & Feel spec and to make Unity parity meaningful; currently natural gravity timing is stubbed and lock delay is missing.",
       "sizeHint": "L",
       "deliverables": [
