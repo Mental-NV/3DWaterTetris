@@ -2260,10 +2260,13 @@
       ],
       "evidence": {
         "commandsRun": [
-          "powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1"
+          "powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1",
+          "git push -u origin chore/auto-loop",
+          "gh pr create --title \"FU-0200: enforce full-auto execution loop\" --body \"## Summary\n- require automatic CI monitoring/merge after PR creation\n- update mission prompt to match full-auto behavior\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1\""
         ],
         "notes": [
-          "Preflight requires main; ran on main and returned to feature branch."
+          "Preflight requires main; ran on main and returned to feature branch.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/47"
         ]
       }
     }
