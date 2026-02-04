@@ -77,19 +77,18 @@
 
 ### 2.4 Backlog truth + WIP discipline (hard rule)
 - Canonical backlog: [`backlog.json`](backlog.json).
-- Status enum: `New → InProgress → InReview → Done`.
+- Status enum: `New → InProgress → Done`.
   - `New`: eligible to start once dependencies are satisfied.
   - `InProgress`: being implemented locally (pre-PR) on a working branch.
-  - `InReview`: a PR exists; changes are in review / self-review / CI iteration.
   - `Done`: the PR is merged (or explicitly closed as completed) and `main` contains the changes.
-- **WIP limit = 1**: at most one active item at a time (`InProgress` OR `InReview`).
+- **WIP limit = 1**: at most one active item at a time (`InProgress`).
   - `0` is allowed only between items.
   - If any eligible `New` item exists (all `dependsOn` are `Done`), you MUST immediately set NEXT to `InProgress`
     before making other repo changes.
 
 **Always be able to state:**
 - DONE items (`Done`)
-- CURRENT item (`InProgress` or `InReview`) if any
+- CURRENT item (`InProgress`) if any
 - NEXT item (lowest ID `New` with all dependencies `Done`)
 
 
@@ -112,10 +111,10 @@ If design/architecture must change:
 - If information is missing, make the most conservative assumption consistent with:
   contracts/schemas > tests (incl. golden) > code > docs prose.
 - Record any assumption in backlog evidence.notes.
-- If a hard block prevents progress (missing requirementRef, conflicting constraints, or missing required files):
-  - Keep status InProgress (pre-PR) or InReview (post-PR).
+- If a hard block prevents progress (conflicting constraints, missing required files, etc):
+  - Keep status InProgress.
   - Add evidence.notes with: what failed, two options, and a recommended next step.
-  - Stop; do not ask for clarification.
+  - Self-reflect about options to resolve the blocker; apply the best option; continue the task.
 - Never wait for confirmation to run commands; execute required commands and record results.
 
 ---
@@ -196,7 +195,7 @@ Every new backlog item MUST include:
 ### Backlog timestamp rules (non-negotiable)
 - Use only `startedAt` and `doneAt` (UTC ISO 8601 with `Z`).
 - `New`: no `startedAt` or `doneAt`.
-- `InProgress` / `InReview`: `startedAt` required, `doneAt` must be absent.
+- `InProgress`: `startedAt` required, `doneAt` must be absent.
 - `Done`: `doneAt` required; `startedAt` is optional but recommended.
 - **Never** use `completedAt`.
 
@@ -250,11 +249,11 @@ Prohibitions:
 ### Step 0 — Preflight (each session)
 - Start from a fresh, clean `main` synced to `origin/main`.
 - Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
-- Confirm there is at most one active item (`InProgress` or `InReview`).
+- Confirm there is at most one active item (`InProgress`).
 - Run: `powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1`
 
 ### Step 1 — Select work
-- If there is a CURRENT active item (`InProgress` or `InReview`): continue it.
+- If there is a CURRENT active item (`InProgress`): continue it.
 - Else select NEXT = lowest ID `New` item with all `dependsOn` = `Done`.
 
 ### Step 1.5 — Create feature branch (mandatory)
@@ -275,8 +274,8 @@ Only if gates are satisfied on the branch:
   - Ensure implementation commit exists on a feature branch:
     - `FL-XXXX: <short title>`
   - Push branch and open a PR.
-  - Transition backlog item to `status=InReview` and append evidence:
-    - PR link
+  - Append evidence:
+    - PR link (keep `status=InProgress`)
 
 ### Step 6 — Close PR (merge) + Done + Next
 After publishing:
@@ -289,7 +288,7 @@ After publishing:
 - Return to Step 1 and continue with the next backlog item.
 
 ### Step 7 — Blocked
-- Keep `status=InProgress` (pre-PR) or `status=InReview` (post-PR).
+- Keep `status=InProgress`.
 - Add evidence.notes: what failed, options, recommendation, needed info.
 - If allowed, add an enabler/bugfix/change-proposal item with `requirementRef`.
 

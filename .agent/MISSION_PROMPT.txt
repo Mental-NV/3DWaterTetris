@@ -26,7 +26,7 @@ If any conflict exists: contracts/schemas > tests > code > docs prose.
 - Determinism: Core sim deterministic for (level, seed, per-tick inputs, rulesVersion). No floats in Core gameplay logic.
 - Architecture: Floodline.Core must not reference UnityEngine. Unity work forbidden until milestone M5.
 - Strict .NET gates: locked restore when applicable, Release build, tests, warnings-as-errors. Formatting gate once introduced.
-- Backlog truth: backlog.json is canonical; Status enum New→InProgress→InReview→Done; WIP limit=1 (InProgress|InReview).
+- Backlog truth: backlog.json is canonical; Status enum New→InProgress→Done; WIP limit=1 (InProgress).
 - Change control: if spec/architecture must change, create Change Proposal + backlog item; no silent drift.
 - Autonomy: do not ask questions or request approval; proceed with conservative assumptions and log them in evidence.notes.
 
@@ -37,12 +37,12 @@ AUTONOMY POLICY (NO QUESTIONS)
 - If information is missing, make the most conservative assumption consistent with:
   contracts/schemas > tests > code > docs prose.
 - Record any assumption in backlog evidence.notes.
-- If a hard block prevents progress (missing requirementRef, conflicting constraints, or missing required files):
-  - Keep status InProgress (or InReview if a PR exists).
-  - Add evidence.notes with: what failed, two options, and a recommended next step.
-  - Stop; do not ask for clarification.
+- If a hard block prevents progress (conflicting constraints, missing required files, etc):
+  - Keep status InProgress.
+  - Add evidence.notes with: what failed.
+  - Self-reflect about options to resolve the blocker; apply the best option; continue the task.
 - Never wait for confirmation to run commands; execute required commands and record results.
-- Always follow AGENT_OS, including Step 1.5: create a feature branch before any commits.
+- Always follow AGENT_OS
 
 ============================================================
 2) EXECUTION LOOP (REPEAT UNTIL COMPLETE)
@@ -51,11 +51,15 @@ Step 0 — Preflight (each session)
 - Start from a fresh, clean `main` synced to `origin/main` (no local diffs, no untracked files).
 - Read the 8 canonical artifacts (Core GDD, Input Feel, Simulation Rules, Water Algorithm, Content Pack, contract policy, AGENT_OS, backlog).
 - Run: powershell -File ./scripts/preflight.ps1
-- Confirm at most one active item (InProgress or InReview).
+- Confirm at most one active item (InProgress).
 
 Step 1 — Select work
-- If there is an active item (InProgress or InReview): continue it.
+- If there is an active item (InProgress): continue it.
 - Else select NEXT = lowest ID New item whose dependsOn are all Done.
+
+Step 1.5 — Create feature branch (mandatory)
+- Create a feature branch from `main` before making any commits.
+- All non-merge commits MUST be on a feature branch (never on `main`).
 
 Step 2 — Start work (backlog-only commit)
 - Set status=InProgress; set startedAt (UTC ISO 8601).
@@ -70,7 +74,7 @@ Step 4 — Publishing
 - Only if gates pass on the branch:
   - Commit implementation: “FL-XXXX: <short title>”.
   - Push branch + open PR.
-  - Set backlog status=InReview; append evidence (PR link).
+  - Append evidence (PR link) and keep status=InProgress.
 
 Step 6 — Close PR (merge) + Done + Next
 - After publishing:
@@ -80,7 +84,7 @@ Step 6 — Close PR (merge) + Done + Next
 
 
 Step 7 — Blocked
-- Keep status=InProgress (pre-PR) or InReview (post-PR).
+- Keep status=InProgress.
 - Add evidence.notes: what failed, options, recommendation, needed info.
 - If allowed, add an enabler/bugfix/change-proposal item with requirementRef.
 
@@ -90,6 +94,6 @@ Step 7 — Blocked
 ============================================================
 1) Run powershell -File ./scripts/preflight.ps1
 2) Open /.agent/backlog.json
-3) Identify DONE / CURRENT (InProgress|InReview) / NEXT
+3) Identify DONE / CURRENT (InProgress) / NEXT
 4) If no CURRENT, set NEXT to InProgress and commit backlog-only change
 5) Execute role loop per AGENT_OS (Planner → Architect → Implementer → Verifier)

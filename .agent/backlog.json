@@ -3,12 +3,11 @@
   "statusEnum": [
     "New",
     "InProgress",
-    "InReview",
     "Done"
   ],
   "wipLimit": 1,
   "canonicalOrdering": "lowest-id-first",
-  "selectionRule": "current = item with status InProgress or InReview; next = lowest-id New item where all dependsOn are Done",
+  "selectionRule": "current = item with status InProgress; next = lowest-id New item where all dependsOn are Done",
   "backlogEvolution": {
     "editWindows": [
       "before-starting-new-item",
