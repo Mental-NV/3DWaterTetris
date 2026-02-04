@@ -1,0 +1,7 @@
+# FloodlineRotationSnapshot v0.1
+gravity: North
+ticks: 1
+piecesLocked: 0
+rotationsExecuted: 1
+rotationCooldownRemaining: 0
+activePiece: id=I4 orientation=0 origin=5,9,5
