@@ -317,6 +317,36 @@ When timer expires:
 - those positions are added to water sources,
 - water settle is executed.
 
+### 9.3 Freeze ability (MVP input/targeting)
+Freeze is an **armed-on-lock** ability (see Input model in this spec).
+
+**Activation:**
+- A `FreezeAbility` input arms the current active piece if `freezeCharges > 0`.
+- Pressing again before lock disarms it (no charge refund).
+
+**On lock (deterministic):**
+- Freeze all `WATER` cells in `freezeScope` around the locking piece voxels.
+- Frozen cells become `ICE` with timer `freezeDurationResolves`.
+- Duplicate targets are ignored (a cell freezes once).
+
+**Resolve order:**
+- Apply freeze immediately after merge and **before** solid settling in the Resolve Phase.
+
+### 9.4 Drain placement ability (MVP input/targeting)
+Drain placement is an **armed-on-lock** ability.
+
+**Activation:**
+- A `DrainPlacementAbility` input arms the current active piece if `drainPlacementCharges > 0`.
+- Pressing again before lock disarms it (no charge refund).
+
+**On lock (deterministic):**
+- Convert the **pivot voxel** of the locking piece to a `DRAIN` tile using `abilities.drainPlacement` params.
+- All other voxels of the piece become normal `SOLID` voxels.
+- If the pivot overlaps `WATER`, that water unit is displaced per standard rules.
+
+**Resolve order:**
+- Apply drain placement immediately after merge and **before** solid settling in the Resolve Phase.
+
 ---
 
 <a id="objectives"></a>
@@ -356,6 +386,22 @@ If a level enforces “no voxel resting on water”:
   - For every solid voxel `c`, if cell `c+g` is `WATER`, the condition fails.
 
 (If you need stricter “ever happened” behavior, track a boolean flag when detected during resolve.)
+
+### 10.5 Stars and Score (MVP)
+**Stars**
+- Star 1: all primary objectives completed.
+- Star 2/3: AND-list of typed conditions (if present).
+
+**Supported star condition types (v0.2.3+):**
+- `MAX_PIECES_USED` (params: `count`)
+- `MAX_ROTATIONS_USED` (params: `count`)
+- `MAX_SHIFT_VOXELS_TOTAL` (params: `count`)
+- `MAX_LOST_VOXELS_TOTAL` (params: `count`)
+
+**Score (optional, deterministic)**
+- If `score.enabled=true`, compute:
+  - `score = perPiece * PiecesUsed + perWaterRemoved * WaterRemovedTotal - penaltyShiftVoxel * ShiftVoxelsTotal - penaltyLostVoxel * LostVoxelsTotal - penaltyRotation * RotationsExecuted`
+- All weights are integers; if `score` is omitted or `enabled=false`, score is not computed.
 
 ---
 
