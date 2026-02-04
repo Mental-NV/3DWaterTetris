@@ -1,32 +1,51 @@
 # Floodline
 
-Floodline is a deterministic puzzle/strategy game implemented with a **Unity client** on top of a **headless .NET simulation**.
+Floodline is an in-development 3D voxel puzzle game where gravity is your main tool: stack blocks, rotate the world, and outsmart the flood.
 
-## Canonical documents (read first)
+Instead of merely spinning a piece, you **tilt the entire board** in crisp 90-degree snaps. Every rotation rewrites what "supported" means, turning safe platforms into freefalls, exposing new routes, and enabling satisfying, intentional chain reactions.
 
-1) [`docs/GDD_Core_v0_2.md`](docs/GDD_Core_v0_2.md) — core GDD (player-facing design)
-2) [`docs/specs/Simulation_Rules_v0_2.md`](docs/specs/Simulation_Rules_v0_2.md) — determinism + resolve order (simulation source of truth)
-3) [`.agent/AGENT_OS.md`](.agent/AGENT_OS.md) — agent constitution: workflow, gates, milestone order
-4) [`.agent/backlog.json`](.agent/backlog.json) — canonical work state (DONE / CURRENT / NEXT) + evidence  
+Your opponent is **water**: it hunts the lowest reachable spaces, levels out into readable basins, and **never supports blocks**. Build basins and channels, then deploy tools like **drains** and **freeze/ice** to stay one step ahead as later levels add hazards like **wind** and stabilizing anchors.
 
-The agent should open any other file only if the CURRENT backlog item’s `requirementRef` explicitly points to it.
+Key features:
+- World rotation as a primary mechanic (snap 90-degree gravity shifts).
+- Deterministic, puzzle-fair simulation (same inputs -> same outcome).
+- Discrete water system: basin leveling, spillover, and displacement (no physics fuzz).
+- A campaign focused on teachable mechanics and engineering-style solutions.
 
-## Repo structure
+## Design & Specs
 
-- `.agent/` — autonomous agent operating system + backlog
-- `docs/` — game design document(s)
-- `scripts/` — canonical validation entrypoints
-- (created by backlog) `src/` / `tests/`
+1. [`docs/GDD_Core_v0_2.md`](docs/GDD_Core_v0_2.md) - Core GDD (player-facing design)
+2. [`docs/specs/Input_Feel_v0_2.md`](docs/specs/Input_Feel_v0_2.md) - Input sampling, lock rules, and feel constraints
+3. [`docs/specs/Simulation_Rules_v0_2.md`](docs/specs/Simulation_Rules_v0_2.md) - Determinism + resolve order (simulation source of truth)
+4. [`docs/specs/Water_Algorithm_v0_2.md`](docs/specs/Water_Algorithm_v0_2.md) - Deterministic water equilibrium solver + drains/freeze
+5. [`docs/content/Content_Pack_v0_2.md`](docs/content/Content_Pack_v0_2.md) - Canonical pieces + campaign plan
+6. [`.agent/contract-policy.md`](.agent/contract-policy.md) - Contract/versioning policy (schemas, replays, determinism)
+7. [`.agent/change-proposals/`](.agent/change-proposals/) - Design/contract change proposals (CP-*.md)
+8. [`.agent/backlog.json`](.agent/backlog.json) - Project backlog (work items and evidence)
 
-## Validation entrypoints
+## Repo Structure
 
-Preflight (must be clean tree + prints DONE/CURRENT/NEXT):
+- `.agent/` - change proposals, contract policy, and backlog
+- `docs/` - game design + simulation specs
+- `schemas/` - level/campaign JSON schemas (authoritative for validation)
+- `levels/` - level fixtures (and later: campaign + solutions/replays)
+- `scripts/` - canonical validation entrypoints (preflight/ci)
+- `src/Floodline.Core/` - deterministic simulation (Unity-free)
+- `src/Floodline.Cli/` - headless runner + validators
+- `tests/Floodline.Core.Tests/` - Core unit + golden tests
+- `tests/Floodline.Cli.Tests/` - CLI smoke tests (validation, record/replay)
+
+Unity client is not checked in yet (planned under milestone M5).
+
+## Build & Test
+
+Preflight:
 
 ```powershell
 powershell -File ./scripts/preflight.ps1
 ```
 
-CI (use this from backlog item `validation` to avoid command drift):
+CI (local equivalent of what the repo expects in GitHub Actions):
 
 ```powershell
 # early repo (before lock files exist)
@@ -42,11 +61,18 @@ powershell -File ./scripts/ci.ps1 -Scope M0 -IncludeFormat
 powershell -File ./scripts/ci.ps1 -Scope M1
 ```
 
-Note: `-Golden`, `-Replay`, `-ValidateLevels`, `-CampaignSolutions`, `-Unity` switches exist as reserved placeholders and should be implemented when the corresponding tooling/tests land.
+Note: `-Golden`, `-Replay`, `-ValidateLevels`, `-CampaignSolutions`, `-Unity` switches exist but some are placeholders until their corresponding tooling lands.
 
-## Starting the autonomous run
+## Run The CLI
 
-1) Read the 4 canonical documents above.  
-2) Run `powershell -File ./scripts/preflight.ps1`.  
-3) If no CURRENT item exists, set NEXT to `InProgress` and commit that backlog-only change.  
-4) Execute the role loop per [`.agent/AGENT_OS.md`](.agent/AGENT_OS.md).
+Run a level with an input script:
+
+```powershell
+dotnet run --project .\src\Floodline.Cli\Floodline.Cli.csproj -- --level .\levels\minimal_level.json --inputs .\levels\minimal_inputs.txt
+```
+
+Validate a level file:
+
+```powershell
+dotnet run --project .\src\Floodline.Cli\Floodline.Cli.csproj -- --level .\levels\minimal_level.json --validate
+```
