@@ -1181,8 +1181,12 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        ],
+        "notes": [
+          "Added campaign authoring conventions to Content Pack and confirmed campaign manifest path/ordering policy."
+        ]
       }
     },
     {
