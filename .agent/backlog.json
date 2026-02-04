@@ -1376,7 +1376,8 @@
           "notes": [
             "Implemented WEIGHT_EXCEEDED (total mass > maxMass), WATER_FORBIDDEN (any water at worldHeight >= min), and NO_RESTING_ON_WATER checks after resolve.",
             "Constraint evaluation runs after objective calculation and before win check to ensure fail states override success.",
-            "Inspected ConstraintsConfig/Voxel/SolidSettler/ObjectiveEvaluator patterns to align mass + solid checks beyond spec reference."
+            "Inspected ConstraintsConfig/Voxel/SolidSettler/ObjectiveEvaluator patterns to align mass + solid checks beyond spec reference.",
+            "PR: https://github.com/Mental-NV/Floodline/pull/54"
           ]
         }
       },
