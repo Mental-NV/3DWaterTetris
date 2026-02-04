@@ -1220,8 +1220,13 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Replay"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Replay"
+        ],
+        "notes": [
+          "Implemented hold slot with once-per-drop rule and orientation reset on swap.",
+          "Replay format bumped to 0.1.1 / command-v1; determinism hash bumped to 0.1.2 including hold state."
+        ]
       }
     },
     {
