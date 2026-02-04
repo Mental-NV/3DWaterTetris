@@ -1137,8 +1137,12 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+        ],
+        "notes": [
+          "Semantic validation fixtures use schemaVersion 0.2.0 so schema passes and semantic checks are exercised."
+        ]
       }
     },
     {

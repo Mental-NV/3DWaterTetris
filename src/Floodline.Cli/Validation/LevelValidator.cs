@@ -11,6 +11,20 @@ public static class LevelValidator
 {
     private const string DefaultSchemaVersion = "0.2.1";
     private const int RepoSearchDepth = 12;
+    private static readonly HashSet<string> AllowedGravityDirections = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "DOWN",
+        "NORTH",
+        "SOUTH",
+        "EAST",
+        "WEST"
+    };
+    private static readonly HashSet<string> AllowedBagMaterials = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "STANDARD",
+        "HEAVY",
+        "REINFORCED"
+    };
 
     public static LevelValidationResult ValidateFile(string levelPath)
     {
@@ -186,6 +200,7 @@ public static class LevelValidator
 
         ValidateInitialVoxels(level, levelPath, errors);
         ValidateBag(level, levelPath, errors);
+        ValidateRotation(level, levelPath, errors);
         ValidateObjectives(level, levelPath, errors);
         ValidateHazards(level, levelPath, errors);
     }
@@ -254,6 +269,10 @@ public static class LevelValidator
                     "semantic.bag.sequence_missing",
                     "Fixed-sequence bag requires a non-empty sequence."));
             }
+            else
+            {
+                ValidateBagSequence(levelPath, errors, level.Bag.Sequence);
+            }
         }
 
         if (isWeighted)
@@ -266,6 +285,10 @@ public static class LevelValidator
                     "semantic.bag.weights_missing",
                     "Weighted bag requires at least one weight entry."));
             }
+            else
+            {
+                ValidateBagWeights(levelPath, errors, level.Bag.Weights);
+            }
         }
     }
 
@@ -273,6 +296,220 @@ public static class LevelValidator
         typeRaw.Trim()
             .Replace("-", "_", StringComparison.Ordinal)
             .ToUpperInvariant();
+
+    private static void ValidateBagSequence(string levelPath, List<LevelValidationError> errors, string[] sequence)
+    {
+        for (int i = 0; i < sequence.Length; i++)
+        {
+            string token = sequence[i];
+            if (!TryValidateBagToken(levelPath, errors, $"#/bag/sequence/{i}", token))
+            {
+                continue;
+            }
+        }
+    }
+
+    private static void ValidateBagWeights(
+        string levelPath,
+        List<LevelValidationError> errors,
+        Dictionary<string, int> weights)
+    {
+        bool hasPositive = false;
+
+        foreach (KeyValuePair<string, int> entry in weights)
+        {
+            string key = entry.Key;
+            string pointer = $"#/bag/weights/{EscapePointerToken(key)}";
+
+            if (!TryValidateBagToken(levelPath, errors, pointer, key))
+            {
+                continue;
+            }
+
+            int weight = entry.Value;
+            if (weight < 0)
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    pointer,
+                    "semantic.bag.weight_negative",
+                    $"Weight for '{key}' must be >= 0."));
+            }
+
+            if (weight > 0)
+            {
+                hasPositive = true;
+            }
+        }
+
+        if (!hasPositive)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                "#/bag/weights",
+                "semantic.bag.weights_empty",
+                "Weighted bag must include at least one positive weight."));
+        }
+    }
+
+    private static bool TryValidateBagToken(
+        string levelPath,
+        List<LevelValidationError> errors,
+        string pointer,
+        string token)
+    {
+        if (!TryParseBagToken(token, out string pieceId, out string? material))
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                pointer,
+                "semantic.bag.token_invalid",
+                $"Bag entry '{token}' is not a valid piece token."));
+            return false;
+        }
+
+        if (!IsValidPieceId(pieceId))
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                pointer,
+                "semantic.bag.token_invalid",
+                $"Piece id '{pieceId}' is not recognized."));
+            return false;
+        }
+
+        if (material is not null && !IsValidMaterialId(material))
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                pointer,
+                "semantic.bag.material_invalid",
+                $"Material id '{material}' is not supported."));
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryParseBagToken(string token, out string pieceId, out string? material)
+    {
+        pieceId = string.Empty;
+        material = null;
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return false;
+        }
+
+        string trimmed = token.Trim();
+        int separatorIndex = trimmed.IndexOf(':', StringComparison.Ordinal);
+        if (separatorIndex < 0)
+        {
+            pieceId = trimmed;
+            return true;
+        }
+
+        if (separatorIndex == 0 || separatorIndex == trimmed.Length - 1)
+        {
+            return false;
+        }
+
+        if (trimmed.IndexOf(':', separatorIndex + 1) >= 0)
+        {
+            return false;
+        }
+
+        pieceId = trimmed[..separatorIndex];
+        material = trimmed[(separatorIndex + 1)..];
+        return true;
+    }
+
+    private static bool IsValidPieceId(string value) =>
+        Enum.TryParse<PieceId>(value.Trim(), ignoreCase: true, out PieceId _);
+
+    private static bool IsValidMaterialId(string value) =>
+        AllowedBagMaterials.Contains(value.Trim());
+
+    private static void ValidateRotation(Level level, string levelPath, List<LevelValidationError> errors)
+    {
+        RotationConfig rotation = level.Rotation;
+
+        if (rotation.MaxRotations is < 0)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                "#/rotation/maxRotations",
+                "semantic.rotation.max_rotations_negative",
+                "maxRotations must be >= 0."));
+        }
+
+        if (rotation.TiltBudget is < 0)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                "#/rotation/tiltBudget",
+                "semantic.rotation.tilt_budget_negative",
+                "tiltBudget must be >= 0."));
+        }
+
+        if (rotation.CooldownTicks is < 0)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                "#/rotation/cooldownTicks",
+                "semantic.rotation.cooldown_negative",
+                "cooldownTicks must be >= 0."));
+        }
+
+        if (rotation.AllowedDirections is null)
+        {
+            return;
+        }
+
+        if (rotation.AllowedDirections.Length == 0)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                "#/rotation/allowedDirections",
+                "semantic.rotation.allowed_directions_empty",
+                "allowedDirections must include at least one direction."));
+            return;
+        }
+
+        for (int i = 0; i < rotation.AllowedDirections.Length; i++)
+        {
+            string? direction = rotation.AllowedDirections[i];
+            if (string.IsNullOrWhiteSpace(direction))
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"#/rotation/allowedDirections/{i}",
+                    "semantic.rotation.allowed_direction_missing",
+                    "allowedDirections entry must be a non-empty string."));
+                continue;
+            }
+
+            string normalized = direction.Trim().ToUpperInvariant();
+            if (normalized == "UP")
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"#/rotation/allowedDirections/{i}",
+                    "semantic.rotation.allowed_direction_up",
+                    "UP is not allowed as a gameplay gravity direction."));
+                continue;
+            }
+
+            if (!AllowedGravityDirections.Contains(normalized))
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"#/rotation/allowedDirections/{i}",
+                    "semantic.rotation.allowed_direction_invalid",
+                    $"Gravity direction '{direction}' is not valid."));
+            }
+        }
+    }
 
     private static void ValidateObjectives(Level level, string levelPath, List<LevelValidationError> errors)
     {
@@ -288,24 +525,40 @@ public static class LevelValidator
                 continue;
             }
 
+            if (objective.Params is null)
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"#/objectives/{i}/params",
+                    "semantic.objective.params_missing",
+                    "Objective params are missing."));
+                continue;
+            }
+
+            Dictionary<string, object> parameters = objective.Params;
             string normalized = NormalizeType(typeRaw);
             switch (normalized)
             {
                 case "DRAINWATER":
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["targetUnits", "units", "target"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["targetUnits", "units", "target"]);
+                    RejectUnknownParams(levelPath, errors, $"#/objectives/{i}/params", parameters, ["targetUnits", "units", "target"], "semantic.objective.param_unknown", "objective DRAIN_WATER");
                     break;
                 case "REACHHEIGHT":
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["height", "worldHeight"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["height", "worldHeight"]);
+                    RejectUnknownParams(levelPath, errors, $"#/objectives/{i}/params", parameters, ["height", "worldHeight"], "semantic.objective.param_unknown", "objective REACH_HEIGHT");
                     break;
                 case "BUILDPLATEAU":
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["area"]);
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["worldLevel", "height"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["area"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["worldLevel", "height"]);
+                    RejectUnknownParams(levelPath, errors, $"#/objectives/{i}/params", parameters, ["area", "worldLevel", "height"], "semantic.objective.param_unknown", "objective BUILD_PLATEAU");
                     break;
                 case "STAYUNDERWEIGHT":
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["maxMass", "maxWeight"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["maxMass", "maxWeight"]);
+                    RejectUnknownParams(levelPath, errors, $"#/objectives/{i}/params", parameters, ["maxMass", "maxWeight"], "semantic.objective.param_unknown", "objective STAY_UNDER_WEIGHT");
                     break;
                 case "SURVIVEROTATIONS":
-                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", objective.Params, ["rotations", "count", "k"]);
+                    RequireInt(levelPath, errors, $"#/objectives/{i}/params", parameters, ["rotations", "count", "k"]);
+                    RejectUnknownParams(levelPath, errors, $"#/objectives/{i}/params", parameters, ["rotations", "count", "k"], "semantic.objective.param_unknown", "objective SURVIVE_ROTATIONS");
                     break;
                 default:
                     errors.Add(new LevelValidationError(
@@ -332,11 +585,22 @@ public static class LevelValidator
                 continue;
             }
 
+            if (hazard.Params is null)
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"#/hazards/{i}/params",
+                    "semantic.hazard.params_missing",
+                    "Hazard params are missing."));
+                continue;
+            }
+
+            Dictionary<string, object> parameters = hazard.Params;
             string normalized = NormalizeType(typeRaw);
             switch (normalized)
             {
                 case "WINDGUST":
-                    ValidateWindGust(levelPath, errors, i, hazard);
+                    ValidateWindGust(levelPath, errors, i, parameters);
                     break;
                 default:
                     errors.Add(new LevelValidationError(
@@ -349,19 +613,28 @@ public static class LevelValidator
         }
     }
 
-    private static void ValidateWindGust(string levelPath, List<LevelValidationError> errors, int hazardIndex, HazardConfig hazard)
+    private static void ValidateWindGust(string levelPath, List<LevelValidationError> errors, int hazardIndex, Dictionary<string, object> parameters)
     {
-        if (!hazard.Enabled)
-        {
-            return;
-        }
-
-        Dictionary<string, object> parameters = hazard.Params ?? [];
-
         int intervalTicks = RequireInt(levelPath, errors, $"#/hazards/{hazardIndex}/params", parameters, ["intervalTicks"]);
         int pushStrength = RequireInt(levelPath, errors, $"#/hazards/{hazardIndex}/params", parameters, ["pushStrength"]);
-        _ = intervalTicks;
-        _ = pushStrength;
+
+        if (intervalTicks < 1)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                $"#/hazards/{hazardIndex}/params/intervalTicks",
+                "semantic.wind.interval_ticks_invalid",
+                "intervalTicks must be >= 1."));
+        }
+
+        if (pushStrength < 1)
+        {
+            errors.Add(new LevelValidationError(
+                levelPath,
+                $"#/hazards/{hazardIndex}/params/pushStrength",
+                "semantic.wind.push_strength_invalid",
+                "pushStrength must be >= 1."));
+        }
 
         string? directionMode = RequireString(levelPath, errors, $"#/hazards/{hazardIndex}/params/directionMode", parameters, "directionMode");
         if (string.IsNullOrWhiteSpace(directionMode))
@@ -412,7 +685,7 @@ public static class LevelValidator
                     levelPath,
                     $"#/hazards/{hazardIndex}/params/fixedDirection",
                     "semantic.wind.fixed_direction_invalid",
-                    $"fixedDirection '{fixedDir}' is invalid. Use EAST/WEST/NORTH/SOUTH."));
+                $"fixedDirection '{fixedDir}' is invalid. Use EAST/WEST/NORTH/SOUTH."));
             }
         }
         else if (hasFixedDirection)
@@ -423,6 +696,15 @@ public static class LevelValidator
                 "semantic.wind.fixed_direction_unexpected",
                 "fixedDirection must not be provided unless directionMode is FIXED."));
         }
+
+        RejectUnknownParams(
+            levelPath,
+            errors,
+            $"#/hazards/{hazardIndex}/params",
+            parameters,
+            ["intervalTicks", "pushStrength", "directionMode", "firstGustOffsetTicks", "fixedDirection"],
+            "semantic.hazard.param_unknown",
+            "hazard WIND_GUST");
     }
 
     private static int RequireInt(
@@ -527,6 +809,36 @@ public static class LevelValidator
 
         return value is not null;
     }
+
+    private static void RejectUnknownParams(
+        string levelPath,
+        List<LevelValidationError> errors,
+        string paramsPointer,
+        Dictionary<string, object> parameters,
+        IReadOnlyList<string> allowedKeys,
+        string ruleId,
+        string context)
+    {
+        HashSet<string> allowed = new(allowedKeys, StringComparer.OrdinalIgnoreCase);
+
+        foreach (string key in parameters.Keys)
+        {
+            if (allowed.Contains(key))
+            {
+                continue;
+            }
+
+            errors.Add(new LevelValidationError(
+                levelPath,
+                $"{paramsPointer}/{EscapePointerToken(key)}",
+                ruleId,
+                $"Parameter '{key}' is not supported for {context}."));
+        }
+    }
+
+    private static string EscapePointerToken(string token) =>
+        token.Replace("~", "~0", StringComparison.Ordinal)
+            .Replace("/", "~1", StringComparison.Ordinal);
 
     private static string NormalizeType(string typeRaw)
     {
