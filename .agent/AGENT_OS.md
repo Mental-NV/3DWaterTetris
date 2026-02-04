@@ -276,6 +276,8 @@ Only if gates are satisfied on the branch:
   - Push branch and open a PR.
   - Append evidence:
     - PR link (keep `status=InProgress`)
+  - **Do not stop after opening the PR.** Monitor CI until checks are complete; if green, proceed to Step 6.
+  - If checks fail, treat as **Blocked** (Step 7): record failures and continue fixing without waiting for user confirmation.
 
 ### Step 6 — Close PR (merge) + Done + Next
 After publishing:
@@ -283,9 +285,9 @@ After publishing:
   - set `status=Done`
   - set `doneAt` (UTC ISO 8601)
   - append final evidence (PR link)
-- Merge the PR (this closes it) and delete the branch.
+- Merge the PR (this closes it) and delete the branch **as soon as checks are green**.
 - Sync local `main` to `origin/main` and re-run preflight/CI if required by gates.
-- Return to Step 1 and continue with the next backlog item.
+- Return to Step 1 **in the same session** and continue with the next backlog item (no user confirmation).
 
 ### Step 7 — Blocked
 - Keep `status=InProgress`.
