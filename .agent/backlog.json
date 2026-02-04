@@ -1430,7 +1430,8 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Freeze + Drain Placement: define MVP semantics (Change Proposal + schema)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T22:22:29Z",
       "dependsOn": [
         "FL-0410"
       ],
