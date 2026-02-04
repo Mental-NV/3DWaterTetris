@@ -1052,18 +1052,295 @@
       "title": "Campaign validation in CI (-ValidateLevels)",
       "status": "New",
       "dependsOn": [
-        "FL-0401"
+        "FL-0411"
       ],
       "requirementRef": "/.agent/AGENT_OS.md#milestone-m4",
       "rationale": "Campaign-wide validation must be a CI gate before any Unity work begins.",
       "sizeHint": "M",
       "deliverables": [
-        "Repository stores a campaign levels list file + all level JSONs referenced by it",
-        "scripts/ci.ps1: -ValidateLevels runs validator on the campaign levels list and fails on any error"
+        "Floodline.Cli: add campaign validation entrypoint that validates campaign JSON against schema and validates each referenced level (schema + semantic)",
+        "Repository convention: default campaign manifest path is /levels/campaign.v0.2.0.json (or a CLI argument); validator enumerates referenced levels relative to repo root",
+        "scripts/ci.ps1: implement -ValidateLevels to run campaign validation and fail on any error (actionable file+pointer messages)",
+        "Unit tests: campaign validation fails on missing campaign file, missing referenced level file, and invalid referenced level"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0410",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Schema hardening: typed objectives + hazards (v0.2.1)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0400"
+      ],
+      "requirementRef": "/.agent/contract-policy.md#4-level-json-policy",
+      "rationale": "Campaign authoring by an autonomous agent must fail fast on unknown objective/hazard types and missing required params; schema constraints reduce semantic-validator burden and prevent runtime surprises.",
+      "sizeHint": "M",
+      "deliverables": [
+        "Add schemas/level.schema.v0.2.1.json (keep v0.2.0 unchanged) with objective/hazard definitions constrained by oneOf/if-then: known types only, required integer params enforced where applicable",
+        "Add schemas/campaign.schema.v0.2.1.json (keep v0.2.0 unchanged) if needed for tighter campaign validation (paths, id rules); otherwise document why v0.2.0 is sufficient",
+        "Typed objectives: DRAIN_WATER, REACH_HEIGHT, BUILD_PLATEAU, SURVIVE_ROTATIONS (and any other MVP objective types referenced by Content Pack)",
+        "Typed hazards/constraints: WIND_GUST, HOLD, STABILIZE, WATER_FORBIDDEN, WEIGHT_LIMIT, NO_RESTING_ON_WATER (and any other MVP hazards referenced by Content Pack)",
+        "Update validator default schema version to latest (0.2.1) and update fixtures/tests accordingly"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0411",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Semantic validation expansion (objectives/hazards/rotation/bag)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0410",
+        "FL-0401"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#objectives",
+      "rationale": "Schema validation alone cannot fully validate gameplay meaning (e.g., piece IDs, supported direction modes, param relationships); semantic validation is required for safe autonomous content production.",
+      "sizeHint": "M",
+      "deliverables": [
+        "LevelValidator semantic checks: objective.type is recognized; required params present and integer; reject unknown keys where practical for MVP",
+        "Hazard semantic checks: hazard.type is recognized; required params present and integer; validate directionMode enum and non-negative tick counts",
+        "Rotation semantic checks: cooldown/maxRotations/tiltBudget are integers >= 0; allowedDirections values valid; forbid Up; reject empty/invalid arrays when they imply no allowed actions",
+        "Bag semantic checks: FIXED_SEQUENCE entries are valid piece IDs (and material tokens if supported); WEIGHTED keys are valid and weights are non-negative; reject empty configs",
+        "Unit tests: add coverage for invalid objective/hazard/rotation/bag configurations with actionable JSON pointers"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0412",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: piece bag draw (FIXED_SEQUENCE/WEIGHTED) + bag token parsing",
+      "status": "New",
+      "dependsOn": [
+        "FL-0113"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#12-rng-bags-and-hold",
+      "rationale": "Campaign levels depend on deterministic piece supply. Current Simulation spawns random Enum values and ignores level.bag, making content authoring and solutions impossible.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Simulation uses level.bag for piece selection (FIXED_SEQUENCE consumes sequence; WEIGHTED draws by deterministic PRNG) and removes the random-Enum placeholder",
+        "Define and implement a deterministic bag token format usable in JSON (e.g., PIECE_ID or PIECE_ID:MATERIAL) to support Reinforced/Heavy bags without inventing ad-hoc per-level code",
+        "Determinism: piece bag uses a deterministic stream; hazard RNG uses a separate deterministic stream (seeded derivation) as required by Wind spec",
+        "Unit tests: FIXED_SEQUENCE yields expected piece sequence; WEIGHTED is stable given seed and weights; invalid tokens rejected by loader/validator"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0413",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: Hold (once per drop) + replay/determinism updates",
+      "status": "New",
+      "dependsOn": [
+        "FL-0412"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#12-rng-bags-and-hold",
+      "rationale": "Hold is introduced in campaign level 6 and is part of the canonical rules; it must be deterministic and encoded in replays and determinism hashes.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Add Hold input command and implement hold slot behavior: swap current piece with hold slot, reset held piece to spawn orientation, enforce once-per-drop restriction",
+        "Replay: bump replay/input encoding as needed to support Hold; ensure record->replay parity remains a CI gate",
+        "Determinism hash includes hold slot state and per-piece hold-used flag",
+        "Unit tests for hold behavior, restriction, and replay determinism parity"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Replay"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0414",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: gravity timing + lock delay/reset limits (Input_Feel v0.2)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0413"
+      ],
+      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#lock-behavior",
+      "rationale": "Lock delay and deterministic tick-driven gravity are essential to match the Input & Feel spec and to make Unity parity meaningful; currently natural gravity timing is stubbed and lock delay is missing.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Implement deterministic natural gravity stepping (tick-based) and soft drop behavior per Input_Feel_v0_2.md §1 and §3",
+        "Implement lock delay (12 ticks) and reset limit (max 4), including grounded/ungrounded transitions on moves/rotations/world-tilts",
+        "Determinism hash includes active piece lock delay counters/state when computed mid-run",
+        "Unit tests covering lock delay start/reset and reset-limit enforcement"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0415",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: enforce rotation constraints (cooldown/maxRotations/tiltBudget/allowed dirs)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0414"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#3-world-rotation-snap-90",
+      "rationale": "Campaign levels rely on rotation scarcity (cooldown, max rotations, tilt budget) and direction restrictions. These must be enforced deterministically in Core, not approximated in Unity.",
+      "sizeHint": "M",
+      "deliverables": [
+        "RotationConfig enforcement in Core: reject rotations that violate allowedDirections, cooldownTicks, maxRotations, or tiltBudget; increment counters only on success",
+        "Fail-state handling: TILT_BUDGET_EXCEEDED behavior matches Simulation_Rules_v0_2.md §11 (inputs rejected before budget goes negative in normal flow)",
+        "Unit tests for rotation rejection/acceptance and counter/budget behavior across ticks"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0416",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: materials + anchoring + Stabilize ability (MVP)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0415"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#materials",
+      "rationale": "High-Rise levels require Heavy/Reinforced materials, permanent/temporary anchoring, and Stabilize charges; these must exist in Core for deterministic settling and later Unity parity.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Represent anchored voxels in Core grid state (e.g., Voxel includes anchored flag) and include anchoring in determinism hash as required by contract-policy",
+        "Reinforced material behavior: voxels become anchored permanently on lock",
+        "Stabilize ability: input to arm/cancel, consumes stabilizeCharges, anchors locked piece temporarily for N successful rotations (default 2) and decrements on successful world rotation events only",
+        "Solid settling respects anchored voxels: any connected component containing anchored voxel is immovable (drop distance 0)",
+        "Unit tests for anchored immovability and stabilize duration decrement/expiry"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0417",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: constraints + fail states (WEIGHT_EXCEEDED/WATER_FORBIDDEN/NO_RESTING_ON_WATER)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0416"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#fail-states",
+      "rationale": "Campaign constraints must be enforceable and testable without a human: fail states provide deterministic completion criteria and prevent invalid ‘wins’ under constraints.",
+      "sizeHint": "L",
+      "deliverables": [
+        "Implement fail states per Simulation_Rules_v0_2.md §11: WEIGHT_EXCEEDED, WATER_FORBIDDEN, and any configured overflow/tilt-budget failures",
+        "Implement NO_RESTING_ON_WATER constraint evaluation at end-of-resolve when configured",
+        "Expose/track canonical metrics needed for constraints/UI/hashing (mass, water forbidden count/flag, shift/lost totals where applicable) and include in determinism hash policy minimums",
+        "Unit tests for each fail state/constraint trigger and non-trigger cases"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0418",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: Wind hazard (WIND_GUST) scheduling + push rules",
+      "status": "New",
+      "dependsOn": [
+        "FL-0417"
+      ],
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#wind-hazard",
+      "rationale": "High-Rise campaign levels depend on deterministic wind forcing that is predictable and replayable; wind must be implemented in Core to keep Unity as a pure view/controller.",
+      "sizeHint": "M",
+      "deliverables": [
+        "Implement WIND_GUST hazard: deterministic tick scheduling, direction mode, and pushStrength; applies only to active piece per spec",
+        "Wind movement rules: stepwise translation, stop on collision; may move through/into WATER; never rotates the piece",
+        "Heavy material interaction: effective push reduced per Simulation_Rules_v0_2.md §3 (Wind + mass interaction)",
+        "Unit tests for scheduling, direction patterns, collision stopping, water pass-through, and heavy reduction"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "FL-0419",
+      "epic": "E4",
+      "milestone": "M4",
+      "title": "Campaign winnability proofs: solution inputs + CI gate (-CampaignSolutions)",
+      "status": "New",
+      "dependsOn": [
+        "FL-0403",
+        "FL-0402",
+        "FL-0418"
+      ],
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "rationale": "Autonomous level authoring must be mechanically verifiable. Requiring a committed solution per level lets CI prove each level is winnable and prevents content regressions.",
+      "sizeHint": "M",
+      "deliverables": [
+        "Define per-level solution convention (e.g., /levels/solutions/{levelId}.inputs.txt or replay) and document it alongside campaign authoring conventions",
+        "Add CLI and/or script support to run a level with its solution and assert Status=Won, producing actionable failures on mismatch",
+        "scripts/ci.ps1: add -CampaignSolutions switch that enumerates campaign manifest levels and runs each solution in Release, failing if any level does not reach Won",
+        "Unit tests: at least one harness test that validates solution discovery and reports missing solution file paths clearly"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1083,7 +1360,7 @@
       "rationale": "Before bulk authoring, lock the campaign file layout, naming/ID conventions, and a repeatable validation workflow so subsequent level batches are mechanical and low-risk.",
       "sizeHint": "M",
       "deliverables": [
-        "Add campaign manifest: /levels/campaign.v0.2.0.json (schemaVersion=0.2.0) with deterministic ordering of levels as they are added",
+        "Add campaign manifest: /levels/campaign.v0.2.0.json (schemaVersion=0.2.x, latest) with deterministic ordering of levels as they are added",
         "Define conventions (in-repo doc or README section): level file naming (L01_..., L02_...), level meta.id equals campaign levelRef.id, seeds deterministic, and tick-only numeric policy (no floats)",
         "Add/confirm a single test or validator invocation that enumerates all levels referenced by the campaign manifest and fails with actionable pointers",
         "Keep tutorial guidance: use bag.type=FIXED_SEQUENCE where required by the campaign plan"
@@ -1104,7 +1381,7 @@
       "title": "Author Campaign Chapter 1A levels (Lv 1-5)",
       "status": "New",
       "dependsOn": [
-        "FL-0403"
+        "FL-0419"
       ],
       "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
       "rationale": "Implement the first five Foundation levels exactly as specified (titles, teach beats, primary objectives, constraints/star hooks), establishing the baseline for all later levels.",
@@ -1112,14 +1389,15 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs under /levels/campaign/ (or equivalent): Lv1 First Stack, Lv2 First Tilt, Lv3 Four Winds, Lv4 Unsupported, Lv5 Parking Lot",
         "Update /levels/campaign.v0.2.0.json to reference these 5 levels in order (id+path)",
-        "Encoding requirements per level.schema.v0.2.0: meta/bounds/initialVoxels/objectives/rotation/bag/hazards present and valid",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
+        "Encoding requirements per level.schema.v0.2.x: meta/bounds/initialVoxels/objectives/rotation/bag/hazards present and valid",
         "Rotation knobs per plan (e.g., Lv1 no world rotation; Lv2 E/W; Lv3 N/S; Lv3 cooldown stored as integer ticks)",
         "Represent constraints/star hooks as hazards/config in a schema-compatible way (no extra top-level fields)",
         "Add/extend golden-smoke coverage (minimum): load + schema validate + semantic validate for the 5 new levels"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1141,13 +1419,14 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs: Lv6 Hold It, Lv7 Reinforced Intro, Lv8 Tilt Budget, Lv9 Cavity Bonus, Lv10 Foundation Exam",
         "Update campaign manifest to include Lv6–Lv10",
-        "Ensure per-level unlock cadence is expressed via level config where applicable (e.g., Hold enabled/disabled per level)",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
+        "Ensure per-level unlock cadence is expressed via hazards/constraints where applicable (e.g., Hold enabled/disabled per level)",
         "Ensure piece set aligns with Chapter 1 recommended pack (O2/I3/L3/T3/I4) unless the level explicitly needs something else",
         "Extend golden-smoke coverage to include Lv6–Lv10"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1169,13 +1448,14 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs: Lv11 First Basin, Lv12 Meet the Drain, Lv13 Dig a Channel, Lv14 Two Basins, Lv15 Don’t Build on Water",
         "Update campaign manifest to include Lv11–Lv15",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
         "Use initialVoxels to author starter pools/shelves/drain tiles as specified; represent drains via voxel type=Drain + drain config (ratePerResolve/scope)",
         "Ensure water constraints (no build on water / forbidden water behavior if used) are represented via hazards/fail-state knobs",
         "Extend golden-smoke coverage to include Lv11–Lv15"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1197,12 +1477,13 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs: Lv16 Freeze 101, Lv17 Temporary Bridge, Lv18 Drain Placement, Lv19 Forbidden Zone, Lv20 Floodplain Exam",
         "Update campaign manifest to include Lv16–Lv20",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
         "Ensure freeze/drain placement constraints are encoded in hazards/config with integer values only (Freeze duration is in resolves; no floats)",
         "Extend golden-smoke coverage to include Lv16–Lv20"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1224,14 +1505,15 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs: Lv21 Weight Limit, Lv22 Heavy Pieces, Lv23 Skyline Footprint, Lv24 First Gust, Lv25 Stabilize",
         "Update campaign manifest to include Lv21–Lv25",
-        "Represent weight limit as objective/hazard per Rules/GDD (Stay Under Weight); represent heavy bias via bag weights/material roll knobs (as supported by Core)",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
+        "Represent weight limit as a fail-state hazard (WEIGHT_LIMIT) per Simulation Rules; keep primary objective as REACH_HEIGHT; represent heavy bias via bag weights/material tokens (as supported by Core)",
         "Wind: encode WIND_GUST hazard with integer tick params (intervalTicks, pushStrength, directionMode, firstGustOffsetTicks) in a schema-compatible way",
         "Lv23 uses reduced field size (8×8) as specified; ensure bounds reflect this",
         "Extend golden-smoke coverage to include Lv21–Lv25"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1253,13 +1535,14 @@
       "deliverables": [
         "Create 5 schema-valid level JSONs: Lv26 Cantilever, Lv27 Tight Budget, Lv28 Alternating Wind, Lv29 Wet Foundation, Lv30 High-Rise Exam",
         "Update campaign manifest to include Lv26–Lv30 (campaign now has Lv1–Lv30 complete in order)",
+        "Add 5 committed solution artifacts (inputs or replay) matching the per-level solution convention so CI can prove each level is winnable",
         "Ensure alternating wind and tighter intervals are expressed deterministically and tick-only; keep wind predictable/telegraphed intent via hazard params",
-        "Encode combined objectives for Lv30 (Height 30 AND weight ≤400) as multiple objectives, matching GDD multi-objective exam intent",
+        "Encode Lv30 as REACH_HEIGHT(30) objective plus WEIGHT_LIMIT(≤400) hazard (constraint), matching the Content Pack intent",
         "Extend golden-smoke coverage to include Lv26–Lv30"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
         "commandsRun": [],
@@ -1273,7 +1556,7 @@
       "title": "Unity project scaffold + Core integration (no Core->Unity refs)",
       "status": "New",
       "dependsOn": [
-        "FL-0402"
+        "FL-0409"
       ],
       "requirementRef": "/.agent/AGENT_OS.md#milestone-m5",
       "rationale": "Create the Unity shell only after Core + validation tooling are locked down.",
@@ -1361,7 +1644,9 @@
       "sizeHint": "M",
       "deliverables": [
         "Unity can run a replay and emit determinism hash",
-        "scripts/ci.ps1: -Unity runs a parity check (Unity vs CLI) on at least one replay"
+        "Use a committed replay fixture (preferably one campaign solution replay) as the parity scenario so parity covers real gameplay mechanics (hold/wind/stabilize as applicable)",
+        "scripts/ci.ps1: -Unity runs a parity check (Unity vs CLI) on at least one replay and fails on mismatch",
+        "CI integration: GitHub Actions runs Unity tests/parity in batchmode (headless) and publishes test results artifacts"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
