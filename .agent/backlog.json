@@ -1239,11 +1239,12 @@
       "epic": "E1",
       "milestone": "M4",
       "title": "Core: gravity timing + lock delay/reset limits (Input_Feel v0.2)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T20:32:24Z",
       "dependsOn": [
         "FL-0413"
       ],
-      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#lock-behavior",
+      "requirementRef": "/docs/specs/Input_Feel_v0_2.md#lock-behavior; /src/Floodline.Core/Simulation.cs; /src/Floodline.Core/SimulationState.cs; /src/Floodline.Core/Movement/MovementController.cs; /src/Floodline.Core/Movement/ActivePiece.cs; /src/Floodline.Core/Movement/InputApplyResult.cs; /src/Floodline.Core/Movement/InputCommand.cs; /src/Floodline.Core/Determinism/DeterminismHasher.cs; /src/Floodline.Core/Constants.cs; /tests/Floodline.Core.Tests/SimulationTests.cs; /tests/Floodline.Core.Tests/LockDelayTests.cs",
       "rationale": "Lock delay and deterministic tick-driven gravity are essential to match the Input & Feel spec and to make Unity parity meaningful; currently natural gravity timing is stubbed and lock delay is missing.",
       "sizeHint": "L",
       "deliverables": [
@@ -1253,14 +1254,20 @@
         "Unit tests covering lock delay start/reset and reset-limit enforcement"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-      "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-      ],
-      "evidence": {
-        "commandsRun": [],
-        "notes": []
-      }
-    },
+        "validation": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+        ],
+        "evidence": {
+          "commandsRun": [
+            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+          ],
+          "notes": [
+            "Assumed natural gravity cadence is 1 cell per 2 ticks (Constants.GravityTicksPerStep = 2) because Input_Feel_v0_2.md specifies soft drop at 1 cell/tick but does not define the baseline rate.",
+            "Bumped determinism hash version to 0.1.3 to include lock delay and gravity timer state.",
+            "PR: https://github.com/Mental-NV/Floodline/pull/51"
+          ]
+        }
+      },
     {
       "id": "FL-0415",
       "epic": "E1",
