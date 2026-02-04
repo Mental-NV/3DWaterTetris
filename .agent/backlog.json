@@ -1050,11 +1050,13 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Campaign validation in CI (-ValidateLevels)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-04T19:19:43Z",
+      "doneAt": "2026-02-04T19:36:19Z",
       "dependsOn": [
         "FL-0411"
       ],
-      "requirementRef": "/.agent/AGENT_OS.md#milestone-m4",
+      "requirementRef": "/.agent/AGENT_OS.md#milestone-m4; /src/Floodline.Cli/CliApp.cs; /src/Floodline.Cli/Program.cs; /src/Floodline.Cli/Validation/LevelValidator.cs; /src/Floodline.Cli/Validation/LevelValidationResult.cs; /src/Floodline.Cli/Validation/LevelValidationError.cs; /src/Floodline.Cli/Validation/CampaignValidator.cs; /schemas/campaign.schema.v0.2.1.json; /schemas/campaign.schema.v0.2.0.json; /schemas/level.schema.v0.2.1.json; /levels/campaign.v0.2.0.json; /scripts/ci.ps1; /tests/Floodline.Cli.Tests/CliAppTests.cs; /tests/Floodline.Cli.Tests/TestPaths.cs; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_missing_manifest.json; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_missing_level.json; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_invalid_level.json",
       "rationale": "Campaign-wide validation must be a CI gate before any Unity work begins.",
       "sizeHint": "M",
       "deliverables": [
@@ -1068,9 +1070,16 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
       ],
       "evidence": {
-        "commandsRun": [],
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels",
+          "git push -u origin feat/FL-0402-campaign-validation",
+          "gh pr create --title \"FL-0402: campaign validation in CI\" --body \"## Summary\n- add campaign validation entrypoint and validator\n- add default campaign manifest and fixtures for validation tests\n- wire -ValidateLevels CI gate to campaign validation\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels\""
+        ],
         "notes": [
-          "Blocked: requirementRef points only to /docs/specs/Simulation_Rules_v0_2.md#objectives; AGENT_OS rule forbids opening other files, but implementing semantic validation requires LevelValidator and schema code. Options: (1) update FL-0411 requirementRef to include validator/source file paths; (2) amend AGENT_OS rule to allow opening code files needed to implement an item. Recommendation: update FL-0411 requirementRef to include the validator code paths."
+          "Blocked: requirementRef points only to /docs/specs/Simulation_Rules_v0_2.md#objectives; AGENT_OS rule forbids opening other files, but implementing semantic validation requires LevelValidator and schema code. Options: (1) update FL-0411 requirementRef to include validator/source file paths; (2) amend AGENT_OS rule to allow opening code files needed to implement an item. Recommendation: update FL-0411 requirementRef to include the validator code paths.",
+          "Implemented campaign validation entrypoint (CLI + validator), added default campaign manifest, and wired -ValidateLevels gate; CI M4 ValidateLevels passed.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/46",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/46"
         ]
       }
     },
