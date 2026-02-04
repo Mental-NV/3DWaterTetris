@@ -1050,11 +1050,12 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Campaign validation in CI (-ValidateLevels)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T19:19:43Z",
       "dependsOn": [
         "FL-0411"
       ],
-      "requirementRef": "/.agent/AGENT_OS.md#milestone-m4",
+      "requirementRef": "/.agent/AGENT_OS.md#milestone-m4; /src/Floodline.Cli/CliApp.cs; /src/Floodline.Cli/Program.cs; /src/Floodline.Cli/Validation/LevelValidator.cs; /src/Floodline.Cli/Validation/LevelValidationResult.cs; /src/Floodline.Cli/Validation/LevelValidationError.cs; /src/Floodline.Cli/Validation/CampaignValidator.cs; /schemas/campaign.schema.v0.2.1.json; /schemas/campaign.schema.v0.2.0.json; /schemas/level.schema.v0.2.1.json; /levels/campaign.v0.2.0.json; /scripts/ci.ps1; /tests/Floodline.Cli.Tests/CliAppTests.cs; /tests/Floodline.Cli.Tests/TestPaths.cs; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_missing_manifest.json; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_missing_level.json; /tests/Floodline.Cli.Tests/fixtures/invalid_campaign_invalid_level.json",
       "rationale": "Campaign-wide validation must be a CI gate before any Unity work begins.",
       "sizeHint": "M",
       "deliverables": [
