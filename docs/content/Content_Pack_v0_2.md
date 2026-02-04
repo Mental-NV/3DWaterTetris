@@ -309,4 +309,13 @@ This plan is intended to be authored into actual JSON levels using the level tem
 
 ---
 
+### Campaign Authoring Conventions (MVP)
+- Campaign manifest path: `levels/campaign.v0.2.0.json` with `meta.schemaVersion` set to the latest `0.2.x`.
+- Level file naming: `levels/campaign/L01_First_Stack.json`, `L02_First_Tilt.json`, ... (two-digit level number, title case with underscores).
+- `meta.id` must equal the campaign `levels[].id`, and should match the filename stem (e.g., `L01_First_Stack`).
+- Seeds are deterministic: always set `meta.seed` to an integer.
+- Numeric policy: no floats in level JSON; all durations/intervals are integer ticks (`TICK_HZ=60`).
+- Manifest ordering is canonical: keep `levels[]` in ascending level number order.
+- Validation: `powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels`.
+
 *End of 30-Level Campaign Plan v0.2*
