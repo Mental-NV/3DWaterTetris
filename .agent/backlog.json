@@ -2238,6 +2238,30 @@
           "Merged PR #21 into main."
         ]
       }
+    },
+    {
+      "id": "FU-0200",
+      "epic": "E0",
+      "milestone": "M0",
+      "title": "Autonomy: prevent stopping after PR creation",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T19:42:49Z",
+      "dependsOn": [],
+      "requirementRef": "/.agent/AGENT_OS.md#execution-loop; /.agent/MISSION_PROMPT.txt",
+      "rationale": "Ensure the execution loop explicitly continues through CI/merge without waiting for user confirmation.",
+      "sizeHint": "S",
+      "deliverables": [
+        "Update AGENT_OS execution loop to require automatic CI monitoring and merge",
+        "Update MISSION_PROMPT execution loop with the same full-auto requirement"
+      ],
+      "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1"
+      ],
+      "evidence": {
+        "commandsRun": [],
+        "notes": []
+      }
     }
   ]
 }
