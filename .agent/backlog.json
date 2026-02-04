@@ -1116,7 +1116,7 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Semantic validation expansion (objectives/hazards/rotation/bag)",
-      "status": "InProgress",
+      "status": "InReview",
       "startedAt": "2026-02-04T18:24:55Z",
       "dependsOn": [
         "FL-0410",
@@ -1138,10 +1138,13 @@
       ],
       "evidence": {
         "commandsRun": [
-          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4",
+          "git push -u origin fl-0411-semantic-validation",
+          "gh pr create --fill"
         ],
         "notes": [
-          "Semantic validation fixtures use schemaVersion 0.2.0 so schema passes and semantic checks are exercised."
+          "Semantic validation fixtures use schemaVersion 0.2.0 so schema passes and semantic checks are exercised.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/45"
         ]
       }
     },
