@@ -28,6 +28,21 @@ If any conflict exists: contracts/schemas > tests > code > docs prose.
 - Strict .NET gates: locked restore when applicable, Release build, tests, warnings-as-errors. Formatting gate once introduced.
 - Backlog truth: backlog.json is canonical; Status enum New→InProgress→InReview→Done; WIP limit=1 (InProgress|InReview).
 - Change control: if spec/architecture must change, create Change Proposal + backlog item; no silent drift.
+- Autonomy: do not ask questions or request approval; proceed with conservative assumptions and log them in evidence.notes.
+
+============================================================
+AUTONOMY POLICY (NO QUESTIONS)
+============================================================
+- Do not ask the user questions or request approvals.
+- If information is missing, make the most conservative assumption consistent with:
+  contracts/schemas > tests > code > docs prose.
+- Record any assumption in backlog evidence.notes.
+- If a hard block prevents progress (missing requirementRef, conflicting constraints, or missing required files):
+  - Keep status InProgress (or InReview if a PR exists).
+  - Add evidence.notes with: what failed, two options, and a recommended next step.
+  - Stop; do not ask for clarification.
+- Never wait for confirmation to run commands; execute required commands and record results.
+- Always follow AGENT_OS, including Step 1.5: create a feature branch before any commits.
 
 ============================================================
 2) EXECUTION LOOP (REPEAT UNTIL COMPLETE)

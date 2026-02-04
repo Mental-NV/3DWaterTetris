@@ -107,6 +107,17 @@ If design/architecture must change:
 ### 2.7 Security / secrets
 - Never commit secrets, tokens, keys, passwords, private personal data.
 
+### 2.8 Autonomy policy (no questions)
+- Do not ask the user questions or request approvals.
+- If information is missing, make the most conservative assumption consistent with:
+  contracts/schemas > tests (incl. golden) > code > docs prose.
+- Record any assumption in backlog evidence.notes.
+- If a hard block prevents progress (missing requirementRef, conflicting constraints, or missing required files):
+  - Keep status InProgress (pre-PR) or InReview (post-PR).
+  - Add evidence.notes with: what failed, two options, and a recommended next step.
+  - Stop; do not ask for clarification.
+- Never wait for confirmation to run commands; execute required commands and record results.
+
 ---
 
 ## 3) Milestones (order is mandatory)
