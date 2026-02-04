@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "id": "invalid-rotation-directions",
+    "title": "Invalid Rotation Directions",
+    "schemaVersion": "0.2.0",
+    "seed": 3
+  },
+  "bounds": {
+    "x": 4,
+    "y": 4,
+    "z": 4
+  },
+  "initialVoxels": [],
+  "objectives": [
+    {
+      "type": "DRAIN_WATER",
+      "params": {
+        "targetUnits": 1
+      }
+    }
+  ],
+  "rotation": {
+    "allowedDirections": []
+  },
+  "bag": {
+    "type": "FIXED_SEQUENCE",
+    "sequence": ["O2"]
+  },
+  "hazards": []
+}

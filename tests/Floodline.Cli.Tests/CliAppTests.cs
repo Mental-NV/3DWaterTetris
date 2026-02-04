@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Floodline.Cli;
+using Floodline.Cli.Validation;
 using Xunit;
 
 namespace Floodline.Cli.Tests;
@@ -114,6 +115,22 @@ public class CliAppTests
         Assert.Contains("#", errorText, StringComparison.Ordinal);
         Assert.Contains("[schema.", errorText, StringComparison.Ordinal);
         Assert.True(string.IsNullOrWhiteSpace(output.ToString()));
+    }
+
+    [Theory]
+    [InlineData("invalid_objective_unknown_type.json", "semantic.objective.type_invalid", "#/objectives/0/type")]
+    [InlineData("invalid_hazard_direction_mode.json", "semantic.wind.direction_mode_invalid", "#/hazards/0/params/directionMode")]
+    [InlineData("invalid_rotation_allowed_directions.json", "semantic.rotation.allowed_directions_empty", "#/rotation/allowedDirections")]
+    [InlineData("invalid_bag_fixed_invalid_piece.json", "semantic.bag.token_invalid", "#/bag/sequence/0")]
+    [InlineData("invalid_bag_weighted_empty_weights.json", "semantic.bag.weights_missing", "#/bag/weights")]
+    public void LevelValidator_Returns_Semantic_Errors(string fixture, string ruleId, string jsonPointer)
+    {
+        string levelPath = TestPaths.GetCliFixturePath(fixture);
+
+        LevelValidationResult result = LevelValidator.ValidateFile(levelPath);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error => error.RuleId == ruleId && error.JsonPointer == jsonPointer);
     }
 
     private static string ExtractHash(string output)

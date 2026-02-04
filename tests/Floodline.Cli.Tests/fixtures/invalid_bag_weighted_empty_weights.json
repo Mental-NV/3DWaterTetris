@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "id": "invalid-bag-weighted-empty",
+    "title": "Invalid Weighted Bag Empty",
+    "schemaVersion": "0.2.0",
+    "seed": 5
+  },
+  "bounds": {
+    "x": 4,
+    "y": 4,
+    "z": 4
+  },
+  "initialVoxels": [],
+  "objectives": [
+    {
+      "type": "DRAIN_WATER",
+      "params": {
+        "targetUnits": 1
+      }
+    }
+  ],
+  "rotation": {},
+  "bag": {
+    "type": "WEIGHTED",
+    "weights": {}
+  },
+  "hazards": []
+}

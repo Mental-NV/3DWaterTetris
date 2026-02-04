@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "id": "invalid-bag-fixed-piece",
+    "title": "Invalid Fixed Bag Piece",
+    "schemaVersion": "0.2.0",
+    "seed": 4
+  },
+  "bounds": {
+    "x": 4,
+    "y": 4,
+    "z": 4
+  },
+  "initialVoxels": [],
+  "objectives": [
+    {
+      "type": "DRAIN_WATER",
+      "params": {
+        "targetUnits": 1
+      }
+    }
+  ],
+  "rotation": {},
+  "bag": {
+    "type": "FIXED_SEQUENCE",
+    "sequence": ["BADPIECE"]
+  },
+  "hazards": []
+}
