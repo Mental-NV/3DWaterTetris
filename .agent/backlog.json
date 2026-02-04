@@ -1289,14 +1289,21 @@
         "Unit tests for rotation rejection/acceptance and counter/budget behavior across ticks"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-      "validation": [
-        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-      ],
-      "evidence": {
-        "commandsRun": [],
-        "notes": []
-      }
-    },
+        "validation": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+        ],
+        "evidence": {
+          "commandsRun": [
+            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+          ],
+          "notes": [
+            "Implemented rotation cooldown as full-tick wait: cooldown decremented after each tick that does not accept a rotation; successful rotations set RotationCooldownRemaining to cooldownTicks.",
+            "Enforced maxRotations and tiltBudget using RotationsExecuted (incremented only on successful world rotation).",
+            "Bumped determinism hash version to 0.1.4 to include rotation cooldown state.",
+            "Inspected LevelConfigs/LevelValidator to align allowedDirections string mapping and tiltBudget constraints."
+          ]
+        }
+      },
     {
       "id": "FL-0416",
       "epic": "E1",
