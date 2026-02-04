@@ -1657,11 +1657,12 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Campaign v0.2.0 scaffold + authoring conventions",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T19:48:46Z",
       "dependsOn": [
         "FL-0402"
       ],
-      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30",
+      "requirementRef": "/docs/content/Content_Pack_v0_2.md#campaign-plan-30; /levels/campaign.v0.2.0.json",
       "rationale": "Before bulk authoring, lock the campaign file layout, naming/ID conventions, and a repeatable validation workflow so subsequent level batches are mechanical and low-risk.",
       "sizeHint": "M",
       "deliverables": [
