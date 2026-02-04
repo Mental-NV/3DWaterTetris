@@ -1077,7 +1077,8 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Schema hardening: typed objectives + hazards (v0.2.1)",
-      "status": "New",
+      "status": "Done",
+      "doneAt": "2026-02-04T14:41:01.0192889Z",
       "dependsOn": [
         "FL-0400"
       ],
@@ -1096,8 +1097,15 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "Get-Content schemas\\level.schema.v0.2.1.json",
+          "Get-Content schemas\\campaign.schema.v0.2.1.json",
+          "rg -n \"DefaultSchemaVersion\" src\\Floodline.Cli\\Validation\\LevelValidator.cs"
+        ],
+        "notes": [
+          "Confirmed v0.2.1 schemas exist with typed objectives/hazards and abilities/constraints.",
+          "Validator default schema version is 0.2.1; minimal_level.json already uses schemaVersion 0.2.1."
+        ]
       }
     },
     {
