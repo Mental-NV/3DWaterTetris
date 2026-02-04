@@ -1116,8 +1116,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Semantic validation expansion (objectives/hazards/rotation/bag)",
-      "status": "InReview",
+      "status": "Done",
       "startedAt": "2026-02-04T18:24:55Z",
+      "doneAt": "2026-02-04T19:02:26Z",
       "dependsOn": [
         "FL-0410",
         "FL-0401"
