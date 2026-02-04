@@ -1201,11 +1201,12 @@
       "epic": "E1",
       "milestone": "M4",
       "title": "Core: Hold (once per drop) + replay/determinism updates",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T20:22:00Z",
       "dependsOn": [
         "FL-0412"
       ],
-      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#12-rng-bags-and-hold",
+      "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#12-rng-bags-and-hold; /src/Floodline.Core/Simulation.cs; /src/Floodline.Core/SimulationState.cs; /src/Floodline.Core/Movement/InputCommand.cs; /src/Floodline.Core/Movement/ActivePiece.cs; /src/Floodline.Core/Movement/MovementController.cs; /src/Floodline.Core/Determinism/DeterminismHasher.cs; /src/Floodline.Core/PieceBag.cs; /src/Floodline.Core/PieceLibrary.cs; /src/Floodline.Core/Levels/Level.cs; /src/Floodline.Core/Levels/LevelConfigs.cs; /src/Floodline.Core/Replay/ReplayFile.cs; /src/Floodline.Core/Replay/ReplaySerializer.cs; /tests/Floodline.Core.Tests/Replay/ReplayFormatTests.cs; /tests/Floodline.Core.Tests/SimulationTests.cs; /tests/Floodline.Core.Tests/HoldTests.cs",
       "rationale": "Hold is introduced in campaign level 6 and is part of the canonical rules; it must be deterministic and encoded in replays and determinism hashes.",
       "sizeHint": "L",
       "deliverables": [
