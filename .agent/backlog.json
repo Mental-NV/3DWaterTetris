@@ -1183,11 +1183,14 @@
       ],
       "evidence": {
         "commandsRun": [
-          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4",
+          "git push -u origin feat/FL-0412-bag",
+          "gh pr create --title \"FL-0412: deterministic piece bag\" --body \"## Summary\n- implement fixed/weighted bag draws with material tokens\n- add bag preview via RNG clone and tests\n- propagate material ids into active piece, voxels, and determinism hash\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4\""
         ],
         "notes": [
           "Implemented deterministic piece bag (fixed/weighted) with material tokens and peek via cloneable RNG.",
-          "Determinism hash version bumped to 0.1.1 to include active piece material."
+          "Determinism hash version bumped to 0.1.1 to include active piece material.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/49"
         ]
       }
     },
