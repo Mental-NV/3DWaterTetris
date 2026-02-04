@@ -1543,7 +1543,8 @@
       "epic": "E2",
       "milestone": "M4",
       "title": "Golden suite: lock delay + reset limits",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T23:33:32Z",
       "dependsOn": [
         "FL-0414",
         "FL-0200"
