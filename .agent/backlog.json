@@ -1430,8 +1430,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Freeze + Drain Placement: define MVP semantics (Change Proposal + schema)",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-04T22:22:29Z",
+      "doneAt": "2026-02-04T22:42:49Z",
       "dependsOn": [
         "FL-0410"
       ],
@@ -1457,7 +1458,8 @@
           "First ci.ps1 run failed due to schema error expectations in new fixtures; adjusted schema dependency and test rule IDs.",
           "Second ci.ps1 run failed due to dependentRequired ruleId mismatch; updated test expectations.",
           "Assumption: default input bindings set to Freeze=B and Drain placement=N.",
-          "PR: https://github.com/Mental-NV/Floodline/pull/56"
+          "PR: https://github.com/Mental-NV/Floodline/pull/56",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/56"
         ]
       }
     },
