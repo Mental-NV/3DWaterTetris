@@ -1578,7 +1578,8 @@
       "epic": "E2",
       "milestone": "M4",
       "title": "Golden suite: rotation constraints + tilt budget",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-04T23:42:23Z",
       "dependsOn": [
         "FL-0415",
         "FL-0200"
