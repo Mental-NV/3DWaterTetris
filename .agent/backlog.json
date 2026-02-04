@@ -1508,8 +1508,9 @@
       "epic": "E2",
       "milestone": "M4",
       "title": "Golden suite: Hold (once per drop) determinism",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-04T23:21:45Z",
+      "doneAt": "2026-02-04T23:31:58Z",
       "dependsOn": [
         "FL-0413",
         "FL-0200"
@@ -1532,7 +1533,8 @@
         ],
         "notes": [
           "Generated hold golden fixtures with FLOODLINE_UPDATE_GOLDENS=1 dotnet test C:\\Projects\\Floodline\\Floodline.sln -c Release --filter FullyQualifiedName~HoldGoldenTests.",
-          "PR: https://github.com/Mental-NV/Floodline/pull/58"
+          "PR: https://github.com/Mental-NV/Floodline/pull/58",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/58"
         ]
       }
     },
