@@ -1,0 +1,14 @@
+# FloodlineSnapshot v0.1
+cellOrder: x,y,z
+bounds: 20 20 20
+gravity: Down
+status: InProgress
+ticks: 1
+piecesLocked: 1
+objectives: 0 allCompleted=false
+activePiece: id=I4 orientation=0 origin=10,19,10
+cells: 4
+cell: 7,0,10 type=Solid material=none
+cell: 8,0,10 type=Solid material=none
+cell: 9,0,10 type=Solid material=none
+cell: 10,0,10 type=Solid material=none

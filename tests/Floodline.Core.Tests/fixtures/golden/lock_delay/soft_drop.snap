@@ -1,0 +1,10 @@
+# FloodlineSnapshot v0.1
+cellOrder: x,y,z
+bounds: 20 20 20
+gravity: Down
+status: InProgress
+ticks: 1
+piecesLocked: 0
+objectives: 0 allCompleted=false
+activePiece: id=I4 orientation=0 origin=10,18,10
+cells: 0
