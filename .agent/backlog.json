@@ -2259,8 +2259,12 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/preflight.ps1"
+        ],
+        "notes": [
+          "Preflight requires main; ran on main and returned to feature branch."
+        ]
       }
     }
   ]

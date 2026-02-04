@@ -75,12 +75,14 @@ Step 4 — Publishing
   - Commit implementation: “FL-XXXX: <short title>”.
   - Push branch + open PR.
   - Append evidence (PR link) and keep status=InProgress.
+  - Do not stop after opening the PR; monitor CI and proceed automatically.
 
 Step 6 — Close PR (merge) + Done + Next
 - After publishing:
   - Finalize backlog on PR branch: set status=Done; set doneAt; append final evidence (PR link).
   - Merge PR (closing it) and delete branch.
   - Sync main and continue with the next backlog item (loop to Step 1).
+  - Do not wait for user confirmation; merge when checks are green and proceed.
 
 
 Step 7 — Blocked
