@@ -1070,11 +1070,14 @@
       ],
       "evidence": {
         "commandsRun": [
-          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels"
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels",
+          "git push -u origin feat/FL-0402-campaign-validation",
+          "gh pr create --title \"FL-0402: campaign validation in CI\" --body \"## Summary\n- add campaign validation entrypoint and validator\n- add default campaign manifest and fixtures for validation tests\n- wire -ValidateLevels CI gate to campaign validation\n\n## Testing\n- powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels\""
         ],
         "notes": [
           "Blocked: requirementRef points only to /docs/specs/Simulation_Rules_v0_2.md#objectives; AGENT_OS rule forbids opening other files, but implementing semantic validation requires LevelValidator and schema code. Options: (1) update FL-0411 requirementRef to include validator/source file paths; (2) amend AGENT_OS rule to allow opening code files needed to implement an item. Recommendation: update FL-0411 requirementRef to include the validator code paths.",
-          "Implemented campaign validation entrypoint (CLI + validator), added default campaign manifest, and wired -ValidateLevels gate; CI M4 ValidateLevels passed."
+          "Implemented campaign validation entrypoint (CLI + validator), added default campaign manifest, and wired -ValidateLevels gate; CI M4 ValidateLevels passed.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/46"
         ]
       }
     },
