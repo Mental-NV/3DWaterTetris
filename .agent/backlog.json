@@ -51,7 +51,7 @@
         "Floodline.Core (netstandard2.1;net8.0)",
         "Floodline.Core.Tests (net8.0)",
         "Floodline.Cli (net8.0)",
-        "Floodline.Levels (optional shared schema/helpers)"
+        "No Floodline.Levels project (schemas/ and levels/ live at repo root)"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
