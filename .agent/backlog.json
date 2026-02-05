@@ -1862,8 +1862,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Author Campaign Chapter 1A levels (Lv 1-5)",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-05T09:49:11Z",
+      "doneAt": "2026-02-05T10:07:53Z",
       "dependsOn": [
         "FL-0419"
       ],
@@ -1896,7 +1897,8 @@
           "Mapped unsupported campaign hooks to schema/Core-supported fields: Lv1 'place 8 pieces' represented as REACH_HEIGHT 7 with flat O2 sequence; unsupported star hooks (holes/overhangs/plateau-survives-tilts) omitted or approximated with supported star conditions.",
           "Recorded replay solutions for L01-L05 via CLI using temp input scripts.",
           "Assumption: opened/edited schema, CLI, and test files required by deliverables even though requirementRef points to Content_Pack_v0_2.md.",
-          "PR: https://github.com/Mental-NV/Floodline/pull/66"
+          "PR: https://github.com/Mental-NV/Floodline/pull/66",
+          "CI: build-and-test passed on PR #66."
         ]
       }
     },
