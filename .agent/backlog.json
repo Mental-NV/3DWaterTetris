@@ -1769,7 +1769,6 @@
         "Simulation_Rules_v0_2.md: clarify NO_RESTING_ON_WATER as a fail state (or explicitly mark as objective/constraint) and align with constraints wording",
         "Content_Pack_v0_2.md: update star hook examples to only use supported MVP star condition types (MAX_PIECES_USED / MAX_ROTATIONS_USED / MAX_SHIFT_VOXELS_TOTAL / MAX_LOST_VOXELS_TOTAL)",
         "AGENT_OS.md: fix canonical artifact count text to match the actual list",
-        "Normalize canonical docs to UTF-8 without BOM to avoid encoding artifacts in tooling"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
