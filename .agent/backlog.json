@@ -1649,7 +1649,9 @@
       "epic": "E2",
       "milestone": "M4",
       "title": "Golden suite: constraints + fail states (overflow/weight/water/no-resting)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-05T00:28:18Z",
+      "doneAt": "2026-02-05T00:41:42Z",
       "dependsOn": [
         "FL-0417",
         "FL-0200"
@@ -1667,8 +1669,14 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "$env:FLOODLINE_UPDATE_GOLDENS='1'; dotnet test tests/Floodline.Core.Tests/Floodline.Core.Tests.csproj -c Release --filter \"FullyQualifiedName~Floodline.Core.Tests.Golden.ConstraintFailStateGoldenTests\"",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
+        ],
+        "notes": [
+          "Added constraint fail-state golden snapshots (overflow, weight, water forbidden, no resting) plus a passing case and a negative constraint validation test.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/62"
+        ]
       }
     },
     {
