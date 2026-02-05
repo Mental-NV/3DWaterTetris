@@ -1239,9 +1239,9 @@
       "epic": "E1",
       "milestone": "M4",
       "title": "Core: gravity timing + lock delay/reset limits (Input_Feel v0.2)",
-        "status": "Done",
-        "startedAt": "2026-02-04T20:32:24Z",
-        "doneAt": "2026-02-04T20:58:39Z",
+      "status": "Done",
+      "startedAt": "2026-02-04T20:32:24Z",
+      "doneAt": "2026-02-04T20:58:39Z",
       "dependsOn": [
         "FL-0413"
       ],
@@ -1255,32 +1255,32 @@
         "Unit tests covering lock delay start/reset and reset-limit enforcement"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-        "validation": [
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
         ],
-        "evidence": {
-          "commandsRun": [
-            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-          ],
-          "notes": [
-            "Assumed natural gravity cadence is 1 cell per 2 ticks (Constants.GravityTicksPerStep = 2) because Input_Feel_v0_2.md specifies soft drop at 1 cell/tick but does not define the baseline rate.",
-            "Bumped determinism hash version to 0.1.3 to include lock delay and gravity timer state.",
-            "PR: https://github.com/Mental-NV/Floodline/pull/51",
-            "Merged PR: https://github.com/Mental-NV/Floodline/pull/51"
-          ]
-        }
-      },
-      {
-        "id": "FL-0415",
-        "epic": "E1",
-        "milestone": "M4",
-        "title": "Core: enforce rotation constraints (cooldown/maxRotations/tiltBudget/allowed dirs)",
-        "status": "Done",
-        "startedAt": "2026-02-04T20:59:48Z",
-        "doneAt": "2026-02-04T21:16:35Z",
-        "dependsOn": [
-          "FL-0414"
-        ],
+        "notes": [
+          "Assumed natural gravity cadence is 1 cell per 2 ticks (Constants.GravityTicksPerStep = 2) because Input_Feel_v0_2.md specifies soft drop at 1 cell/tick but does not define the baseline rate.",
+          "Bumped determinism hash version to 0.1.3 to include lock delay and gravity timer state.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/51",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/51"
+        ]
+      }
+    },
+    {
+      "id": "FL-0415",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: enforce rotation constraints (cooldown/maxRotations/tiltBudget/allowed dirs)",
+      "status": "Done",
+      "startedAt": "2026-02-04T20:59:48Z",
+      "doneAt": "2026-02-04T21:16:35Z",
+      "dependsOn": [
+        "FL-0414"
+      ],
       "requirementRef": "/docs/specs/Simulation_Rules_v0_2.md#3-world-rotation-snap-90",
       "rationale": "Campaign levels rely on rotation scarcity (cooldown, max rotations, tilt budget) and direction restrictions. These must be enforced deterministically in Core, not approximated in Unity.",
       "sizeHint": "M",
@@ -1290,31 +1290,31 @@
         "Unit tests for rotation rejection/acceptance and counter/budget behavior across ticks"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-        "validation": [
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
         ],
-        "evidence": {
-          "commandsRun": [
-            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-          ],
-          "notes": [
-            "Implemented rotation cooldown as full-tick wait: cooldown decremented after each tick that does not accept a rotation; successful rotations set RotationCooldownRemaining to cooldownTicks.",
-            "Enforced maxRotations and tiltBudget using RotationsExecuted (incremented only on successful world rotation).",
-            "Bumped determinism hash version to 0.1.4 to include rotation cooldown state.",
-            "Inspected LevelConfigs/LevelValidator to align allowedDirections string mapping and tiltBudget constraints.",
-            "PR: https://github.com/Mental-NV/Floodline/pull/52",
-            "Merged PR: https://github.com/Mental-NV/Floodline/pull/52"
-          ]
-        }
-      },
-      {
-        "id": "FL-0416",
-        "epic": "E1",
-        "milestone": "M4",
-        "title": "Core: materials + anchoring + Stabilize ability (MVP)",
-        "status": "Done",
-        "startedAt": "2026-02-04T21:17:31Z",
-        "doneAt": "2026-02-04T21:35:36Z",
+        "notes": [
+          "Implemented rotation cooldown as full-tick wait: cooldown decremented after each tick that does not accept a rotation; successful rotations set RotationCooldownRemaining to cooldownTicks.",
+          "Enforced maxRotations and tiltBudget using RotationsExecuted (incremented only on successful world rotation).",
+          "Bumped determinism hash version to 0.1.4 to include rotation cooldown state.",
+          "Inspected LevelConfigs/LevelValidator to align allowedDirections string mapping and tiltBudget constraints.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/52",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/52"
+        ]
+      }
+    },
+    {
+      "id": "FL-0416",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: materials + anchoring + Stabilize ability (MVP)",
+      "status": "Done",
+      "startedAt": "2026-02-04T21:17:31Z",
+      "doneAt": "2026-02-04T21:35:36Z",
       "dependsOn": [
         "FL-0415"
       ],
@@ -1329,31 +1329,31 @@
         "Unit tests for anchored immovability and stabilize duration decrement/expiry"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-        "validation": [
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
         ],
-        "evidence": {
-          "commandsRun": [
-            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-          ],
-          "notes": [
-            "Anchored state stored on Voxel (Anchored flag) with temporary stabilize timers tracked per-position and decremented only on successful world rotations.",
-            "Reinforced material anchors permanently on lock; stabilize anchors expire after Constants.StabilizeAnchorRotations (2) rotations.",
-            "Bumped determinism hash version to 0.1.5 to include anchored voxels and stabilize timers/state.",
-            "Inspected Voxel/SolidSettler/PieceBag/InputCommand to implement anchored settling and Stabilize input despite requirementRef only listing spec.",
-            "PR: https://github.com/Mental-NV/Floodline/pull/53",
-            "Merged PR: https://github.com/Mental-NV/Floodline/pull/53"
-          ]
-        }
-      },
-      {
-        "id": "FL-0417",
-        "epic": "E1",
-        "milestone": "M4",
-        "title": "Core: constraints + fail states (WEIGHT_EXCEEDED/WATER_FORBIDDEN/NO_RESTING_ON_WATER)",
-        "status": "Done",
-        "startedAt": "2026-02-04T21:36:43Z",
-        "doneAt": "2026-02-04T21:46:31Z",
+        "notes": [
+          "Anchored state stored on Voxel (Anchored flag) with temporary stabilize timers tracked per-position and decremented only on successful world rotations.",
+          "Reinforced material anchors permanently on lock; stabilize anchors expire after Constants.StabilizeAnchorRotations (2) rotations.",
+          "Bumped determinism hash version to 0.1.5 to include anchored voxels and stabilize timers/state.",
+          "Inspected Voxel/SolidSettler/PieceBag/InputCommand to implement anchored settling and Stabilize input despite requirementRef only listing spec.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/53",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/53"
+        ]
+      }
+    },
+    {
+      "id": "FL-0417",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: constraints + fail states (WEIGHT_EXCEEDED/WATER_FORBIDDEN/NO_RESTING_ON_WATER)",
+      "status": "Done",
+      "startedAt": "2026-02-04T21:36:43Z",
+      "doneAt": "2026-02-04T21:46:31Z",
       "dependsOn": [
         "FL-0416"
       ],
@@ -1367,30 +1367,30 @@
         "Unit tests for each fail state/constraint trigger and non-trigger cases"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
-        "validation": [
+      "validation": [
+        "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+      ],
+      "evidence": {
+        "commandsRun": [
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
         ],
-        "evidence": {
-          "commandsRun": [
-            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-          ],
-          "notes": [
-            "Implemented WEIGHT_EXCEEDED (total mass > maxMass), WATER_FORBIDDEN (any water at worldHeight >= min), and NO_RESTING_ON_WATER checks after resolve.",
-            "Constraint evaluation runs after objective calculation and before win check to ensure fail states override success.",
-            "Inspected ConstraintsConfig/Voxel/SolidSettler/ObjectiveEvaluator patterns to align mass + solid checks beyond spec reference.",
-            "PR: https://github.com/Mental-NV/Floodline/pull/54",
-            "Merged PR: https://github.com/Mental-NV/Floodline/pull/54"
-          ]
-        }
-      },
+        "notes": [
+          "Implemented WEIGHT_EXCEEDED (total mass > maxMass), WATER_FORBIDDEN (any water at worldHeight >= min), and NO_RESTING_ON_WATER checks after resolve.",
+          "Constraint evaluation runs after objective calculation and before win check to ensure fail states override success.",
+          "Inspected ConstraintsConfig/Voxel/SolidSettler/ObjectiveEvaluator patterns to align mass + solid checks beyond spec reference.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/54",
+          "Merged PR: https://github.com/Mental-NV/Floodline/pull/54"
+        ]
+      }
+    },
     {
       "id": "FL-0418",
-        "epic": "E1",
-        "milestone": "M4",
-        "title": "Core: Wind hazard (WIND_GUST) scheduling + push rules",
-        "status": "Done",
-        "startedAt": "2026-02-04T21:47:40Z",
-        "doneAt": "2026-02-04T22:19:01Z",
+      "epic": "E1",
+      "milestone": "M4",
+      "title": "Core: Wind hazard (WIND_GUST) scheduling + push rules",
+      "status": "Done",
+      "startedAt": "2026-02-04T21:47:40Z",
+      "doneAt": "2026-02-04T22:19:01Z",
       "dependsOn": [
         "FL-0417"
       ],
@@ -1758,6 +1758,7 @@
       "title": "Docs: canonical consistency sweep (input actions, fail states, stars, encoding)",
       "status": "Done",
       "startedAt": "2026-02-05T10:42:18Z",
+      "doneAt": "2026-02-05T14:43:51Z",
       "dependsOn": [
         "FL-0420"
       ],
@@ -1768,26 +1769,26 @@
         "Input_Feel_v0_2.md: add FreezeAbility/DrainPlacementAbility to per-tick action order consistent with Simulation_Rules",
         "Simulation_Rules_v0_2.md: clarify NO_RESTING_ON_WATER as a fail state (or explicitly mark as objective/constraint) and align with constraints wording",
         "Content_Pack_v0_2.md: update star hook examples to only use supported MVP star condition types (MAX_PIECES_USED / MAX_ROTATIONS_USED / MAX_SHIFT_VOXELS_TOTAL / MAX_LOST_VOXELS_TOTAL)",
-          "AGENT_OS.md: fix canonical artifact count text to match the actual list"
+        "AGENT_OS.md: fix canonical artifact count text to match the actual list"
       ],
       "definitionOfDoneRef": "/.agent/AGENT_OS.md#dod",
       "validation": [
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
-        "evidence": {
-          "commandsRun": [
-            "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
-          ],
-          "notes": [
-            "Input_Feel: updated input defaults naming to FreezeAbility/DrainPlacementAbility.",
-            "Simulation_Rules: clarified NO_RESTING_ON_WATER as a constraint-triggered fail state and added to Fail States.",
-            "Content_Pack: replaced unsupported star hook examples with MAX_* star condition types and moved no-resting-on-water to a constraint.",
-            "AGENT_OS: corrected canonical artifact count text to 9 (includes change proposals).",
-            "Assumption: star hook thresholds were updated to supported MAX_* types as illustrative placeholders.",
-            "Fixed invalid trailing comma in backlog.json to restore valid JSON parsing."
-          ]
-        }
-      },
+      "evidence": {
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
+        ],
+        "notes": [
+          "Input_Feel: updated input defaults naming to FreezeAbility/DrainPlacementAbility.",
+          "Simulation_Rules: clarified NO_RESTING_ON_WATER as a constraint-triggered fail state and added to Fail States.",
+          "Content_Pack: replaced unsupported star hook examples with MAX_* star condition types and moved no-resting-on-water to a constraint.",
+          "AGENT_OS: corrected canonical artifact count text to 9 (includes change proposals).",
+          "Assumption: star hook thresholds were updated to supported MAX_* types as illustrative placeholders.",
+          "Fixed invalid trailing comma in backlog.json to restore valid JSON parsing."
+        ]
+      }
+    },
     {
       "id": "FL-0419",
       "epic": "E4",
