@@ -1756,9 +1756,8 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Docs: canonical consistency sweep (input actions, fail states, stars, encoding)",
-      "status": "Done",
+      "status": "InProgress",
       "startedAt": "2026-02-05T10:42:18Z",
-      "doneAt": "2026-02-05T11:10:03Z",
       "dependsOn": [
         "FL-0420"
       ],
@@ -1953,7 +1952,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Author Campaign Chapter 2A levels (Lv 11-15)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-05T10:42:18Z",
+      "doneAt": "2026-02-05T11:10:03Z",
       "dependsOn": [
         "FL-0405"
       ],
