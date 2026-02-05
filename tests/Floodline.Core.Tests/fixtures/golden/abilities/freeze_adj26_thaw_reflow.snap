@@ -1,0 +1,29 @@
+# FloodlineAbilitySnapshot v0.1
+scenario: freeze_adj26_thaw_reflow
+section: after_freeze
+ticks: 2
+status: InProgress
+gravity: Down
+activePiece: id=O2 orientation=0 origin=5,19,5
+cells: 5
+cell: 4,0,5 type=Solid material=STANDARD
+cell: 4,0,6 type=Solid material=STANDARD
+cell: 5,0,5 type=Solid material=STANDARD
+cell: 5,0,6 type=Solid material=STANDARD
+cell: 6,1,6 type=Ice material=none
+section: after_thaw
+ticks: 3
+status: InProgress
+gravity: Down
+activePiece: id=O2 orientation=0 origin=5,19,5
+cells: 10
+cell: 0,0,8 type=Water material=none
+cell: 0,0,9 type=Water material=none
+cell: 4,0,5 type=Solid material=STANDARD
+cell: 4,0,6 type=Solid material=STANDARD
+cell: 4,1,5 type=Solid material=STANDARD
+cell: 4,1,6 type=Solid material=STANDARD
+cell: 5,0,5 type=Solid material=STANDARD
+cell: 5,0,6 type=Solid material=STANDARD
+cell: 5,1,5 type=Solid material=STANDARD
+cell: 5,1,6 type=Solid material=STANDARD

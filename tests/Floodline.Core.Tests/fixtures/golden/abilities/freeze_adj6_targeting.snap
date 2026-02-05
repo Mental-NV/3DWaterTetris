@@ -1,0 +1,14 @@
+# FloodlineAbilitySnapshot v0.1
+scenario: freeze_adj6_targeting
+section: state
+ticks: 2
+status: InProgress
+gravity: Down
+activePiece: id=O2 orientation=0 origin=5,19,5
+cells: 6
+cell: 0,0,9 type=Water material=none
+cell: 4,0,5 type=Solid material=STANDARD
+cell: 4,0,6 type=Solid material=STANDARD
+cell: 5,0,5 type=Solid material=STANDARD
+cell: 5,0,6 type=Solid material=STANDARD
+cell: 6,0,5 type=Ice material=none

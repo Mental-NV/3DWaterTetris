@@ -1,0 +1,15 @@
+# FloodlineAbilitySnapshot v0.1
+scenario: drain_adjacent_remove
+section: state
+ticks: 2
+status: InProgress
+gravity: Down
+activePiece: id=O2 orientation=0 origin=5,19,5
+cells: 7
+cell: 4,0,5 type=Solid material=STANDARD
+cell: 4,0,6 type=Solid material=STANDARD
+cell: 5,0,5 type=Drain material=none
+cell: 5,0,6 type=Solid material=STANDARD
+cell: 6,0,4 type=Bedrock material=none
+cell: 6,0,6 type=Bedrock material=none
+cell: 7,0,5 type=Bedrock material=none
