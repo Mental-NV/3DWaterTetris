@@ -1,0 +1,17 @@
+# FloodlineWindSnapshot v0.1
+scenario: push_strength_vs_heavy
+wind: interval=1 offset=0 pushStrength=2 directionMode=FIXED fixedDirection=EAST
+section: standard
+bounds: 12 10 12
+gravity: Down
+piece: id=O2 material=STANDARD
+start: origin=6,9,6
+ticks: 1
+tick: 1 origin=8,9,6
+section: heavy
+bounds: 12 10 12
+gravity: Down
+piece: id=O2 material=HEAVY
+start: origin=6,9,6
+ticks: 1
+tick: 1 origin=7,9,6

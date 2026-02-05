@@ -1613,7 +1613,9 @@
       "epic": "E2",
       "milestone": "M4",
       "title": "Golden suite: wind hazard + Stabilize anchoring",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-05T00:04:03Z",
+      "doneAt": "2026-02-05T00:26:26Z",
       "dependsOn": [
         "FL-0418",
         "FL-0416",
@@ -1632,8 +1634,14 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "$env:FLOODLINE_UPDATE_GOLDENS='1'; dotnet test tests/Floodline.Core.Tests/Floodline.Core.Tests.csproj -c Release --filter \"FullyQualifiedName~Floodline.Core.Tests.Golden.WindGoldenTests|FullyQualifiedName~Floodline.Core.Tests.Golden.StabilizeGoldenTests\"",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
+        ],
+        "notes": [
+          "Generated new wind/stabilize golden snapshots and copied them into tests/Floodline.Core.Tests/fixtures/golden.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/61"
+        ]
       }
     },
     {

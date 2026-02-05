@@ -1,0 +1,12 @@
+# FloodlineWindSnapshot v0.1
+scenario: schedule_alternate
+wind: interval=2 offset=1 pushStrength=1 directionMode=ALTERNATE_EW fixedDirection=none
+bounds: 12 10 12
+gravity: Down
+piece: id=O2 material=STANDARD
+start: origin=6,9,6
+ticks: 4
+tick: 1 origin=6,9,6
+tick: 2 origin=7,8,6
+tick: 3 origin=7,8,6
+tick: 4 origin=6,7,6

@@ -1,0 +1,10 @@
+# FloodlineWindSnapshot v0.1
+scenario: collision_stop
+wind: interval=1 offset=0 pushStrength=2 directionMode=FIXED fixedDirection=EAST
+bounds: 12 10 12
+gravity: Down
+piece: id=O2 material=STANDARD
+start: origin=6,9,6
+blocker: 8,9,6
+ticks: 1
+tick: 1 origin=7,9,6
