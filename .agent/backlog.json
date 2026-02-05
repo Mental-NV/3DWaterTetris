@@ -1756,7 +1756,8 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Docs: canonical consistency sweep (input actions, fail states, stars, encoding)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-05T10:42:18Z",
       "dependsOn": [
         "FL-0420"
       ],
