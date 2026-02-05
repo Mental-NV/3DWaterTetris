@@ -1708,7 +1708,8 @@
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
         ],
         "notes": [
-          "Added golden snapshots for freeze targeting/thaw and drain placement (pivot conversion, drain effects), plus a zero-charge drain negative case."
+          "Added golden snapshots for freeze targeting/thaw and drain placement (pivot conversion, drain effects), plus a zero-charge drain negative case.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/63"
         ]
       }
     },
