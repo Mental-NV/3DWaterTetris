@@ -1638,7 +1638,8 @@
           "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -Golden"
         ],
         "notes": [
-          "Generated new wind/stabilize golden snapshots and copied them into tests/Floodline.Core.Tests/fixtures/golden."
+          "Generated new wind/stabilize golden snapshots and copied them into tests/Floodline.Core.Tests/fixtures/golden.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/61"
         ]
       }
     },
