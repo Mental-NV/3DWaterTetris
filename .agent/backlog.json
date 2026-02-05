@@ -1807,8 +1807,14 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "dotnet run --project src/Floodline.Cli/Floodline.Cli.csproj --configuration Release -- --level levels/minimal_level.json --inputs levels/minimal_inputs.txt --record levels/solutions/cli-minimal.replay.json",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
+        ],
+        "notes": [
+          "Created cli-minimal campaign solution replay for the CampaignSolutions gate.",
+          "Assumption: opened/edited CLI, tests, and scripts required by deliverables even though requirementRef points to Content_Pack_v0_2.md."
+        ]
       }
     },
     {
