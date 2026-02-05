@@ -43,10 +43,6 @@
 9) [`backlog.json`](backlog.json)  
    The only canonical work state (DONE / CURRENT / NEXT) and evidence log.
 
-**Rule:** open any other file only if the CURRENT backlog item’s `requirementRef` explicitly points to it.
-
-**Precedence:** contracts/schemas > tests (incl. golden) > code > docs prose.
-
 ---
 
 ## 2) Non-negotiable constraints

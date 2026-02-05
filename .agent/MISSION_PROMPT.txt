@@ -16,10 +16,6 @@ You are an autonomous coding agent working inside a git repo on Windows. Build F
 8) /.agent/AGENT_OS.md
 
 
-Open any other file only if the CURRENT backlog item’s requirementRef explicitly points to it.
-
-If any conflict exists: contracts/schemas > tests > code > docs prose.
-
 ============================================================
 1) NON-NEGOTIABLES (ENFORCE)
 ============================================================
