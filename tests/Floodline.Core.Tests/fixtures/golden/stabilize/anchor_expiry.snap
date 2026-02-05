@@ -1,0 +1,42 @@
+# FloodlineStabilizeSnapshot v0.1
+scenario: anchor_expiry
+section: after_lock
+ticks: 3
+gravity: Down
+anchoredSolids: 4
+activePiece: id=I4 orientation=0 origin=5,9,5
+cells: 4
+cell: 5,0,5 type=Solid material=STANDARD anchored=true
+cell: 5,0,6 type=Solid material=STANDARD anchored=true
+cell: 5,0,7 type=Solid material=STANDARD anchored=true
+cell: 5,0,8 type=Solid material=STANDARD anchored=true
+section: after_rotation_1
+ticks: 4
+gravity: East
+anchoredSolids: 4
+activePiece: id=I4 orientation=0 origin=5,9,5
+cells: 4
+cell: 5,0,5 type=Solid material=STANDARD anchored=true
+cell: 5,0,6 type=Solid material=STANDARD anchored=true
+cell: 5,0,7 type=Solid material=STANDARD anchored=true
+cell: 5,0,8 type=Solid material=STANDARD anchored=true
+section: after_rotation_2
+ticks: 5
+gravity: East
+anchoredSolids: 0
+activePiece: id=I4 orientation=0 origin=6,9,5
+cells: 4
+cell: 5,0,5 type=Solid material=STANDARD anchored=false
+cell: 5,0,6 type=Solid material=STANDARD anchored=false
+cell: 5,0,7 type=Solid material=STANDARD anchored=false
+cell: 5,0,8 type=Solid material=STANDARD anchored=false
+section: after_rotation_3
+ticks: 6
+gravity: East
+anchoredSolids: 0
+activePiece: id=I4 orientation=0 origin=6,9,5
+cells: 4
+cell: 9,0,5 type=Solid material=STANDARD anchored=false
+cell: 9,0,6 type=Solid material=STANDARD anchored=false
+cell: 9,0,7 type=Solid material=STANDARD anchored=false
+cell: 9,0,8 type=Solid material=STANDARD anchored=false
