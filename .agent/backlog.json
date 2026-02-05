@@ -1862,7 +1862,8 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Author Campaign Chapter 1A levels (Lv 1-5)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-05T09:49:11Z",
       "dependsOn": [
         "FL-0419"
       ],
