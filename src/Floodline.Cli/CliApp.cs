@@ -220,12 +220,20 @@ public static class CliApp
         }
 
         string? resolvedReplayPath = replayPath;
+        string? alternateReplayPath = null;
         if (requireWin)
         {
             resolvedReplayPath = solutionPath;
             if (string.IsNullOrWhiteSpace(resolvedReplayPath))
             {
-                resolvedReplayPath = Path.Combine("levels", "solutions", $"{level.Meta.Id}.replay.json");
+                resolvedReplayPath = ResolveSolutionPath(levelPath, level.Meta.Id);
+                alternateReplayPath = Path.ChangeExtension(resolvedReplayPath, ".replay");
+
+                if (File.Exists(alternateReplayPath) && !File.Exists(resolvedReplayPath))
+                {
+                    resolvedReplayPath = alternateReplayPath;
+                    alternateReplayPath = null;
+                }
             }
         }
 
@@ -237,7 +245,9 @@ public static class CliApp
             if (!File.Exists(resolvedReplayPath))
             {
                 return Fail(error, requireWin
-                    ? $"Solution replay not found: {resolvedReplayPath}"
+                    ? alternateReplayPath is null
+                        ? $"Solution replay not found: {resolvedReplayPath}"
+                        : $"Solution replay not found: {resolvedReplayPath} (also tried {alternateReplayPath})"
                     : $"Replay file not found: {resolvedReplayPath}");
             }
 
@@ -438,6 +448,20 @@ public static class CliApp
         }
 
         output.WriteLine($"DeterminismHash: {simulation.ComputeDeterminismHash()}");
+    }
+
+    private static string ResolveSolutionPath(string levelPath, string levelId)
+    {
+        string fullLevelPath = Path.GetFullPath(levelPath);
+        string? levelDirPath = Path.GetDirectoryName(fullLevelPath);
+        DirectoryInfo? dir = levelDirPath is null ? null : new DirectoryInfo(levelDirPath);
+        while (dir != null && !dir.Name.Equals("levels", StringComparison.OrdinalIgnoreCase))
+        {
+            dir = dir.Parent;
+        }
+
+        string baseDir = dir?.FullName ?? Directory.GetCurrentDirectory();
+        return Path.Combine(baseDir, "solutions", $"{levelId}.replay.json");
     }
 
     private static void PrintUsage(TextWriter output)

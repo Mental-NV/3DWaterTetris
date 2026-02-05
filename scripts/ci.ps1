@@ -195,7 +195,59 @@ if ($ValidateLevels) {
 }
 
 if ($CampaignSolutions) {
-  throw "-CampaignSolutions is not implemented yet. Implement solution runner gate first (see backlog FL-0419)."
+  $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+  $cliProject = Join-Path $repoRoot "src\Floodline.Cli\Floodline.Cli.csproj"
+  $campaignPath = Join-Path $repoRoot "levels\campaign.v0.2.0.json"
+
+  if (-not (Test-Path $cliProject)) { throw "CLI project not found: $cliProject" }
+  if (-not (Test-Path $campaignPath)) { throw "Campaign manifest not found: $campaignPath" }
+
+  $campaignJson = Get-Content -LiteralPath $campaignPath -Raw | ConvertFrom-Json
+  if (-not $campaignJson.levels) {
+    throw "Campaign manifest missing levels array: $campaignPath"
+  }
+
+  foreach ($levelEntry in $campaignJson.levels) {
+    if (-not $levelEntry.path) {
+      $levelId = $levelEntry.id
+      throw "Campaign level entry missing path for id '$levelId'."
+    }
+
+    $levelPath = $levelEntry.path
+    if (-not [System.IO.Path]::IsPathRooted($levelPath)) {
+      $levelPath = Join-Path $repoRoot $levelPath
+    }
+
+    if (-not (Test-Path $levelPath)) {
+      throw "Campaign level not found: $levelPath"
+    }
+
+    $levelId = $levelEntry.id
+    if (-not $levelId) {
+      $levelId = "(unknown)"
+    }
+
+    Write-Host ">> Campaign solution: $levelId ($levelPath)"
+
+    $solutionArgs = @(
+      "run",
+      "--project", $cliProject,
+      "--configuration", $Configuration,
+      "--no-build",
+      "--",
+      "--level", $levelPath,
+      "--solution"
+    )
+
+    try {
+      $solutionOutput = RunDotnet $solutionArgs
+      $solutionJoined = $solutionOutput -join [Environment]::NewLine
+      Write-Host $solutionJoined
+    }
+    catch {
+      throw "Campaign solution failed for level '$levelId' ($levelPath): $($_.Exception.Message)"
+    }
+  }
 }
 
 if ($Unity) {

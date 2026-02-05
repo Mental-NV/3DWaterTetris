@@ -1784,7 +1784,9 @@
       "epic": "E4",
       "milestone": "M4",
       "title": "Campaign winnability proofs: solution inputs + CI gate (-CampaignSolutions)",
-      "status": "New",
+      "status": "Done",
+      "startedAt": "2026-02-05T09:36:42Z",
+      "doneAt": "2026-02-05T09:45:20Z",
       "dependsOn": [
         "FL-0403",
         "FL-0402",
@@ -1806,8 +1808,16 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "dotnet run --project src/Floodline.Cli/Floodline.Cli.csproj --configuration Release -- --level levels/minimal_level.json --inputs levels/minimal_inputs.txt --record levels/solutions/cli-minimal.replay.json",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 -ValidateLevels -CampaignSolutions"
+        ],
+        "notes": [
+          "Created cli-minimal campaign solution replay for the CampaignSolutions gate.",
+          "Assumption: opened/edited CLI, tests, and scripts required by deliverables even though requirementRef points to Content_Pack_v0_2.md.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/65",
+          "CI: build-and-test passed on PR #65."
+        ]
       }
     },
     {

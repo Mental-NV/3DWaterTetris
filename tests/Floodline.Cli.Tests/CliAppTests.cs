@@ -85,6 +85,42 @@ public class CliAppTests
     }
 
     [Fact]
+    public void CliApp_Solution_Missing_Default_Path_Returns_Actionable_Error()
+    {
+        string sourceLevelPath = TestPaths.GetLevelPath("minimal_level.json");
+        string json = File.ReadAllText(sourceLevelPath)
+            .Replace("\"cli-minimal\"", "\"cli-missing-solution\"");
+        string tempRoot = Path.Combine(Path.GetTempPath(), $"floodline-solution-{Guid.NewGuid()}");
+        string levelsDir = Path.Combine(tempRoot, "levels");
+        Directory.CreateDirectory(levelsDir);
+        string levelPath = Path.Combine(levelsDir, "temp_level.json");
+        string expectedPath = Path.Combine(levelsDir, "solutions", "cli-missing-solution.replay.json");
+
+        try
+        {
+            File.WriteAllText(levelPath, json);
+
+            using StringWriter output = new();
+            using StringWriter error = new();
+
+            int exitCode = CliApp.Run(["--level", levelPath, "--solution"], output, error);
+
+            Assert.Equal(2, exitCode);
+            string errorText = error.ToString();
+            Assert.Contains("Solution replay not found", errorText, StringComparison.Ordinal);
+            Assert.Contains(expectedPath, errorText, StringComparison.OrdinalIgnoreCase);
+            Assert.True(string.IsNullOrWhiteSpace(output.ToString()));
+        }
+        finally
+        {
+            if (Directory.Exists(tempRoot))
+            {
+                Directory.Delete(tempRoot, recursive: true);
+            }
+        }
+    }
+
+    [Fact]
     public void CliApp_Validate_Level_Succeeds()
     {
         string levelPath = TestPaths.GetLevelPath("minimal_level.json");
