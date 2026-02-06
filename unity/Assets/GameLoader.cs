@@ -7,8 +7,8 @@ namespace Floodline.Client
 {
     /// <summary>
     /// Minimal bootstrap loader for a Floodline level.
-    /// Loads a level JSON, creates a simulation, and runs it headlessly.
-    /// For M5, this is the proof that Unity can import and execute Core without modifications.
+    /// Loads a level JSON, creates a simulation, and integrates input management.
+    /// For M5, this is the proof that Unity can import and execute Core with deterministic input mapping.
     /// </summary>
     public class GameLoader : MonoBehaviour
     {
@@ -19,7 +19,7 @@ namespace Floodline.Client
         private uint seed = 0;
 
         private Simulation simulation;
-        private int ticksUntilDone = 0;
+        private InputManager inputManager;
 
         private void Start()
         {
@@ -28,12 +28,13 @@ namespace Floodline.Client
 
         private void Update()
         {
-            if (simulation != null && simulation.Status == SimulationStatus.Playing)
+            if (simulation != null && simulation.Status == SimulationStatus.Playing && inputManager != null)
             {
-                // Run one tick per frame (this is a headless runner; no frame-rate constraint for determinism)
-                var inputs = new InputCommand[1];
-                inputs[0] = InputCommand.None;
-                simulation.Tick(inputs);
+                // Sample input for this tick, applying DAS/ARR and buffering rules
+                var command = inputManager.SampleAndGenerateCommand();
+
+                // Tick the simulation with the generated command
+                simulation.Tick(command);
 
                 if (simulation.Status != SimulationStatus.Playing)
                 {
@@ -65,6 +66,11 @@ namespace Floodline.Client
 
                 // Create the simulation
                 simulation = new Simulation(level, prng);
+
+                // Initialize input management
+                inputManager = gameObject.AddComponent<InputManager>();
+                inputManager.InputSource = gameObject.AddComponent<DeviceInputSource>();
+
                 Debug.Log($"Simulation initialized: level={level.Meta.Id}, seed={seed}, status={simulation.Status}");
             }
             catch (Exception ex)
