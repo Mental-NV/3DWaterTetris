@@ -2212,8 +2212,9 @@
       "epic": "E5",
       "milestone": "M5",
       "title": "Unity project scaffold + Core integration (no Core->Unity refs)",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-06T16:00:00Z",
+      "doneAt": "2026-02-06T16:30:00Z",
       "dependsOn": [
         "FL-0409"
       ],
@@ -2230,8 +2231,21 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M5"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M5",
+          "git push -u origin feat/FL-0500-unity-scaffold",
+          "gh pr create --title \"FL-0500: Unity project scaffold + Core integration\" --body \"...\"",
+          "gh pr merge 79 --merge --delete-branch"
+        ],
+        "notes": [
+          "Created /unity/Packages/manifest.json with minimal package manifest.",
+          "Added /unity/.gitignore with Unity-standard build/IDE exclusions.",
+          "Created /unity/Assets/Floodline.Client.asmdef assembly definition that references Floodline.Core.",
+          "Added GameLoader.cs bootstrap script for headless level loading and simulation.",
+          "CI M5 passed: build, tests (215), replay parity, formatting all OK.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/79",
+          "Merged PR #79 into main."
+        ]
       }
     },
     {
