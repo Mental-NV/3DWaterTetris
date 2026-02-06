@@ -2205,8 +2205,9 @@
       "epic": "E1",
       "milestone": "M5",
       "title": "Core/CLI: stars + score evaluation (for campaign + HUD)",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-06T16:49:00Z",
+      "doneAt": "2026-02-06T16:57:29Z",
       "dependsOn": [
         "FL-0520",
         "FL-0417"
@@ -2225,8 +2226,30 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M5"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "git checkout -b feat/FL-0521-stars-evaluation",
+          "git commit -m 'FL-0521: start Core/CLI star + score evaluation' (backlog-only, ff8c208)",
+          "Create StarEvaluator (StarEvaluation.cs, 208 lines) - supports all 4 MVP star condition types",
+          "Create ScoreEvaluator (ScoreEvaluation.cs, 54 lines) - computes integer-only score per CP-0003 formula",
+          "Update Simulation.cs: add Stars and Score properties, update UpdateStatus() to compute evaluations",
+          "Update CliApp.WriteSummary() to display star count, conditions, score (if enabled)",
+          "git commit -m 'FL-0521: add star/score evaluation to Core and CLI output' (e385ac3)",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M5 (PASSED: build OK, 168 unit tests, 47 golden tests, replay parity OK, formatting OK)",
+          "git push -u origin feat/FL-0521-stars-evaluation",
+          "gh pr create --title 'FL-0521: Core/CLI star + score evaluation' (PR #90)",
+          "gh pr merge 90 --merge --delete-branch (MERGED to main)"
+        ],
+        "notes": [
+          "StarEvaluator: Computes stars (0/1/2/3) based on objectives + star2/star3 conditions (AND logic per condition set)",
+          "Supports MVP star conditions: MAX_PIECES_USED, MAX_ROTATIONS_USED, MAX_SHIFT_VOXELS_TOTAL, MAX_LOST_VOXELS_TOTAL",
+          "ScoreEvaluator: Computes deterministic integer score using CP-0003 formula with configurable weights",
+          "Simulation exposes Stars and Score properties (evaluated each UpdateStatus() call)",
+          "CLI output includes: Star count, per-condition progress, score value (if enabled)",
+          "Infrastructure: ShiftVoxelsTotal and LostVoxelsTotal placeholders ready for future tracking (currently 0 MVP)",
+          "CI validation: all 215 tests passed (168 unit + 47 golden); replay parity verified; formatting passed",
+          "GitHub Actions CI: build-and-test completed with SUCCESS conclusion",
+          "Ready for: Unity HUD integration, solution result validation, future shift/lost voxel tracking"
+        ]
       }
     },
     {
