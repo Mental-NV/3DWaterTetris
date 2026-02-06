@@ -65,5 +65,26 @@
       "id": "L15_Dont_Build_on_Water",
       "path": "levels/campaign/L15_Dont_Build_on_Water.json"
     }
+    ,
+    {
+      "id": "L16_Freeze_101",
+      "path": "levels/campaign/L16_Freeze_101.json"
+    },
+    {
+      "id": "L17_Temporary_Bridge",
+      "path": "levels/campaign/L17_Temporary_Bridge.json"
+    },
+    {
+      "id": "L18_Drain_Placement",
+      "path": "levels/campaign/L18_Drain_Placement.json"
+    },
+    {
+      "id": "L19_Forbidden_Zone",
+      "path": "levels/campaign/L19_Forbidden_Zone.json"
+    },
+    {
+      "id": "L20_Floodplain_Exam",
+      "path": "levels/campaign/L20_Floodplain_Exam.json"
+    }
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "id": "L18_Drain_Placement",
+    "title": "Drain Placement",
+    "schemaVersion": "0.2.3",
+    "seed": 1018
+  },
+  "bounds": { "x": 10, "y": 16, "z": 10 },
+  "initialVoxels": [
+    { "pos": { "x": 4, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 0, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 7 }, "type": "Drain", "drain": { "ratePerResolve": 12, "scope": "Adj26" } }
+  ],
+  "objectives": [ { "type": "REACH_HEIGHT", "params": { "height": 2 } } ],
+  "rotation": { "allowedDirections": ["Down"] },
+  "bag": { "type": "FIXED_SEQUENCE", "sequence": ["O2"] },
+  "hazards": [],
+  "abilities": {
+    "holdEnabled": false,
+    "stabilizeCharges": 0,
+    "drainPlacementCharges": 1,
+    "drainPlacement": { "ratePerResolve": 6, "scope": "Adj26" }
+  },
+  "constraints": {},
+  "stars": {
+    "star2": [ { "type": "MAX_PIECES_USED", "params": { "count": 18 } } ]
+  }
+}
