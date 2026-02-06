@@ -12,5 +12,7 @@ public record Level(
     BagConfig Bag,
     List<HazardConfig> Hazards,
     AbilitiesConfig? Abilities = null,
-    ConstraintsConfig? Constraints = null
+    ConstraintsConfig? Constraints = null,
+    StarsConfig? Stars = null,
+    ScoreConfig? Score = null
 );
