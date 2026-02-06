@@ -1,0 +1,71 @@
+{
+  "description": "Test: Horizontal movement with DAS/ARR (move right continuously)",
+  "frames": [
+    {
+      "tick": 0,
+      "input": {
+        "moveX": 1,
+        "moveZ": 0,
+        "rotateYaw": 0,
+        "rotatePitch": 0,
+        "rotateRoll": 0,
+        "softDrop": false,
+        "hardDrop": false,
+        "holdAction": false,
+        "rotateWorldForward": 0,
+        "rotateWorldLeft": 0,
+        "abilityStabilize": false,
+        "abilityFreeze": false,
+        "abilityDrain": false,
+        "cameraNE": 0,
+        "cameraNW": 0,
+        "cameraSE": 0,
+        "cameraSW": 0
+      }
+    },
+    {
+      "tick": 1,
+      "input": {
+        "moveX": 1,
+        "moveZ": 0,
+        "rotateYaw": 0,
+        "rotatePitch": 0,
+        "rotateRoll": 0,
+        "softDrop": false,
+        "hardDrop": false,
+        "holdAction": false,
+        "rotateWorldForward": 0,
+        "rotateWorldLeft": 0,
+        "abilityStabilize": false,
+        "abilityFreeze": false,
+        "abilityDrain": false,
+        "cameraNE": 0,
+        "cameraNW": 0,
+        "cameraSE": 0,
+        "cameraSW": 0
+      }
+    },
+    {
+      "tick": 2,
+      "input": {
+        "moveX": 1,
+        "moveZ": 0,
+        "rotateYaw": 0,
+        "rotatePitch": 0,
+        "rotateRoll": 0,
+        "softDrop": false,
+        "hardDrop": false,
+        "holdAction": false,
+        "rotateWorldForward": 0,
+        "rotateWorldLeft": 0,
+        "abilityStabilize": false,
+        "abilityFreeze": false,
+        "abilityDrain": false,
+        "cameraNE": 0,
+        "cameraNW": 0,
+        "cameraSE": 0,
+        "cameraSW": 0
+      }
+    }
+  ]
+}

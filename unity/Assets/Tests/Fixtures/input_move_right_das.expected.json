@@ -1,0 +1,24 @@
+{
+  "description": "Expected commands for input_move_right_das.json fixture",
+  "testName": "DASMoveRight",
+  "expectedCommands": [
+    "MoveRight",
+    "None",
+    "None",
+    "None",
+    "None",
+    "None",
+    "None",
+    "None",
+    "None",
+    "None",
+    "MoveRight",
+    "MoveRight",
+    "MoveRight"
+  ],
+  "notes": [
+    "Tick 0: Immediate first move (initial response)",
+    "Ticks 1-9: DAS delay (10 ticks total at 60 Hz ≈ 166ms)",
+    "Ticks 10+: ARR repeat fires every 2 ticks (30 Hz ≈ 33ms)"
+  ]
+}
