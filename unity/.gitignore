@@ -1,0 +1,31 @@
+# Unity project files
+ProjectSettings/
+Library/
+Temp/
+Logs/
+MemoryCaptures/
+Recordings/
+
+# IDE
+.vscode/
+.idea/
+*.sln.meta
+*.csproj.meta
+
+# Build output
+[Bb]uild/
+[Bb]uilds/
+[Oo]bj/
+[Bb]in/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Artifacts
+*.user
+*.userprefs
+*.DotSettings
+*.swp
+*.swo
+*~
