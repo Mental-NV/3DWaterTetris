@@ -2231,9 +2231,15 @@
       ],
       "evidence": {
         "commandsRun": [
-          "git checkout -b feat/FL-0500-unity-scaffold"
+          "git checkout -b feat/FL-0500-unity-scaffold",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M5",
+          "git push -u origin feat/FL-0500-unity-scaffold",
+          "gh pr create --title 'FL-0500: Unity project scaffold + Core integration (no Core->Unity refs)' --body '<see validation>'"
         ],
-        "notes": []
+        "notes": [
+          "CI (M5 scope) passed locally: locked restore, build, tests, golden, replay parity, formatting.",
+          "PR: https://github.com/Mental-NV/Floodline/pull/75"
+        ]
       }
     },
     {
