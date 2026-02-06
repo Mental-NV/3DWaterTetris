@@ -447,6 +447,32 @@ public static class CliApp
             }
         }
 
+        output.WriteLine($"Stars: {simulation.Stars.StarCount}");
+        if (simulation.Stars.Star2Conditions.Count > 0)
+        {
+            output.WriteLine("- Star2 Conditions:");
+            foreach (StarConditionEvaluation condition in simulation.Stars.Star2Conditions)
+            {
+                output.WriteLine(
+                    $"  - {condition.Type}: {condition.Current}/{condition.Target} (Completed={condition.Completed})");
+            }
+        }
+
+        if (simulation.Stars.Star3Conditions.Count > 0)
+        {
+            output.WriteLine("- Star3 Conditions:");
+            foreach (StarConditionEvaluation condition in simulation.Stars.Star3Conditions)
+            {
+                output.WriteLine(
+                    $"  - {condition.Type}: {condition.Current}/{condition.Target} (Completed={condition.Completed})");
+            }
+        }
+
+        if (simulation.Score.Enabled)
+        {
+            output.WriteLine($"Score: {simulation.Score.Score}");
+        }
+
         output.WriteLine($"DeterminismHash: {simulation.ComputeDeterminismHash()}");
     }
 

@@ -43,6 +43,10 @@ public sealed class Simulation
     private SimulationStatus _status = SimulationStatus.InProgress;
     private long _ticksElapsed;
     private int _piecesLocked;
+#pragma warning disable CS0649, IDE0044 // Fields unused in MVP; will be populated by future shift/lost voxel tracking
+    private int _shiftVoxelsTotal;
+    private int _lostVoxelsTotal;
+#pragma warning restore CS0649, IDE0044
     internal int WaterRemovedTotal { get; private set; }
     internal int RotationsExecuted { get; private set; }
 
@@ -60,6 +64,16 @@ public sealed class Simulation
     /// Gets the latest objective evaluation snapshot.
     /// </summary>
     public ObjectiveEvaluation Objectives { get; private set; } = ObjectiveEvaluation.Empty;
+
+    /// <summary>
+    /// Gets the latest star evaluation snapshot.
+    /// </summary>
+    public StarEvaluation Stars { get; private set; } = StarEvaluation.Empty;
+
+    /// <summary>
+    /// Gets the latest score evaluation snapshot.
+    /// </summary>
+    public ScoreEvaluation Score { get; private set; } = ScoreEvaluation.Disabled;
 
     /// <summary>
     /// Gets the current active piece, if any.
@@ -472,6 +486,22 @@ public sealed class Simulation
             _piecesLocked,
             WaterRemovedTotal,
             RotationsExecuted);
+
+        Stars = StarEvaluator.Evaluate(
+            Objectives,
+            _level,
+            _piecesLocked,
+            RotationsExecuted,
+            _shiftVoxelsTotal,
+            _lostVoxelsTotal);
+
+        Score = ScoreEvaluator.Evaluate(
+            _level,
+            _piecesLocked,
+            WaterRemovedTotal,
+            RotationsExecuted,
+            _shiftVoxelsTotal,
+            _lostVoxelsTotal);
 
         if (CheckConstraints())
         {
