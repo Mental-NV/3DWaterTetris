@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "id": "L16_Freeze_101",
+    "title": "Freeze 101",
+    "schemaVersion": "0.2.3",
+    "seed": 1016
+  },
+  "bounds": { "x": 10, "y": 16, "z": 10 },
+  "initialVoxels": [
+    { "pos": { "x": 4, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 0, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 0, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 0, "z": 6 }, "type": "Water" },
+
+    { "pos": { "x": 4, "y": 1, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 1, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 4, "y": 1, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 1, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 1, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 5, "y": 1, "z": 6 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 1, "z": 4 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 1, "z": 5 }, "type": "Water" },
+    { "pos": { "x": 6, "y": 1, "z": 6 }, "type": "Water" },
+
+    { "pos": { "x": 5, "y": 0, "z": 7 }, "type": "Drain", "drain": { "ratePerResolve": 10, "scope": "Adj26" } }
+  ],
+  "objectives": [ { "type": "REACH_HEIGHT", "params": { "height": 2 } } ],
+  "rotation": { "allowedDirections": ["Down"] },
+  "bag": { "type": "FIXED_SEQUENCE", "sequence": ["O2", "O2"] },
+  "hazards": [],
+  "abilities": {
+    "holdEnabled": false,
+    "stabilizeCharges": 0,
+    "freezeCharges": 1,
+    "freezeDurationResolves": 2,
+    "freezeScope": "Adj26"
+  },
+  "constraints": {},
+  "stars": {
+    "star3": [ { "type": "MAX_PIECES_USED", "params": { "count": 16 } } ]
+  }
+}
