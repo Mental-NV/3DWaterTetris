@@ -30,6 +30,23 @@ namespace Floodline.Client
         [SerializeField]
         private Material freezeMaterial;
 
+        private VoxelPool voxelPool;
+
+        private void OnEnable()
+        {
+            // Initialize or reuse existing pool
+            var existingPool = GetComponent<VoxelPool>();
+            if (existingPool == null)
+            {
+                voxelPool = gameObject.AddComponent<VoxelPool>();
+                voxelPool.Initialize();
+            }
+            else
+            {
+                voxelPool = existingPool;
+            }
+        }
+
         /// <summary>
         /// Called each frame to update grid visualization based on simulation state
         /// </summary>
@@ -156,25 +173,22 @@ namespace Floodline.Client
         }
 
         /// <summary>
-        /// Create a cube at world position with material
+        /// Create a cube at world position with material (uses pool)
         /// </summary>
         private GameObject CreateCube(Vector3 position, float size, Material mat, string name)
         {
-            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.parent = transform;
-            cube.transform.position = position;
-            cube.transform.localScale = Vector3.one * size;
-            cube.name = name;
+            if (voxelPool == null)
+                return null;
 
-            // Remove collider for rendering-only cube
-            var collider = cube.GetComponent<Collider>();
-            if (collider != null)
-                Object.Destroy(collider);
+            // Convert world position to grid position for pool tracking
+            int gridX = Mathf.RoundToInt(position.x / voxelSize);
+            int gridY = Mathf.RoundToInt(position.y / voxelSize);
+            int gridZ = Mathf.RoundToInt(position.z / voxelSize);
+            var gridPos = new Vector3Int(gridX, gridY, gridZ);
 
-            // Apply material
-            var renderer = cube.GetComponent<Renderer>();
-            if (renderer != null && mat != null)
-                renderer.material = mat;
+            var cube = voxelPool.GetCube(gridPos, position, size, mat);
+            if (cube != null)
+                cube.name = name;
 
             return cube;
         }
@@ -204,15 +218,12 @@ namespace Floodline.Client
         }
 
         /// <summary>
-        /// Clear all rendered voxels
+        /// Clear all rendered voxels by returning them to the pool
         /// </summary>
         private void ClearGrid()
         {
-            // Destroy all child cubes
-            foreach (Transform child in transform)
-            {
-                Object.Destroy(child.gameObject);
-            }
+            if (voxelPool != null)
+                voxelPool.ReleaseAllCubes();
         }
     }
 }
