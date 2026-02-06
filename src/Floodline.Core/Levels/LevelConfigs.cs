@@ -119,3 +119,31 @@ public record HazardConfig(
     bool Enabled = true,
     Dictionary<string, object>? Params = null
 );
+
+/// <summary>
+/// Configuration for a single star condition (e.g., MAX_PIECES_USED).
+/// </summary>
+public record StarConditionConfig(
+    string Type,
+    Dictionary<string, object> Params
+);
+
+/// <summary>
+/// Per-level star configuration (conditions for earning 2-star and 3-star ratings).
+/// </summary>
+public record StarsConfig(
+    List<StarConditionConfig>? Star2 = null,
+    List<StarConditionConfig>? Star3 = null
+);
+
+/// <summary>
+/// Per-level score configuration for deterministic scoring.
+/// </summary>
+public record ScoreConfig(
+    bool Enabled = false,
+    int PerPiece = 10,
+    int PerWaterRemoved = 5,
+    int PenaltyShiftVoxel = 1,
+    int PenaltyLostVoxel = 2,
+    int PenaltyRotation = 3
+);

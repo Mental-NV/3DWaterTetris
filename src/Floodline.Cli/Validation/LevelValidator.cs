@@ -9,7 +9,7 @@ namespace Floodline.Cli.Validation;
 
 public static class LevelValidator
 {
-    private const string DefaultSchemaVersion = "0.2.2";
+    private const string DefaultSchemaVersion = "0.2.3";
     private const int RepoSearchDepth = 12;
     private static readonly HashSet<string> AllowedGravityDirections = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -203,6 +203,7 @@ public static class LevelValidator
         ValidateRotation(level, levelPath, errors);
         ValidateObjectives(level, levelPath, errors);
         ValidateHazards(level, levelPath, errors);
+        ValidateStars(level, levelPath, errors);
     }
 
     private static void ValidateInitialVoxels(Level level, string levelPath, List<LevelValidationError> errors)
@@ -705,6 +706,81 @@ public static class LevelValidator
             ["intervalTicks", "pushStrength", "directionMode", "firstGustOffsetTicks", "fixedDirection"],
             "semantic.hazard.param_unknown",
             "hazard WIND_GUST");
+    }
+
+    private static void ValidateStars(Level level, string levelPath, List<LevelValidationError> errors)
+    {
+        if (level.Stars is null)
+        {
+            return;
+        }
+
+        // Validate star2 conditions
+        if (level.Stars.Star2 is not null && level.Stars.Star2.Count > 0)
+        {
+            ValidateStarConditions(levelPath, errors, "#/stars/star2", level.Stars.Star2, "star2");
+        }
+
+        // Validate star3 conditions
+        if (level.Stars.Star3 is not null && level.Stars.Star3.Count > 0)
+        {
+            ValidateStarConditions(levelPath, errors, "#/stars/star3", level.Stars.Star3, "star3");
+        }
+    }
+
+    private static void ValidateStarConditions(string levelPath, List<LevelValidationError> errors, string basePath, List<StarConditionConfig> conditions, string starLabel)
+    {
+        for (int i = 0; i < conditions.Count; i++)
+        {
+            StarConditionConfig condition = conditions[i];
+            string typeRaw = condition.Type ?? string.Empty;
+            string pointer = $"{basePath}/{i}/type";
+
+            if (string.IsNullOrWhiteSpace(typeRaw))
+            {
+                errors.Add(new LevelValidationError(levelPath, pointer, "semantic.star_condition.type_missing", $"{starLabel} condition type is missing."));
+                continue;
+            }
+
+            if (condition.Params is null)
+            {
+                errors.Add(new LevelValidationError(
+                    levelPath,
+                    $"{basePath}/{i}/params",
+                    "semantic.star_condition.params_missing",
+                    $"{starLabel} condition params are missing."));
+                continue;
+            }
+
+            Dictionary<string, object> parameters = condition.Params;
+            string normalized = NormalizeType(typeRaw);
+            switch (normalized)
+            {
+                case "MAXPIECESUSED":
+                    RequireInt(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"]);
+                    RejectUnknownParams(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"], "semantic.star_condition.param_unknown", $"{starLabel} condition MAX_PIECES_USED");
+                    break;
+                case "MAXROTATIONSUSED":
+                    RequireInt(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"]);
+                    RejectUnknownParams(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"], "semantic.star_condition.param_unknown", $"{starLabel} condition MAX_ROTATIONS_USED");
+                    break;
+                case "MAXSHIFTVOXELSTOTAL":
+                    RequireInt(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"]);
+                    RejectUnknownParams(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"], "semantic.star_condition.param_unknown", $"{starLabel} condition MAX_SHIFT_VOXELS_TOTAL");
+                    break;
+                case "MAXLOSTVOXELSTOTAL":
+                    RequireInt(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"]);
+                    RejectUnknownParams(levelPath, errors, $"{basePath}/{i}/params", parameters, ["count"], "semantic.star_condition.param_unknown", $"{starLabel} condition MAX_LOST_VOXELS_TOTAL");
+                    break;
+                default:
+                    errors.Add(new LevelValidationError(
+                        levelPath,
+                        pointer,
+                        "semantic.star_condition.type_invalid",
+                        $"{starLabel} condition type '{typeRaw}' is not recognized."));
+                    break;
+            }
+        }
     }
 
     private static int RequireInt(
