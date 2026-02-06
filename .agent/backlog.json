@@ -2158,8 +2158,9 @@
       "epic": "E4",
       "milestone": "M5",
       "title": "Stars/Score: define MVP model + schema (Change Proposal)",
-      "status": "InProgress",
+      "status": "Done",
       "startedAt": "2026-02-06T16:42:12Z",
+      "doneAt": "2026-02-06T16:48:38Z",
       "dependsOn": [
         "FL-0410"
       ],
@@ -2176,8 +2177,27 @@
         "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4"
       ],
       "evidence": {
-        "commandsRun": [],
-        "notes": []
+        "commandsRun": [
+          "git checkout -b feat/FL-0520-stars-schema",
+          "git commit -m 'FL-0520: start Stars/Score MVP model + schema' (backlog-only, c78026e)",
+          "Replace DefaultSchemaVersion \"0.2.2\" -> \"0.2.3\" in LevelValidator.cs",
+          "Add ValidateStars() + ValidateStarConditions() to LevelValidator.cs (79 lines, supports MAXPIECESUSED, MAXROTATIONSUSED, MAXSHIFTVOXELSTOTAL, MAXLOSTVOXELSTOTAL with params.count validation)",
+          "Add StarConditionConfig, StarsConfig, ScoreConfig records to LevelConfigs.cs",
+          "Add optional Stars/Score parameters to Level record",
+          "git commit -m 'FL-0520: add star/score data models and validator integration' (e0591b7)",
+          "powershell -ExecutionPolicy Bypass -File ./scripts/ci.ps1 -Scope M4 (PASSED: build OK, 168 unit tests, 47 golden tests, replay parity OK, formatting OK)",
+          "git push -u origin feat/FL-0520-stars-schema",
+          "gh pr create --title 'FL-0520: Stars/Score MVP model + schema' (PR #89)",
+          "gh pr merge 89 --merge --delete-branch (MERGED to main)"
+        ],
+        "notes": [
+          "Schema v0.2.3 was pre-existing (854 lines; verified complete with all 4 MVP condition types + score config)",
+          "MVP star conditions: MAX_PIECES_USED, MAX_ROTATIONS_USED, MAX_SHIFT_VOXELS_TOTAL, MAX_LOST_VOXELS_TOTAL (all integer-count params)",
+          "Validator uses normalized type names (UPPERCASE) and enforces required 'count' param with actionable JSON Pointer errors",
+          "CI validation: all 215 tests passed (168 unit + 47 golden); replay parity hash verified: 6552aad6a1ff9a817154ae9f97a1473241d052b148ab7e3c0d46a3b60395a245; formatting gate passed",
+          "PR #89 created with full summary; GitHub Actions CI: build-and-test completed in ~108s with SUCCESS conclusion",
+          "Ready for FL-0521: Core/CLI star + score evaluation (computation in Simulation state, CLI output, unit tests)"
+        ]
       }
     },
     {
@@ -2185,7 +2205,8 @@
       "epic": "E1",
       "milestone": "M5",
       "title": "Core/CLI: stars + score evaluation (for campaign + HUD)",
-      "status": "New",
+      "status": "InProgress",
+      "startedAt": "2026-02-06T16:49:00Z",
       "dependsOn": [
         "FL-0520",
         "FL-0417"
